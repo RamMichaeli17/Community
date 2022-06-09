@@ -40,7 +40,7 @@ public class UserController {
                 notes = "Create a new row in the DB testing")
     public String test() {
         log.info("Trying to save in DB...");
-        return userService.createUser();
+        return "Test";
     }
 
 
