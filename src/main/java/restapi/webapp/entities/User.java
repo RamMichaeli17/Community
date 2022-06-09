@@ -1,13 +1,15 @@
-package entities;
+package restapi.webapp.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import utilities.converters.NameConvertor;
+import restapi.webapp.converters.NameConvertor;
 
 import javax.persistence.*;
 
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Data
 @Table(name="Users")
@@ -16,9 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue
-    private String id;
-
-    @Id
+    private Long id;
     private String email;
 
     private String md5;
@@ -37,6 +37,7 @@ public class User {
 //    private Avatar avatar;
 
     @Data
+    @AllArgsConstructor
     public static class Name {
         private String title;
         private String firstName;

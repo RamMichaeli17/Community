@@ -1,10 +1,10 @@
-package utilities.converters;
+package restapi.webapp.converters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.User.*;
+import restapi.webapp.entities.User.*;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
+
 import javax.persistence.AttributeConverter;
 
 public class NameConvertor implements AttributeConverter<Name, String> {
