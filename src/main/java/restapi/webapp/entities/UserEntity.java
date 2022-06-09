@@ -3,7 +3,9 @@ package restapi.webapp.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import restapi.webapp.converters.NameConvertor;
+import restapi.webapp.enums.AvatarGroups;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,9 +26,6 @@ public class UserEntity implements Serializable {
     private Integer age;
     private String phone;
 
-//    @Column(name = "Name")
-    //@Convert(converter = NameConvertor.class)
-    //@Transient
     @Embedded
     private Name name;
 

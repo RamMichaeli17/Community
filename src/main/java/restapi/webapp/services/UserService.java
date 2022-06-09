@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity.*;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.enums.AvatarGroups;
 import restapi.webapp.repos.UserRepo;
 
 @Service
