@@ -1,7 +1,7 @@
 package restapi.webapp.converters;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import restapi.webapp.entities.User.*;
+import restapi.webapp.entities.UserEntity.*;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 

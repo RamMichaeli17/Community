@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 @Table(name="USERS")
 
-public class User implements Serializable {
+public class UserEntity implements Serializable {
 
     @Id
     @GeneratedValue
@@ -27,9 +27,19 @@ public class User implements Serializable {
     private String phone;
 
 //    @Column(name = "Name")
-    @Convert(converter = NameConvertor.class)
-    @Transient
+    //@Convert(converter = NameConvertor.class)
+    //@Transient
+    @Embedded
     private Name name;
+
+    public UserEntity(String email, String md5, String gender, Integer age, String phone, Name name) {
+        this.email = email;
+        this.md5 = md5;
+        this.gender = gender;
+        this.age = age;
+        this.phone = phone;
+        this.name = name;
+    }
 
 //    @Convert(converter = LocationConvertor.class)
 //    private Location location;
@@ -39,6 +49,8 @@ public class User implements Serializable {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
+    @Embeddable
     public static class Name {
         private String title;
         private String firstName;

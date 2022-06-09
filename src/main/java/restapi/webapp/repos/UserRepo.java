@@ -2,7 +2,7 @@ package restapi.webapp.repos;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import restapi.webapp.entities.User;
+import restapi.webapp.entities.UserEntity;
 
 /**
  * This class is a Data Access Layer class (DAL)
@@ -10,5 +10,5 @@ import restapi.webapp.entities.User;
  * implemented according to the specific data base
  */
 @Repository
-public interface UserRepo extends CrudRepository<User, Long> {
+public interface UserRepo extends CrudRepository<UserEntity, Long> {
 }
