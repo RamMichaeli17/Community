@@ -6,21 +6,21 @@ import lombok.NoArgsConstructor;
 import restapi.webapp.converters.NameConvertor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Data
-@Table(name="Users")
+@Table(name="USERS")
 
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue
     private Long id;
     private String email;
-
     private String md5;
     private String gender;
     private Integer age;
@@ -28,6 +28,7 @@ public class User {
 
 //    @Column(name = "Name")
     @Convert(converter = NameConvertor.class)
+    @Transient
     private Name name;
 
 //    @Convert(converter = LocationConvertor.class)
