@@ -1,11 +1,9 @@
 package restapi.webapp.repos;
 
-import org.apache.catalina.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.enums.AvatarGroups;
-import restapi.webapp.entities.UserEntity.*;
 
 import java.util.List;
 
@@ -15,9 +13,9 @@ import java.util.List;
  * implemented according to the specific database
  */
 @Repository
-public interface UserRepo extends CrudRepository<UserEntity, Long> {
+public interface UserRepo extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
     UserEntity getUserEntityByEmail(String email);
-    //UserEntity getUserEntityByName(String firstName, String lastName);
-    List<UserEntity> getUserEntitiesByAge(Integer age);
+    //UserEntity getUserEntityBy(String param, String value);
+    void deleteUserEntityByEmail(String email);
 }

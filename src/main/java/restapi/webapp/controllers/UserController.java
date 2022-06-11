@@ -5,15 +5,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.services.UserService;
-
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -31,47 +29,94 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 @Slf4j
 public class UserController {
 
-    private final UserService service;
-    private final UserEntityAssembler assembler;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserService service, UserEntityAssembler assembler) {
-        this.service = service;
-        this.assembler = assembler;
+    public UserController(UserService userService, UserEntityAssembler assembler) {
+        this.userService = userService;
     }
 
-    @RequestMapping("/test")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create new row in DB",
-                code = 201,
-                notes = "Create a new row in the DB testing")
-    public String test() {
-        log.info("Trying to save in DB...");
-        return "Test";
-    }
-
-    @GetMapping("/users/getallusers")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getAllUsers(){
-        return ResponseEntity.ok(assembler.toCollectionModel(service.getAllUsers()));
-    }
     @GetMapping("/users/search/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<EntityModel<UserEntity>> getUserByEmail(@PathVariable String email){
-        return ResponseEntity.ok(assembler.toModel(service.getUserByEmail(email)));
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email){
+        ResponseEntity<?> response = userService.getUserByEmail(email);
+        return ResponseEntity.ok(response);
     }
 
-    /*@GetMapping("users/search/")
+    @Transactional
+    @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<EntityModel<UserEntity>> getUserByName(@RequestParam String firstName,
-                                                                 @RequestParam String lastName){
-        return ResponseEntity.ok(assembler.toModel(service.getUserByName(firstName, lastName)));
+    @ApiOperation(value = "Find all users",
+            notes = "Find user details by name, location age and more")
+    public ResponseEntity<?> getAllUsers() {
+        log.info("Trying to fetch all users");
+        ResponseEntity<?> response = this.userService.getAllUsers();
+        return ResponseEntity.ok(response);
+    }
+
+    /*@GetMapping("/find/{param}/{value}")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find a user by specific parameters",
+            notes = "Find user details by name, location age and more")
+    public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
+        log.info("Trying to fetch users by parameter `{}` with value `{}`", param, value);
+        ResponseEntity<?> response = this.userService.getUserBySpecificParameter(param, value);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/find")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find a user by specific parameters",
+            code = 200,
+            notes = "Find user details by name, location age and more")
+    public ResponseEntity<?> getUserWithRequestParam(@RequestParam String param, @RequestParam String value) {
+        log.info("Trying to fetch users by parameter `{}` with value `{}`", param, value);
+        //ResponseEntity<?> response = this.userService.getUserBySpecificParameter(param, value);
+        return null;
+    }
+
+    @GetMapping("/find/comp")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find a user by advanced calculations",
+            code = 200,
+            notes = "Find user details by advanced calculations")
+    public ResponseEntity<?> getUserByAdvCalc() {
+        log.info("Trying to fetch users by advanced calculations");
+        //ResponseEntity<?> response = this.userService.getUserByAdvCalc();
+        return null;
     }*/
 
-    @GetMapping("/users/search/{age}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getUsersByAge(@PathVariable Integer age){
-        return ResponseEntity.ok(assembler.toCollectionModel(service.getUsersByAge(age)));
+    @PostMapping(value = "/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation(value = "Create a user",
+            code = 201,
+            notes = "Create new user by specific parameters")
+    public ResponseEntity<?> createUser(@RequestBody UserEntity user) {
+        log.info("Trying to create new user by specific parameters:");
+        log.info("{}", user);
+        ResponseEntity<?> response = this.userService.createUser(user);
+        return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Update a user",
+            notes = "Update a user by specific parameters")
+    public ResponseEntity<?> updateUser(@RequestBody UserEntity user) {
+        log.info("Trying to update user by specific parameters");
+        log.info("{}", user);
+        ResponseEntity<?> response = this.userService.updateUser(user);
+        return ResponseEntity.ok(response);
+    }
+
+    @Transactional
+    @DeleteMapping("/delete")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Delete a user",
+            notes = "Delete a user by id")
+    public ResponseEntity<?> deleteUser(@RequestParam String id) {
+        log.info("Trying to delete user with id: {}", id);
+        ResponseEntity<?> response = this.userService.deleteUser(id);
+        return ResponseEntity.ok(response);
+    }
 }
