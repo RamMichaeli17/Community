@@ -16,7 +16,6 @@ import restapi.webapp.repos.UserRepo;
 //@EnableScheduling
 
 public class UserConfig {
-
     @Bean
     CommandLineRunner initDatabase(UserRepo userRepo) {
         return args -> {

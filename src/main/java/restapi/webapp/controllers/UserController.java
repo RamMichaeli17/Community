@@ -5,8 +5,13 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import restapi.webapp.entities.UserEntity;
+import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.services.UserService;
 
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
@@ -26,11 +31,13 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 @Slf4j
 public class UserController {
 
-    private UserService userService;
+    private final UserService service;
+    private final UserEntityAssembler assembler;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserService service, UserEntityAssembler assembler) {
+        this.service = service;
+        this.assembler = assembler;
     }
 
     @RequestMapping("/test")
@@ -43,6 +50,28 @@ public class UserController {
         return "Test";
     }
 
+    @GetMapping("/users/getallusers")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getAllUsers(){
+        return ResponseEntity.ok(assembler.toCollectionModel(service.getAllUsers()));
+    }
+    @GetMapping("/users/search/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<EntityModel<UserEntity>> getUserByEmail(@PathVariable String email){
+        return ResponseEntity.ok(assembler.toModel(service.getUserByEmail(email)));
+    }
 
+    /*@GetMapping("users/search/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<EntityModel<UserEntity>> getUserByName(@RequestParam String firstName,
+                                                                 @RequestParam String lastName){
+        return ResponseEntity.ok(assembler.toModel(service.getUserByName(firstName, lastName)));
+    }*/
+
+    @GetMapping("/users/search/{age}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getUsersByAge(@PathVariable Integer age){
+        return ResponseEntity.ok(assembler.toCollectionModel(service.getUsersByAge(age)));
+    }
 
 }
