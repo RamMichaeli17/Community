@@ -1,22 +1,19 @@
 package restapi.webapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
-import restapi.webapp.converters.NameConvertor;
 import restapi.webapp.enums.AvatarGroups;
-
 import javax.persistence.*;
 import java.io.Serializable;
-
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Data
 @Table(name="USERS")
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity implements Serializable {
 
     @Id
