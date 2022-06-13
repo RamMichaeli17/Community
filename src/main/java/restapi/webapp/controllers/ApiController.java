@@ -9,7 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.ApiService;
+
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.net.HttpURLConnection.*;
 
@@ -40,8 +45,15 @@ public class ApiController {
             notes = "Get random user from external API")
     public ResponseEntity<?> getRandomUser() {
         log.info("Trying to get random user");
-        ResponseEntity<?> response = ResponseEntity.ok(this.apiService.getRandomUser());
-        return response;
+        CompletableFuture<UserEntity> response = this.apiService.getRandomUser();
+        response.join();
+        try {
+            return ResponseEntity.of(Optional.of(response.get()));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/getMale")

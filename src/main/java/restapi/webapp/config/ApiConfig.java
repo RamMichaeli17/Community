@@ -1,3 +1,4 @@
+/*
 package restapi.webapp.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,3 +18,4 @@ public class ApiConfig {
         return new RestTemplateBuilder();
     }
 }
+*/
