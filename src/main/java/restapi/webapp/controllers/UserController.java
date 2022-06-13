@@ -10,8 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.services.UserService;
+
+import java.util.HashMap;
+import java.util.concurrent.Callable;
+
 import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -30,17 +33,20 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 public class UserController {
 
     private final UserService userService;
+    private HashMap<String, Callable> callMethodsByParam;
 
     @Autowired
-    public UserController(UserService userService, UserEntityAssembler assembler) {
+    public UserController(UserService userService) {
         this.userService = userService;
+
+        callMethodsByParam = new HashMap<>();
     }
 
     @GetMapping("/users/search/{email}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getUserByEmail(@PathVariable String email){
         ResponseEntity<?> response = userService.getUserByEmail(email);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @Transactional
@@ -51,7 +57,7 @@ public class UserController {
     public ResponseEntity<?> getAllUsers() {
         log.info("Trying to fetch all users");
         ResponseEntity<?> response = this.userService.getAllUsers();
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     /*@GetMapping("/find/{param}/{value}")
@@ -95,7 +101,7 @@ public class UserController {
         log.info("Trying to create new user by specific parameters:");
         log.info("{}", user);
         ResponseEntity<?> response = this.userService.createUser(user);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @PutMapping("/update")
@@ -106,7 +112,7 @@ public class UserController {
         log.info("Trying to update user by specific parameters");
         log.info("{}", user);
         ResponseEntity<?> response = this.userService.updateUser(user);
-        return ResponseEntity.ok(response);
+        return response;
     }
 
     @Transactional
@@ -117,6 +123,55 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@RequestParam String id) {
         log.info("Trying to delete user with id: {}", id);
         ResponseEntity<?> response = this.userService.deleteUser(id);
-        return ResponseEntity.ok(response);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/getbyname")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
+                                           @RequestParam("lastName") String lastName){
+        log.info("Trying to fetch user {} {}", firstName, lastName);
+        ResponseEntity<?> response = this.userService.getUserByName(firstName, lastName);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/getbygender")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getListOfUsersByGender(@RequestParam("gender") String gender){
+        log.info("Trying to fetch users by gender: {}", gender);
+        ResponseEntity<?> response = this.userService.getUsersByGender(gender);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/getbyage")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getListOfUsersByAge(@RequestParam("age") Integer age){
+        log.info("Trying to fetch users by age: {}", age);
+        ResponseEntity<?> response = this.userService.getUsersByAge(age);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/getbyphone")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUserByPhone(@RequestParam("phone") String phone){
+        log.info("Trying to fetch user by phone: {}", phone);
+        ResponseEntity<?> response = this.userService.getUserByPhone(phone);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/getbylocation")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUsersByLocation(@RequestParam("street") String street,
+                                                @RequestParam("city") String city,
+                                                @RequestParam("state") String state){
+        log.info("Trying to fetch users by location: {}, {}, {}", street, city, state);
+        ResponseEntity<?> response = this.userService.getUserByLocation(street, city, state);
+        log.info("{}", response);
+        return response;
     }
 }

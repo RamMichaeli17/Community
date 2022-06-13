@@ -32,21 +32,46 @@ public class UserService {
         return ResponseEntity.of(Optional.of(assembler.toCollectionModel(userRepo.findAll())));
     }
 
-    public ResponseEntity<?> deleteUser(@NonNull String id) {
+    public ResponseEntity<?> deleteUser(String id) {
         userRepo.deleteUserEntityByEmail(id);
         return ResponseEntity.ok("User " + id + " has been deleted.");
     }
 
-    public ResponseEntity<?> createUser(@NonNull UserEntity user){
+    public ResponseEntity<?> createUser(UserEntity user){
         userRepo.save(user);
         log.info("User {} has been created", user.getEmail());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
+    public ResponseEntity<?> updateUser(UserEntity user) {
         // In case there's already a user with same credentials, it will save the changes.
         userRepo.save(user);
         return ResponseEntity.of(Optional.of(user));
+    }
+
+    public ResponseEntity<?> getUserByName(String first, String last){
+        return ResponseEntity.of(Optional.
+                of(assembler.toModel(userRepo.getUserEntityByName(first, last))));
+    }
+
+    public ResponseEntity<?> getUsersByGender(String gender){
+        return ResponseEntity.of(Optional.of
+                (assembler.toCollectionModel(userRepo.getUserEntitiesByGender(gender))));
+    }
+
+    public ResponseEntity<?> getUsersByAge(Integer age){
+        return ResponseEntity.of(Optional
+                .of(assembler.toCollectionModel(userRepo.getUserEntitiesByAge(age))));
+    }
+
+    public ResponseEntity<?> getUserByPhone(String phone){
+        return ResponseEntity.of(Optional
+                .of(assembler.toModel(userRepo.getUserEntityByPhone(phone))));
+    }
+
+    public ResponseEntity<?> getUserByLocation(String street, String city, String state){
+        return ResponseEntity.of(Optional.
+                of(assembler.toCollectionModel(userRepo.getUserEntitiesByLocation(street, city, state))));
     }
 
     /*public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {

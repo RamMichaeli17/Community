@@ -17,8 +17,11 @@ import java.io.Serializable;
 public class UserEntity implements Serializable {
 
     @Id
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String md5;
+
     private String gender;
     private Integer age;
     private String phone;

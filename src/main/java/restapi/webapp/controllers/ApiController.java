@@ -47,9 +47,8 @@ public class ApiController {
     @GetMapping("/getMale")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get male user",
-            code = 200,
             notes = "Get male user from external API")
-    public ResponseEntity getMaleUser() {
+    public ResponseEntity<?> getMaleUser() {
         log.info("Trying to get male user");
         ResponseEntity<?> response = ResponseEntity.ok(this.apiService.getMaleUser());
         return response;
@@ -58,23 +57,21 @@ public class ApiController {
     @GetMapping("/getFemale")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get female user",
-            code = 200,
             notes = "Get female user from external API")
-    public ResponseEntity getFemaleUser() {
+    public ResponseEntity<?> getFemaleUser() {
         log.info("Trying to get female user");
-        ResponseEntity<?> response = ResponseEntity.ok(this.apiService.getFemaleUser());
-        return response;
+        return ResponseEntity.ok(this.apiService.getFemaleUser());
     }
 
-    @PostMapping("/saveBySeed/{id}")
+   /* @PostMapping("/saveBySeed/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get and save user by specific seed",
             code = 200,
-            notes = "Get female user from external API")
-    public ResponseEntity saveBySeed(@PathVariable String id) {
+            notes = "Get female user from external API") // change notes
+    public ResponseEntity<?> saveBySeed(@PathVariable String id) {
         log.info("Trying to save user by seed: {}", id);
         //ResponseEntity<?> response = this.apiService.saveBySeed(String id);
         return null;
-    }
+    }*/
 
 }
