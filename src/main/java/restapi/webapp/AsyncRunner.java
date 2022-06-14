@@ -20,9 +20,9 @@ public class AsyncRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        CompletableFuture<UserEntity> user1 = apiService.getRandomUser();
-        CompletableFuture<UserEntity> user2 = apiService.getRandomUser();
-        CompletableFuture<UserEntity> user3 = apiService.getRandomUser();
+        CompletableFuture<UserEntity> user1 = apiService.getUserByType("male");
+        CompletableFuture<UserEntity> user2 = apiService.getUserByType("female");
+        CompletableFuture<UserEntity> user3 = apiService.getUserByType("random");
 
         CompletableFuture<UserEntity>[] taskArray = new CompletableFuture[3];
         taskArray[0] = user1;

@@ -10,9 +10,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import restapi.webapp.entities.UserEntity;
+
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
@@ -37,16 +41,8 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(String userType) {
         //String temp1 = objectMapper.readValue(new URL(userRetrieveTypes.get(userType)), String.class);
-        String temp = "";
-        URL url = new URL(userRetrieveTypes.get(userType));
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.connect();
-        if (conn.getResponseCode() == 200) {
-            Scanner scan = new Scanner(url.openStream());
-            while (scan.hasNext()) {
-                temp = scan.nextLine();
-            }
+        String temp = getStringFromNestedJsonFile(userRetrieveTypes.get(userType));
+        if (temp!=null) {
             JSONObject rawJson = new JSONObject(temp);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
@@ -72,9 +68,26 @@ public class ApiService {
 
             return CompletableFuture.completedFuture(user);
         }
+
         else {
             return CompletableFuture.failedFuture(new Throwable("Connection to API wasn't successful."));
         }
+    }
+
+    String getStringFromNestedJsonFile (String apiUrl) throws IOException {
+        String temp = "";
+        URL url = new URL(apiUrl);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.connect();
+        if (conn.getResponseCode() == 200) {
+            Scanner scan = new Scanner(url.openStream());
+            while (scan.hasNext()) {
+                temp = scan.nextLine();
+            }
+            return temp;
+        }
+        else return null;
     }
 
 
