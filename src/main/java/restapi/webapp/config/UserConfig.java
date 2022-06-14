@@ -23,12 +23,11 @@ public class UserConfig {
 
             UserEntity user1 = userRepo.save(new UserEntity("tal.beno@nice.com", "202cb962ac59075b964b07152d234b70", "male", 27,"0542070875",
                     new Name("Mr","Tal","Beno"),
-                    new Location("Rehovot", "Harav Shauli", "Israel", 7666209),
+                    new Location("Rehovot", "Harav Shauli", "Israel", 66209),
                     new Avatar(AvatarGroups.ADVENTURER, true)));
             log.info("User1 has initiated: " + user1);
 
-            UserEntity user2 = userRepo.save(new UserEntity("yaniv@gmail.com", "202cnz2a215964b07137d31D614b23", "male", 25,
-                    "0504340408",
+            UserEntity user2 = userRepo.save(new UserEntity("yaniv@gmail.com", "202cnz2a215964b07137d31D614b23", "male", 25, "0504340408",
                     new Name("Mr","Yaniv","Levi"),
                     new Location("Dummy city", "Dummy Street", "Israel", 123456),
                     new Avatar(AvatarGroups.BIG_SMILE, false)));

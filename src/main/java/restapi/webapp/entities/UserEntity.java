@@ -1,6 +1,7 @@
 package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,8 +42,8 @@ public class UserEntity implements Serializable {
     @Embeddable
     public static class Name {
         private String title;
-        private String firstName;
-        private String lastName;
+        private String first;
+        private String last;
     }
 
     @Data
@@ -52,7 +53,7 @@ public class UserEntity implements Serializable {
     public static class Location {
         private String city;
         private String street;
-        private String state;
+        private String country;
         private Integer postcode;
     }
 

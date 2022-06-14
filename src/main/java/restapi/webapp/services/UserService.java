@@ -54,6 +54,11 @@ public class UserService {
                 of(assembler.toModel(userRepo.getUserEntityByName(first, last))));
     }
 
+    public ResponseEntity<?> getUserByLocation(String street, String city, String state){
+        return ResponseEntity.of(Optional.
+                of(assembler.toCollectionModel(userRepo.getUserEntitiesByLocation(street, city, state))));
+    }
+
     public ResponseEntity<?> getUsersByGender(String gender){
         return ResponseEntity.of(Optional.of
                 (assembler.toCollectionModel(userRepo.getUserEntitiesByGender(gender))));
@@ -67,11 +72,6 @@ public class UserService {
     public ResponseEntity<?> getUserByPhone(String phone){
         return ResponseEntity.of(Optional
                 .of(assembler.toModel(userRepo.getUserEntityByPhone(phone))));
-    }
-
-    public ResponseEntity<?> getUserByLocation(String street, String city, String state){
-        return ResponseEntity.of(Optional.
-                of(assembler.toCollectionModel(userRepo.getUserEntitiesByLocation(street, city, state))));
     }
 
     /*public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {

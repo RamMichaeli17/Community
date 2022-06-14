@@ -31,7 +31,7 @@ import static java.net.HttpURLConnection.*;
 @Slf4j
 public class ApiController {
 
-    private ApiService apiService;
+    private final ApiService apiService;
 
     @Autowired
     public ApiController(ApiService apiService) {
@@ -41,17 +41,14 @@ public class ApiController {
     @GetMapping("/getRandom")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Get random user",
-            code = 200,
             notes = "Get random user from external API")
     public ResponseEntity<?> getRandomUser() {
         log.info("Trying to get random user");
-        CompletableFuture<UserEntity> response = this.apiService.getRandomUser();
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType("random");
         response.join();
         try {
             return ResponseEntity.of(Optional.of(response.get()));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
@@ -62,8 +59,13 @@ public class ApiController {
             notes = "Get male user from external API")
     public ResponseEntity<?> getMaleUser() {
         log.info("Trying to get male user");
-        ResponseEntity<?> response = ResponseEntity.ok(this.apiService.getMaleUser());
-        return response;
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType("male");
+        response.join();
+        try {
+            return ResponseEntity.of(Optional.of(response.get()));
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/getFemale")
@@ -72,7 +74,13 @@ public class ApiController {
             notes = "Get female user from external API")
     public ResponseEntity<?> getFemaleUser() {
         log.info("Trying to get female user");
-        return ResponseEntity.ok(this.apiService.getFemaleUser());
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType("female");
+        response.join();
+        try {
+            return ResponseEntity.of(Optional.of(response.get()));
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
    /* @PostMapping("/saveBySeed/{id}")
