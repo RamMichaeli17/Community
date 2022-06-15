@@ -15,21 +15,18 @@ import java.util.List;
  */
 @Repository
 public interface UserRepo extends JpaRepository<UserEntity, Long> {
-    List<UserEntity> findAll();
-
-    void deleteUserEntityByEmail(String email);
-
-    @Query(value = "select u from UserEntity u where u.gender = ?1")
-    List<UserEntity> getUserEntitiesByGender(String gender);
-
     @Query(value = "select u from UserEntity u where u.name.first = ?1 and u.name.last = ?2")
     UserEntity getUserEntityByName(String first, String last);
 
-    @Query(value = "select u from UserEntity u where u.location.street = ?1 and " +
-            "u.location.city = ?2 and u.location.country = ?3")
-    List<UserEntity> getUserEntitiesByLocation(String street, String city, String state);
+    @Query(value = "select u from UserEntity u where u.location.city = :city and " +
+            "u.location.street = :street and u.location.country = :country")
+    List<UserEntity> getUserEntitiesByLocation(@Param("city") String city, @Param("street") String street,
+                                               @Param("country") String country);
 
-    UserEntity getUserEntityByEmail(String email);
+    List<UserEntity> getUserEntitiesByGender(String gender);
+    List<UserEntity> findAll();
     List<UserEntity> getUserEntitiesByAge(Integer age);
+    UserEntity getUserEntityByEmail(String email);
     UserEntity getUserEntityByPhone(String phone);
+    void deleteUserEntityByEmail(String email);
 }

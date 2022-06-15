@@ -9,7 +9,7 @@ import javax.persistence.AttributeConverter;
 
 public class NameConvertor implements AttributeConverter<Name, String> {
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public NameConvertor(ObjectMapper objectMapper) {
@@ -23,7 +23,6 @@ public class NameConvertor implements AttributeConverter<Name, String> {
         return this.objectMapper.writeValueAsString(name);
     }
 
-    //GitHubUser aUser = this.template.getForObject(urlTemplate,GitHubUser.class);
     @Override
     public Name convertToEntityAttribute(String name) {
         return null;

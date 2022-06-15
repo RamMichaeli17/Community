@@ -24,8 +24,8 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class ApiService {
     //private RestTemplate template;
-    private ObjectMapper objectMapper;
-    private HashMap<String, String> userRetrieveTypes;
+    private final ObjectMapper objectMapper;
+    private final HashMap<String, String> userRetrieveTypes;
 
     public ApiService(RestTemplateBuilder restTemplateBuilder) {
         //this.template = restTemplateBuilder.build();
@@ -41,9 +41,9 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(String userType) {
         //String temp1 = objectMapper.readValue(new URL(userRetrieveTypes.get(userType)), String.class);
-        String temp = getStringFromNestedJsonFile(userRetrieveTypes.get(userType));
-        if (temp!=null) {
-            JSONObject rawJson = new JSONObject(temp);
+        String jsonStringRepresentation = getStringFromNestedJsonFile(userRetrieveTypes.get(userType));
+        if (jsonStringRepresentation!=null) {
+            JSONObject rawJson = new JSONObject(jsonStringRepresentation);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
 
@@ -75,7 +75,7 @@ public class ApiService {
     }
 
     String getStringFromNestedJsonFile (String apiUrl) throws IOException {
-        String temp = "";
+        StringBuilder builder = new StringBuilder();
         URL url = new URL(apiUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -83,27 +83,10 @@ public class ApiService {
         if (conn.getResponseCode() == 200) {
             Scanner scan = new Scanner(url.openStream());
             while (scan.hasNext()) {
-                temp = scan.nextLine();
+                builder.append(scan.nextLine());
             }
-            return temp;
+            return builder.toString();
         }
         else return null;
     }
-
-
-    /*@Async
-    public CompletableFuture<UserEntity> getMaleUser() {
-        String urlTemplate = "https://randomuser.me/api/?gender=male&noinfo";
-        UserEntity user = this.template.getForObject(urlTemplate, UserEntity.class);
-
-        return CompletableFuture.completedFuture(user);
-    }
-
-    @Async
-    public CompletableFuture<UserEntity> getFemaleUser() {
-        String urlTemplate = "https://randomuser.me/api/?gender=female&noinfo";
-        UserEntity user = this.template.getForObject(urlTemplate, UserEntity.class);
-
-        return CompletableFuture.completedFuture(user);
-    }*/
 }
