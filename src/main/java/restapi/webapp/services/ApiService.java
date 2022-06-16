@@ -5,36 +5,28 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import restapi.webapp.entities.UserEntity;
-
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
 public class ApiService {
-    //private RestTemplate template;
     private final ObjectMapper objectMapper;
     private final HashMap<String, String> userRetrieveTypes;
 
-    public ApiService(RestTemplateBuilder restTemplateBuilder) {
-        //this.template = restTemplateBuilder.build();
+    public ApiService() {
         this.objectMapper = new ObjectMapper();
 
         userRetrieveTypes = new HashMap<>();
-        userRetrieveTypes.put("random", "https://randomuser.me/api?exc=picture,cell,nat&noinfo");
-        userRetrieveTypes.put("male", "https://randomuser.me/api/?gender=male&noinfo");
-        userRetrieveTypes.put("female", "https://randomuser.me/api/?gender=female&noinfo");
+        userRetrieveTypes.put("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo");
+        userRetrieveTypes.put("male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo");
+        userRetrieveTypes.put("female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
     }
 
     @SneakyThrows
@@ -52,8 +44,7 @@ public class ApiService {
             UserEntity.Location location = new UserEntity.Location
                     (locationJson.getJSONObject("street").getString("name"),
                             locationJson.getString("city"),
-                            locationJson.getString("state"),
-                            locationJson.getInt("postcode"));
+                            locationJson.getString("state"));
             // Removing "Location" key out of original JSON because it causes problems in de-serialization
             userJson.remove("location");
 
@@ -74,7 +65,8 @@ public class ApiService {
         }
     }
 
-    String getStringFromNestedJsonFile (String apiUrl) throws IOException {
+    @SneakyThrows
+    String getStringFromNestedJsonFile (String apiUrl) {
         StringBuilder builder = new StringBuilder();
         URL url = new URL(apiUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -87,6 +79,8 @@ public class ApiService {
             }
             return builder.toString();
         }
-        else return null;
+        else {
+            return null;
+        }
     }
 }

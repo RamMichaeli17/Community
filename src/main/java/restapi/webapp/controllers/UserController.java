@@ -33,7 +33,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Transactional
     @GetMapping("/getAllUsers")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Find all users",
@@ -43,7 +42,7 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("/{param}/{value}")
+    @GetMapping("/find/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Find a user by specific parameters",
             notes = "Find user details by name, location, age and more")
@@ -60,17 +59,6 @@ public class UserController {
         log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
         return this.userService.getUserBySpecificParameter(param, value);
     }
-/*
-    @GetMapping("/find/comp")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find a user by advanced calculations",
-            code = 200,
-            notes = "Find user details by advanced calculations")
-    public ResponseEntity<?> getUserByAdvCalc() {
-        log.info("Trying to fetch users by advanced calculations");
-        //ResponseEntity<?> response = this.userService.getUserByAdvCalc();
-        return null;
-    }*/
 
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -103,7 +91,7 @@ public class UserController {
         return this.userService.deleteUser(id);
     }
 
-    @GetMapping("/name/")
+    @GetMapping("/name")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName){
@@ -113,43 +101,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/gender/{gender}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getListOfUsersByGender(@PathVariable String gender){
-        log.info("Trying to fetch users by gender: {}", gender);
-        ResponseEntity<?> response = this.userService.getUsersByGender(gender);
-        log.info("{}", response);
-        return response;
-    }
-
-    @GetMapping("/age/{age}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getListOfUsersByAge(@PathVariable Integer age){
-        log.info("Trying to fetch users by age: {}", age);
-        ResponseEntity<?> response = this.userService.getUsersByAge(age);
-        log.info("{}", response);
-        return response;
-    }
-
-    @GetMapping("/phone/{phone}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getUserByPhone(@PathVariable String phone){
-        log.info("Trying to fetch user by phone: {}", phone);
-        ResponseEntity<?> response = this.userService.getUserByPhone(phone);
-        log.info("{}", response);
-        return response;
-    }
-
-    @GetMapping("/email/{email}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getUserByEmail(@PathVariable String email){
-        log.info("Trying to fetch user by email \"{}\"", email);
-        ResponseEntity<?> response = userService.getUserByEmail(email);
-        log.info("{}", response);
-        return response;
-    }
-
-    @GetMapping("/location/")
+    @GetMapping("/location")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> getUsersByLocation(String city, String street, String country){
         log.info("Trying to fetch users by location: {}, {}, {}", city, street, country);
@@ -157,4 +109,16 @@ public class UserController {
         log.info("{}", response);
         return response;
     }
+
+    /*
+    @GetMapping("/find/comp")
+    @ResponseStatus(HttpStatus.OK)
+    @ApiOperation(value = "Find a user by advanced calculations",
+            code = 200,
+            notes = "Find user details by advanced calculations")
+    public ResponseEntity<?> getUserByAdvCalc() {
+        log.info("Trying to fetch users by advanced calculations");
+        //ResponseEntity<?> response = this.userService.getUserByAdvCalc();
+        return null;
+    }*/
 }

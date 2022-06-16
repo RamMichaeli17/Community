@@ -28,14 +28,15 @@ public class UserService {
         this.assembler = assembler;
 
         this.methodsByParamsMap = new HashMap<>();
-        this.methodsByParamsMap.put("phone", phone -> getUserByPhone(phone));
+        this.methodsByParamsMap.put("phone", this::getUserByPhone);
         this.methodsByParamsMap.put("age", age -> getUsersByAge(Integer.valueOf(age)));
-        this.methodsByParamsMap.put("gender", gender -> getUsersByGender(gender));
+        this.methodsByParamsMap.put("gender", this::getUsersByGender);
+        this.methodsByParamsMap.put("email", this::getUserByEmail);
         //this.methodsByParamsMap.put("location")
         //this.methodsByParamsMap.put("name")
     }
 
-    public ResponseEntity<?> getUserByEmail(String email){
+    public ResponseEntity<?> getUserByEmail(@NonNull String email){
         EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByEmail(email));
         return ResponseEntity.of(Optional.of(user));
     }
@@ -45,48 +46,48 @@ public class UserService {
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> deleteUser(String id) {
+    public ResponseEntity<?> deleteUser(@NonNull String id) {
         userRepo.deleteUserEntityByEmail(id);
         return ResponseEntity.ok("User " + id + " has been deleted.");
     }
 
-    public ResponseEntity<?> createUser(UserEntity user){
+    public ResponseEntity<?> createUser(@NonNull UserEntity user){
         userRepo.save(user);
         log.info("User {} has been created", user.getEmail());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> updateUser(UserEntity user) {
+    public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, it will save the changes.
         userRepo.save(user);
         log.info("User {} has been updated", user.getEmail());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> getUserByName(String first, String last){
+    public ResponseEntity<?> getUserByName(@NonNull String first, @NonNull String last){
         EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByName(first, last));
         return ResponseEntity.of(Optional.of(user));
     }
 
-    public ResponseEntity<?> getUsersByLocation(String city, String street, String country){
+    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String street, @NonNull String country){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
                 userRepo.getUserEntitiesByLocation(city, street, country));
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> getUsersByGender(String gender){
+    public ResponseEntity<?> getUsersByGender(@NonNull String gender){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
                 userRepo.getUserEntitiesByGender(gender));
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> getUsersByAge(Integer age){
+    public ResponseEntity<?> getUsersByAge(@NonNull Integer age){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
                 userRepo.getUserEntitiesByAge(age));
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> getUserByPhone(String phone){
+    public ResponseEntity<?> getUserByPhone(@NonNull String phone){
         EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByPhone(phone));
         return ResponseEntity.of(Optional.of(user));
     }

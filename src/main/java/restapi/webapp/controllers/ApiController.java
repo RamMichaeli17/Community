@@ -11,17 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.ApiService;
-
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
 import static java.net.HttpURLConnection.*;
 
 @Component
 @RestController
 @RequestMapping("/api")
-//@Validated
 @ApiResponses(value = {
         @ApiResponse(code = HTTP_UNAUTHORIZED, message = "You are not authorized"),
         @ApiResponse(code = HTTP_FORBIDDEN, message = "You don't have permission to access this resource"),
@@ -30,7 +27,6 @@ import static java.net.HttpURLConnection.*;
 })
 @Slf4j
 public class ApiController {
-
     private final ApiService apiService;
 
     @Autowired
@@ -38,44 +34,15 @@ public class ApiController {
         this.apiService = apiService;
     }
 
-    @GetMapping("/getRandom")
+    @GetMapping("/get/{type}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Get random user",
-            notes = "Get random user from external API")
-    public ResponseEntity<?> getRandomUser() {
-        log.info("Trying to get random user");
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType("random");
+    @ApiOperation(value = "Get a user by requested type",
+            notes = "Get a requested type of user from external API")
+    public ResponseEntity<?> getUserByType(@PathVariable String type) {
+        log.info("Trying to get {} user", type);
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType(type);
         response.join();
-        try {
-            return ResponseEntity.of(Optional.of(response.get()));
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @GetMapping("/getMale")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Get male user",
-            notes = "Get male user from external API")
-    public ResponseEntity<?> getMaleUser() {
-        log.info("Trying to get male user");
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType("male");
-        response.join();
-        try {
-            return ResponseEntity.of(Optional.of(response.get()));
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @GetMapping("/getFemale")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Get female user",
-            notes = "Get female user from external API")
-    public ResponseEntity<?> getFemaleUser() {
-        log.info("Trying to get female user");
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType("female");
-        response.join();
+        log.info("{}", response);
         try {
             return ResponseEntity.of(Optional.of(response.get()));
         } catch (InterruptedException | ExecutionException e) {

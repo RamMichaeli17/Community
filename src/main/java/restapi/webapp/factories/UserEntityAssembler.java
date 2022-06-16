@@ -17,7 +17,8 @@
         public EntityModel<UserEntity> toModel(UserEntity entity) {
             return EntityModel.of(entity)
                     .add(linkTo(methodOn(UserController.class).getAllUsers()).withRel("Get all users"))
-                    .add(linkTo(methodOn(UserController.class).getUserByEmail(entity.getEmail())).withSelfRel());
+                    .add(linkTo(methodOn(UserController.class)
+                            .getUserWithPathVar("email", entity.getEmail())).withSelfRel());
         }
 
         @Override

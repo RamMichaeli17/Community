@@ -15,8 +15,8 @@ import java.util.List;
  */
 @Repository
 public interface UserRepo extends JpaRepository<UserEntity, Long> {
-    @Query(value = "select u from UserEntity u where u.name.first = ?1 and u.name.last = ?2")
-    UserEntity getUserEntityByName(String first, String last);
+    @Query(value = "select u from UserEntity u where u.name.first = :first and u.name.last = :last")
+    UserEntity getUserEntityByName(@Param("first") String first, @Param("last") String last);
 
     @Query(value = "select u from UserEntity u where u.location.city = :city and " +
             "u.location.street = :street and u.location.country = :country")
