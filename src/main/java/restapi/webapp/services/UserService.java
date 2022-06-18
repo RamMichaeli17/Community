@@ -12,6 +12,7 @@ import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -28,12 +29,12 @@ public class UserService {
         this.assembler = assembler;
 
         this.methodsByParamsMap = new HashMap<>();
-        this.methodsByParamsMap.put("phone", this::getUserByPhone);
-        this.methodsByParamsMap.put("age", age -> getUsersByAge(Integer.valueOf(age)));
-        this.methodsByParamsMap.put("gender", this::getUsersByGender);
-        this.methodsByParamsMap.put("email", this::getUserByEmail);
-        //this.methodsByParamsMap.put("location")
-        //this.methodsByParamsMap.put("name")
+        this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityById(Long.valueOf(id)));
+        this.methodsByParamsMap.put("phone", userRepo::getUserEntityByPhone);
+        this.methodsByParamsMap.put("phoneLike", userRepo::getUserEntityByPhoneContains);
+        this.methodsByParamsMap.put("age", age -> userRepo.getUserEntitiesByAge(Integer.valueOf(age)));
+        this.methodsByParamsMap.put("gender", userRepo::getUserEntitiesByGender);
+        this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);
     }
 
     public ResponseEntity<?> getUserByEmail(@NonNull String email){
@@ -71,7 +72,7 @@ public class UserService {
 
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName, @NonNull String streetNumber, @NonNull String country){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country));
+                userRepo.getUserEntitiesByLocation(city,streetName,streetNumber , country));
         return ResponseEntity.of(Optional.of(users));
     }
 
