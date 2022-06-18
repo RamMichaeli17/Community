@@ -46,8 +46,8 @@ public class UserService {
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> deleteUser(@NonNull String id) {
-        userRepo.deleteUserEntityByEmail(id);
+    public ResponseEntity<?> deleteUser(@NonNull Long id) {
+        userRepo.deleteUserEntityById(id);
         return ResponseEntity.ok("User " + id + " has been deleted.");
     }
 

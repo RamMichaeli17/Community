@@ -3,6 +3,7 @@ package restapi.webapp.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.xml.bind.v2.TODO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ import java.io.Serializable;
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
-    @JsonIgnore
+    //ToDo: why ?
+//    @JsonIgnore
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;

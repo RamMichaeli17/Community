@@ -81,12 +81,17 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
+    /*
+    In the declarative approach, we annotate the methods with the @Transactional annotation.
+    The @Transactional annotation makes use of the attributes rollbackFor or rollbackForClassName to rollback the transactions,
+    and the attributes noRollbackFor or noRollbackForClassName to avoid rollback on listed exceptions.
+     */
     @Transactional
     @DeleteMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Delete a user",
             notes = "Delete a user by id")
-    public ResponseEntity<?> deleteUser(@RequestParam String id) {
+    public ResponseEntity<?> deleteUser(@RequestParam Long id) {
         log.info("Trying to delete user with id: {}", id);
         return this.userService.deleteUser(id);
     }
