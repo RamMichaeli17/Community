@@ -24,12 +24,9 @@ public class ApiService {
 
     public ApiService() {
         this.objectMapper = new ObjectMapper();
-        //SimpleModule deserializerModule = new SimpleModule().addDeserializer(Tesla.class, new teslaDeserializer());
-
-        userRetrieveTypes = new HashMap<>();
-        userRetrieveTypes.put("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo");
-        userRetrieveTypes.put("male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo");
-        userRetrieveTypes.put("female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
+        userRetrieveTypes = Map.of("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo",
+                "male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo",
+                "female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
     }
 
     @SneakyThrows
@@ -71,22 +68,4 @@ public class ApiService {
         }
     }
 
-    @SneakyThrows
-    String getStringFromNestedJsonFile (String apiUrl) {
-        StringBuilder builder = new StringBuilder();
-        URL url = new URL(apiUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.connect();
-        if (conn.getResponseCode() == 200) {
-            Scanner scan = new Scanner(url.openStream());
-            while (scan.hasNext()) {
-                builder.append(scan.nextLine());
-            }
-            return builder.toString();
-        }
-        else {
-            return null;
-        }
-    }
 }
