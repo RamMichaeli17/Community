@@ -22,7 +22,7 @@ public class UserConfig {
             log.info("Creating Users...");
 
             UserEntity user1 = userRepo.save(new UserEntity("tal.beno@nice.com",
-                    "202cb962ac59075b964b07152d234b70", "male", 27,"0542070875",
+                    "202cb962ac59075b964b07152d234b70", "male", 25,"0542070875",
                     new Name("Mr","Tal","Beno"),
                     new Location("Rehovot", new Street("Harav Shauli", "1"), "Israel"),
                     new Avatar(AvatarGroups.ADVENTURER, true)));

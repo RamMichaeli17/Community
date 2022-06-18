@@ -21,7 +21,7 @@ import java.util.function.Function;
 public class UserService {
     private final UserRepo userRepo;
     private final UserEntityAssembler assembler;
-    private final HashMap<String, Function<String, ResponseEntity<?>>> methodsByParamsMap;
+    private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
 
     @Autowired
     public UserService(UserRepo userRepo, UserEntityAssembler assembler) {
@@ -35,11 +35,6 @@ public class UserService {
         this.methodsByParamsMap.put("age", age -> userRepo.getUserEntitiesByAge(Integer.valueOf(age)));
         this.methodsByParamsMap.put("gender", userRepo::getUserEntitiesByGender);
         this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);
-    }
-
-    public ResponseEntity<?> getUserByEmail(@NonNull String email){
-        EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByEmail(email));
-        return ResponseEntity.of(Optional.of(user));
     }
 
     public ResponseEntity<?> getAllUsers(){
@@ -65,36 +60,26 @@ public class UserService {
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> getUserByName(@NonNull String first, @NonNull String last){
-        EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByName(first, last));
-        return ResponseEntity.of(Optional.of(user));
-    }
-
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName, @NonNull String streetNumber, @NonNull String country){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
                 userRepo.getUserEntitiesByLocation(city,streetName,streetNumber , country));
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> getUsersByGender(@NonNull String gender){
+    public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByGender(gender));
+                userRepo.getUserEntitiesByName(first,last));
         return ResponseEntity.of(Optional.of(users));
-    }
-
-    public ResponseEntity<?> getUsersByAge(@NonNull Integer age){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByAge(age));
-        return ResponseEntity.of(Optional.of(users));
-    }
-
-    public ResponseEntity<?> getUserByPhone(@NonNull String phone){
-        EntityModel<UserEntity> user = assembler.toModel(userRepo.getUserEntityByPhone(phone));
-        return ResponseEntity.of(Optional.of(user));
     }
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
-        Function<String, ResponseEntity<?>> function = methodsByParamsMap.get(param);
-        return function.apply(value);
+        List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
+        if (userEntities.size() == 1) {
+            UserEntity userEntity = userEntities.get(0);
+            EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
+            return ResponseEntity.of(Optional.of(userEntityModel));
+        }
+        CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
+        return ResponseEntity.of(Optional.of(userEntitiesModel));
     }
 }

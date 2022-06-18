@@ -51,15 +51,6 @@ public class UserController {
         return this.userService.getUserBySpecificParameter(param, value);
     }
 
-    @GetMapping("/find")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find a user by specific parameters",
-            notes = "Find user details by name, location, age and more")
-    public ResponseEntity<?> getUserWithRequestParam(@RequestParam String param, @RequestParam String value) {
-        log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
-        return this.userService.getUserBySpecificParameter(param, value);
-    }
-
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create a user",
@@ -96,34 +87,25 @@ public class UserController {
         return this.userService.deleteUser(id);
     }
 
-//    @GetMapping("/name")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
-//                                           @RequestParam("lastName") String lastName){
-//        log.info("Trying to fetch user {} {}", firstName, lastName);
-//        ResponseEntity<?> response = this.userService.getUserByName(firstName, lastName);
-//        log.info("{}", response);
-//        return response;
-//    }
-//
-//    @GetMapping("/location")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<?> getUsersByLocation(String city, String street, String country){
-//        log.info("Trying to fetch users by location: {}, {}, {}", city, street, country);
-//        ResponseEntity<?> response = this.userService.getUsersByLocation(city, street, country);
-//        log.info("{}", response);
-//        return response;
-//    }
-
-    /*
-    @GetMapping("/find/comp")
+    @GetMapping("/find/name")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find a user by advanced calculations",
-            code = 200,
-            notes = "Find user details by advanced calculations")
-    public ResponseEntity<?> getUserByAdvCalc() {
-        log.info("Trying to fetch users by advanced calculations");
-        //ResponseEntity<?> response = this.userService.getUserByAdvCalc();
-        return null;
-    }*/
+    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
+                                           @RequestParam("lastName") String lastName){
+        log.info("Trying to fetch user {} {}", firstName, lastName);
+        ResponseEntity<?> response = this.userService.getUsersByName(firstName, lastName);
+        log.info("{}", response);
+        return response;
+    }
+
+    @GetMapping("/find/location")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUsersByLocation(@RequestParam String city,
+                                                @RequestParam String streetName,
+                                                @RequestParam String streetNumber,
+                                                @RequestParam String country) {
+        log.info("Trying to fetch users by location: {}, {}, {},{}", city, streetName, streetNumber, country);
+        ResponseEntity<?> response = this.userService.getUsersByLocation(city, streetName, streetNumber, country);
+        log.info("{}", response);
+        return response;
+    }
 }

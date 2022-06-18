@@ -36,12 +36,16 @@ public class ApiService {
     @SneakyThrows
     @Async
     public CompletableFuture<UserEntity> getUserByType(String userType) {
+        log.info("Trying to fetch data from API");
        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
+       log.info("Data fetched successfully");
+       log.info("Trying to mapping Json to Java object");
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
             UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
+            log.info("Successfully mapped Json to Java object");
             return CompletableFuture.completedFuture(user);
         }
         else {
