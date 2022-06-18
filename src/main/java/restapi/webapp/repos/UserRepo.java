@@ -19,8 +19,9 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     UserEntity getUserEntityByName(@Param("first") String first, @Param("last") String last);
 
     @Query(value = "select u from UserEntity u where u.location.city = :city and " +
-            "u.location.street = :street and u.location.country = :country")
-    List<UserEntity> getUserEntitiesByLocation(@Param("city") String city, @Param("street") String street,
+            "u.location.street.name = :streetName and u.location.street.number = :streetNumber and u.location.country = :country")
+    List<UserEntity> getUserEntitiesByLocation(@Param("city") String city, @Param("streetName") String streetName,
+                                               @Param("streetNumber") String streetNumber,
                                                @Param("country") String country);
 
     List<UserEntity> getUserEntitiesByGender(String gender);

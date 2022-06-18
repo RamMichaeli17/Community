@@ -1,12 +1,12 @@
 package restapi.webapp.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.xml.bind.v2.TODO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
 import restapi.webapp.enums.AvatarGroups;
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,12 +17,11 @@ import java.util.Map;
 @Entity
 @Data
 @Table(name="USERS")
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true, value={"id"})
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
     //ToDo: why ?
-//    @JsonIgnore
     private Long id;
     @Column(nullable = false, unique = true)
     private String email;
@@ -49,6 +48,16 @@ public class UserEntity implements Serializable {
         this.avatar = avatar;
     }
 
+    @JsonProperty("dob")
+    private void unpackAge(Map<String, Object> dob) {
+        this.age = Integer.parseInt(dob.get("age").toString());
+    }
+
+    @JsonProperty("login")
+    private void unpackMD5(Map<String, Object> login) {
+        this.md5 = login.get("md5").toString();
+    }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -68,6 +77,15 @@ public class UserEntity implements Serializable {
         private String city;
         private Street street;
         private String country;
+
+        @Data
+        @AllArgsConstructor
+        @NoArgsConstructor
+        @Embeddable
+        public static class Street {
+            private String name;
+            private String number;
+        }
     }
 
     @Data

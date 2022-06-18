@@ -1,6 +1,7 @@
 package restapi.webapp.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -23,6 +24,7 @@ public class ApiService {
 
     public ApiService() {
         this.objectMapper = new ObjectMapper();
+        //SimpleModule deserializerModule = new SimpleModule().addDeserializer(Tesla.class, new teslaDeserializer());
 
         userRetrieveTypes = new HashMap<>();
         userRetrieveTypes.put("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo");
@@ -41,6 +43,8 @@ public class ApiService {
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
 
+            UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
+
             // Extracting nested Location out of JSON
 //            JSONObject locationJson = userJson.getJSONObject("location");
 //            Location location = new Location
@@ -51,7 +55,7 @@ public class ApiService {
 //            userJson.remove("location");
 
             // Assigning nested values into the created user
-            UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
+            //UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
 
 //            Integer age = userJson.getJSONObject("dob").getInt("age");
 //            String md5 = userJson.getJSONObject("login").getString("md5");

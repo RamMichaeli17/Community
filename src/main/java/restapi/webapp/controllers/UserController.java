@@ -96,24 +96,24 @@ public class UserController {
         return this.userService.deleteUser(id);
     }
 
-    @GetMapping("/name")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
-                                           @RequestParam("lastName") String lastName){
-        log.info("Trying to fetch user {} {}", firstName, lastName);
-        ResponseEntity<?> response = this.userService.getUserByName(firstName, lastName);
-        log.info("{}", response);
-        return response;
-    }
-
-    @GetMapping("/location")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> getUsersByLocation(String city, String street, String country){
-        log.info("Trying to fetch users by location: {}, {}, {}", city, street, country);
-        ResponseEntity<?> response = this.userService.getUsersByLocation(city, street, country);
-        log.info("{}", response);
-        return response;
-    }
+//    @GetMapping("/name")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
+//                                           @RequestParam("lastName") String lastName){
+//        log.info("Trying to fetch user {} {}", firstName, lastName);
+//        ResponseEntity<?> response = this.userService.getUserByName(firstName, lastName);
+//        log.info("{}", response);
+//        return response;
+//    }
+//
+//    @GetMapping("/location")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ResponseEntity<?> getUsersByLocation(String city, String street, String country){
+//        log.info("Trying to fetch users by location: {}, {}, {}", city, street, country);
+//        ResponseEntity<?> response = this.userService.getUsersByLocation(city, street, country);
+//        log.info("{}", response);
+//        return response;
+//    }
 
     /*
     @GetMapping("/find/comp")

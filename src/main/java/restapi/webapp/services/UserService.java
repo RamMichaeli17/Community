@@ -69,7 +69,7 @@ public class UserService {
         return ResponseEntity.of(Optional.of(user));
     }
 
-    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String street, @NonNull String country){
+    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName, @NonNull String streetNumber, @NonNull String country){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
                 userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country));
         return ResponseEntity.of(Optional.of(users));
