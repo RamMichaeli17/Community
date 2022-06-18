@@ -29,7 +29,7 @@ public class UserService {
         this.assembler = assembler;
 
         this.methodsByParamsMap = new HashMap<>();
-        this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityById(Long.valueOf(id)));
+        this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityByUserId(Long.valueOf(id)));
         this.methodsByParamsMap.put("phone", userRepo::getUserEntityByPhone);
         this.methodsByParamsMap.put("phoneLike", userRepo::getUserEntityByPhoneContains);
         this.methodsByParamsMap.put("age", age -> userRepo.getUserEntitiesByAge(Integer.valueOf(age)));
@@ -43,7 +43,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> deleteUser(@NonNull Long id) {
-        userRepo.deleteUserEntityById(id);
+        userRepo.deleteUserEntityByUserId(id);
         return ResponseEntity.ok("User " + id + " has been deleted.");
     }
 

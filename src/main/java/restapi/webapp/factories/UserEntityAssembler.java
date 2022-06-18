@@ -2,7 +2,6 @@
 
     import org.springframework.hateoas.CollectionModel;
     import org.springframework.hateoas.EntityModel;
-    import org.springframework.hateoas.server.LinkRelationProvider;
     import org.springframework.hateoas.server.RepresentationModelAssembler;
     import org.springframework.stereotype.Component;
     import restapi.webapp.controllers.UserController;
@@ -18,7 +17,7 @@
             return EntityModel.of(entity)
                     .add(linkTo(methodOn(UserController.class).getAllUsers()).withRel("Get all users"))
                     .add(linkTo(methodOn(UserController.class)
-                            .getUserWithPathVar("id", entity.getId().toString())).withSelfRel());
+                            .getUserWithPathVar("id", entity.getUserId().toString())).withSelfRel());
         }
 
         @Override

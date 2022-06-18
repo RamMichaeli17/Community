@@ -1,9 +1,7 @@
 package restapi.webapp.repos;
 
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import restapi.webapp.entities.UserEntity;
@@ -28,9 +26,9 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     List<UserEntity> getUserEntitiesByGender(String gender);
     List<UserEntity> findAll();
     List<UserEntity> getUserEntitiesByAge(Integer age);
-    List<UserEntity> getUserEntityById(Long id);
+    List<UserEntity> getUserEntityByUserId(Long userId);
     List<UserEntity> getUserEntityByEmail(String email);
     List<UserEntity> getUserEntityByPhone(String phone);
     List<UserEntity> getUserEntityByPhoneContains(String phone);
-    void deleteUserEntityById(Long id);
+    void deleteUserEntityByUserId(Long userId);
 }
