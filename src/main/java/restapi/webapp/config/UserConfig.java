@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import restapi.webapp.entities.UserEntity.*;
+import restapi.webapp.entities.UserEntity.Location.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.enums.AvatarGroups;
 import restapi.webapp.repos.UserRepo;
@@ -37,7 +38,7 @@ public class UserConfig {
             UserEntity user3 = userRepo.save(new UserEntity("ram@gmail.com",
                     "202zxzxcccb962a789912964bd2344b70", "male", 24,"0582147625",
                     new Name("Mr","Ram","Michaeli"),
-                    new Location("Ashdod", "Arik Einstein", "Israel"),
+                    new Location("Ashdod", new Street("Arik Miller","56"), "Israel"),
                     new Avatar(AvatarGroups.PIXEL_ART, true)));
             log.info("User3 has been created." + user3);
 

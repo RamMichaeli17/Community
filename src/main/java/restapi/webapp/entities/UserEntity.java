@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import restapi.webapp.enums.AvatarGroups;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -62,9 +63,10 @@ public class UserEntity implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     @Embeddable
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Location {
         private String city;
-        private String street;
+        private Street street;
         private String country;
     }
 

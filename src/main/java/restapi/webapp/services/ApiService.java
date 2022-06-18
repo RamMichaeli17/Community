@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.entities.UserEntity.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -32,30 +33,31 @@ public class ApiService {
     @SneakyThrows
     @Async
     public CompletableFuture<UserEntity> getUserByType(String userType) {
-        //String temp1 = objectMapper.readValue(new URL(userRetrieveTypes.get(userType)), String.class);
-        String jsonStringRepresentation = getStringFromNestedJsonFile(userRetrieveTypes.get(userType));
+        //String jsonStringRepresentation = objectMapper.readValue(new URL(userRetrieveTypes.get(userType)), String.class);
+        //System.out.println(jsonStringRepresentation);
+       String jsonStringRepresentation = getStringFromNestedJsonFile(userRetrieveTypes.get(userType));
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
 
             // Extracting nested Location out of JSON
-            JSONObject locationJson = userJson.getJSONObject("location");
-            UserEntity.Location location = new UserEntity.Location
-                    (locationJson.getJSONObject("street").getString("name"),
-                            locationJson.getString("city"),
-                            locationJson.getString("state"));
-            // Removing "Location" key out of original JSON because it causes problems in de-serialization
-            userJson.remove("location");
+//            JSONObject locationJson = userJson.getJSONObject("location");
+//            Location location = new Location
+//                    (locationJson.getJSONObject("street").getString("name"),
+//                            locationJson.getString("city"),
+//                            locationJson.getString("state"));
+//            // Removing "Location" key out of original JSON because it causes problems in de-serialization
+//            userJson.remove("location");
 
             // Assigning nested values into the created user
             UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
 
-            Integer age = userJson.getJSONObject("dob").getInt("age");
-            String md5 = userJson.getJSONObject("login").getString("md5");
-            user.setAge(age);
-            user.setMd5(md5);
-            user.setLocation(location);
+//            Integer age = userJson.getJSONObject("dob").getInt("age");
+//            String md5 = userJson.getJSONObject("login").getString("md5");
+//            user.setAge(age);
+//            user.setMd5(md5);
+//            user.setLocation(location);
 
             return CompletableFuture.completedFuture(user);
         }
