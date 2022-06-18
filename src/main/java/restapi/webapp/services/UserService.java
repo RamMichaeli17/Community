@@ -49,14 +49,14 @@ public class UserService {
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
         userRepo.save(user);
-        log.info("User {} has been created", user.getEmail());
+        log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, it will save the changes.
         userRepo.save(user);
-        log.info("User {} has been updated", user.getEmail());
+        log.info("User {} has been updated", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 

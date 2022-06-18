@@ -15,7 +15,7 @@ import java.util.Map;
 @Entity
 @Data
 @Table(name="USERS")
-@JsonIgnoreProperties(ignoreUnknown = true, value={"id"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
