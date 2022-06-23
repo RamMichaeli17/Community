@@ -15,9 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 
 @Service
