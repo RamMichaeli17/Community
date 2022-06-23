@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import restapi.webapp.enums.AvatarGroups;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Map;
@@ -19,23 +19,23 @@ import java.util.Map;
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
-    //ToDo: why ?
     private Long userId;
     @Column(nullable = false, unique = true)
     private String email;
     private String md5;
     private String gender;
     private Integer age;
+    @Column(nullable = false, unique = true)
     private String phone;
     @Embedded
     private Name name;
     @Embedded
     private Location location;
-    @Embedded
-    private Avatar avatar;
+
+    private AvatarEntity avatarEntity;
 
     public UserEntity(String email, String md5, String gender, Integer age,
-                      String phone, Name name, Location location, Avatar avatar) {
+                      String phone, Name name, Location location,AvatarEntity avatarEntity) {
         this.email = email;
         this.md5 = md5;
         this.gender = gender;
@@ -43,7 +43,9 @@ public class UserEntity implements Serializable {
         this.phone = phone;
         this.name = name;
         this.location = location;
-        this.avatar = avatar;
+        this.avatarEntity = avatarEntity;
+        this.avatarEntity.setSeed(email);
+        this.avatarEntity.setResultUrl(this.avatarEntity.createResultUrl());
     }
 
     @JsonProperty("dob")
@@ -84,14 +86,5 @@ public class UserEntity implements Serializable {
             private String name;
             private String number;
         }
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Embeddable
-    public static class Avatar {
-        private AvatarGroups avatarGroup;
-        private Boolean glasses;
     }
 }
