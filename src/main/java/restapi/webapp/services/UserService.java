@@ -1,5 +1,6 @@
 package restapi.webapp.services;
 
+import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
 
@@ -21,12 +23,14 @@ import java.util.function.Function;
 public class UserService {
     private final UserRepo userRepo;
     private final UserEntityAssembler assembler;
+    private final UserDTOAssembler dtoAssembler;
     private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEntityAssembler assembler) {
+    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler dtoAssembler) {
         this.userRepo = userRepo;
         this.assembler = assembler;
+        this.dtoAssembler = dtoAssembler;
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityByUserId(Long.valueOf(id)));
@@ -82,4 +86,13 @@ public class UserService {
         CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
         return ResponseEntity.of(Optional.of(userEntitiesModel));
     }
+
+//    public ResponseEntity<EntityModel<UserDTO>> getUserInfoById(@NonNull Long id) {
+//        return userRepo.getUserEntityByUserId(id)
+//                .stream()
+//                .map(UserDTO::new)
+//                .map(UserDTOAssembler::toModel)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
 }
