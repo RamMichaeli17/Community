@@ -108,4 +108,17 @@ public class UserController {
         log.info("{}", response);
         return response;
     }
+
+    @GetMapping("/find/advanced")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> getUserByAgeAndLastName(@RequestParam Integer lower,
+                                                @RequestParam Integer upper,
+                                                @RequestParam String startingChar) {
+        log.info("Trying to fetch users by advanced querying: Lower bound: {}, Upper bound: {}, " +
+                "Starting char at last name: {}", lower, upper, startingChar);
+        ResponseEntity<?> response = this.userService.getUserByAgeAndName(lower, upper, startingChar);
+        log.info("{}", response);
+        return response;
+    }
+
 }

@@ -23,6 +23,11 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     List<UserEntity> getUserEntitiesByLocation(@Param("city") String city, @Param("streetName") String streetName,
                                                @Param("streetNumber") String streetNumber,
                                                @Param("country") String country);
+
+    @Query(value = "select u from UserEntity u where u.age >= :lower and u.age <= :upper and u.name.last like %:startingChar% ")
+    List<UserEntity> getUserEntityByAgeBetweenAndLastNameStartingWith(@Param("lower")Integer lower,
+                                                                  @Param("upper")Integer upper,
+                                                                  @Param("startingChar") String startingChar);
     List<UserEntity> getUserEntitiesByGender(String gender);
     List<UserEntity> findAll();
     List<UserEntity> getUserEntitiesByAge(Integer age);
