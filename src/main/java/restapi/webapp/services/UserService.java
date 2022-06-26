@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity;
@@ -74,6 +75,17 @@ public class UserService {
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
+        return checkEntityList(userEntities);
+    }
+
+    public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
+        List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
+                upper, startingChar);
+        return checkEntityList(userEntities);
+    }
+
+    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> checkEntityList
+            (List<UserEntity> userEntities) {
         if (userEntities.size() == 1) {
             UserEntity userEntity = userEntities.get(0);
             EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
