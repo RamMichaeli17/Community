@@ -43,9 +43,14 @@ public class UserService {
         return ResponseEntity.of(Optional.of(users));
     }
 
-    public ResponseEntity<?> deleteUser(@NonNull Long id) {
+    public ResponseEntity<?> deleteUserById(@NonNull Long id) {
         userRepo.deleteUserEntityByUserId(id);
         return ResponseEntity.ok("User " + id + " has been deleted.");
+    }
+
+    public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
+        userRepo.deleteUserEntityByEmail(email);
+        return ResponseEntity.ok("User " + email + " has been deleted.");
     }
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
