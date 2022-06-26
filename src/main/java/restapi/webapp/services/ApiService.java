@@ -31,7 +31,8 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(String userType) {
         log.info("Trying to fetch data from API");
-       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
+       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
+               StandardCharsets.UTF_8);
        log.info("Data fetched successfully");
        log.info("Trying to map JSON into a Java object");
         if (jsonStringRepresentation!=null) {

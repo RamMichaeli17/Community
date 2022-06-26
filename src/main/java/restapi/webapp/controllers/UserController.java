@@ -20,12 +20,6 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 @RestController
 @RequestMapping("/control")
-/*@ApiResponses(value = {
-        @ApiResponse(code = HTTP_UNAUTHORIZED, message = "You are not authorized"),
-        @ApiResponse(code = HTTP_FORBIDDEN, message = "You don't have permission to access this resource"),
-        @ApiResponse(code = HTTP_BAD_REQUEST, message = "Server can't process the request"),
-        @ApiResponse(code = HTTP_INTERNAL_ERROR, message = "Server error occurred")
-})*/
 @Slf4j
 @Tag(name = "User Controller", description = "The controller of User Entity")
 public class UserController {
@@ -56,9 +50,6 @@ public class UserController {
 
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
-    /*@ApiOperation(value = "Create a user",
-            code = 201,
-            notes = "Create new user by specific parameters")*/
     @Operation(summary = "Create a user",
             description = "Create new user by specific parameters",
             responses = {@ApiResponse(responseCode = "201", description = "User created")},
@@ -71,8 +62,6 @@ public class UserController {
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    /*@ApiOperation(value = "Update a user",
-            notes = "Update a user by specific parameters")*/
     public ResponseEntity<?> updateUser(@RequestBody UserEntity user) {
         log.info("Trying to update user by specific parameters");
         log.info("{}", user);

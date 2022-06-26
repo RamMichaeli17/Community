@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
 
@@ -39,8 +40,10 @@ public class UserService {
     }
 
     public ResponseEntity<?> getAllUsers(){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
-        return ResponseEntity.of(Optional.of(users));
+        List<UserEntity> users = userRepo.findAll();
+        users.stream().findAny().orElseThrow(()-> new UsersNotFoundException());
+        CollectionModel<EntityModel<UserEntity>> usersCollectionModel = assembler.toCollectionModel(users);
+        return ResponseEntity.of(Optional.of(usersCollectionModel));
     }
 
     public ResponseEntity<?> deleteUser(@NonNull Long id) {
