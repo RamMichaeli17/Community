@@ -19,7 +19,6 @@ import java.util.Map;
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
-    //ToDo: why ?
     private Long userId;
     @Column(nullable = false, unique = true)
     private String email;
