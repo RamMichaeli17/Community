@@ -19,20 +19,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
 public class UserService {
     private final UserRepo userRepo;
     private final UserEntityAssembler assembler;
-    private final UserDTOAssembler dtoAssembler;
+    private final UserDTOAssembler userDTOAssembler;
     private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler dtoAssembler) {
+    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler) {
         this.userRepo = userRepo;
         this.assembler = assembler;
-        this.dtoAssembler = dtoAssembler;
+        this.userDTOAssembler = userDTOAssembler;
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityByUserId(Long.valueOf(id)));
@@ -109,12 +111,21 @@ public class UserService {
         return ResponseEntity.of(Optional.of(userEntitiesModel));
     }
 
-//    public ResponseEntity<EntityModel<UserDTO>> getUserInfoById(@NonNull Long id) {
-//        return userRepo.getUserEntityByUserId(id)
-//                .stream()
-//                .map(UserDTO::new)
-//                .map(UserDTOAssembler::toModel)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
+
+    public ResponseEntity<EntityModel<UserDTO>> getUserInfo (@NonNull Long id) {
+        return userRepo.findById(id)
+                .map(UserDTO::new)
+                .map(userDTOAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersInfo () {
+        return ResponseEntity.ok(
+                userDTOAssembler.toCollectionModel(
+                StreamSupport.stream(userRepo.findAll().spliterator(),
+                                false)
+                        .map(UserDTO::new)
+                        .collect(Collectors.toList())));
+    }
 }
