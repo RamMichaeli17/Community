@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
@@ -58,6 +59,10 @@ public class UserService {
     }
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
+        AvatarEntity currentAvatarEntity =user.getAvatarEntity();
+        currentAvatarEntity.setSeed(user.getEmail());
+        currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
+        user.setAvatarEntity(currentAvatarEntity);
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
