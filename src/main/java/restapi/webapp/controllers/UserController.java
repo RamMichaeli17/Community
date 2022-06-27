@@ -34,7 +34,7 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("/find/{param}/{value}")
+    @GetMapping("/get/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a user by specific parameters By Path Variable",
             description = "Find user details by name, location, age and more",
@@ -44,6 +44,7 @@ public class UserController {
         return this.userService.getUserBySpecificParameter(param, value);
     }
 
+    //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a user",
@@ -67,6 +68,7 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
+    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
@@ -89,20 +91,20 @@ public class UserController {
         return this.userService.deleteUserByEmail(email);
     }
 
-    @GetMapping("/find/name")
+    @GetMapping("/get/name")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by name",
             description = "Delete a specific user by their first name and last name",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
-                                           @RequestParam("lastName") String lastName){
+    public ResponseEntity<?> getUserByName(@RequestParam("first") String firstName,
+                                           @RequestParam("last") String lastName){
         log.info("Trying to fetch user {} {}", firstName, lastName);
         ResponseEntity<?> response = this.userService.getUsersByName(firstName, lastName);
         log.info("{}", response);
         return response;
     }
 
-    @GetMapping("/find/location")
+    @GetMapping("/get/location")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by location",
             description = "Delete a specific user by their city, street name, street number and country",
@@ -117,7 +119,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/find/advanced")
+    @GetMapping("/get/advanced")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by their age and last name",
             description = "Find a specific user by their age and the first digit on their last name",
