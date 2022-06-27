@@ -1,8 +1,10 @@
 package restapi.webapp.controllers;
 
-import io.swagger.annotations.ApiOperation;
+/*import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponses;*/
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,8 @@ import static java.net.HttpURLConnection.*;
 @Component
 @RestController
 @RequestMapping("/api")
-@ApiResponses(value = {
-        @ApiResponse(code = HTTP_UNAUTHORIZED, message = "You are not authorized"),
-        @ApiResponse(code = HTTP_FORBIDDEN, message = "You don't have permission to access this resource"),
-        @ApiResponse(code = HTTP_BAD_REQUEST, message = "Server can't process the request"),
-        @ApiResponse(code = HTTP_INTERNAL_ERROR, message = "Server error occurred")
-})
 @Slf4j
+@Tag(name = "API Controller", description = "The controller of the API to fetch users from")
 public class ApiController {
     private final ApiService apiService;
 
@@ -36,8 +33,9 @@ public class ApiController {
 
     @GetMapping("/get/{type}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Get a user by requested type",
-            notes = "Get a requested type of user from external API")
+    @Operation(summary = "Fetch a random user by requested type",
+            description = "Fetch a random user from external API by specified type (male/female)",
+            tags = {"API Controller"})
     public ResponseEntity<?> getUserByType(@PathVariable String type) {
         log.info("Trying to get {} user", type);
         CompletableFuture<UserEntity> response = this.apiService.getUserByType(type);

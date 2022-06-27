@@ -1,8 +1,8 @@
 package restapi.webapp.controllers;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,20 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.UserService;
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 @RestController
 @RequestMapping("/control")
-@ApiResponses(value = {
-        @ApiResponse(code = HTTP_UNAUTHORIZED, message = "You are not authorized"),
-        @ApiResponse(code = HTTP_FORBIDDEN, message = "You don't have permission to access this resource"),
-        @ApiResponse(code = HTTP_BAD_REQUEST, message = "Server can't process the request"),
-        @ApiResponse(code = HTTP_INTERNAL_ERROR, message = "Server error occurred")
-})
 @Slf4j
+@Tag(name = "User Controller", description = "The controller of User entity")
 public class UserController {
     private final UserService userService;
 
@@ -35,8 +26,9 @@ public class UserController {
 
     @GetMapping("/getAllUsers")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find all users",
-            notes = "Find user details by name, location age and more")
+    @Operation(summary = "Find all users",
+            description = "Find user details by name, location age and more",
+            tags = {"User Controller"})
     public ResponseEntity<?> getAllUsers() {
         log.info("Trying to fetch all users");
         return this.userService.getAllUsers();
@@ -44,8 +36,9 @@ public class UserController {
 
     @GetMapping("/find/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Find a user by specific parameters",
-            notes = "Find user details by name, location, age and more")
+    @Operation(summary = "Find a user by specific parameters By Path Variable",
+            description = "Find user details by name, location, age and more",
+            tags = {"User Controller"})
     public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
         return this.userService.getUserBySpecificParameter(param, value);
@@ -53,9 +46,10 @@ public class UserController {
 
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create a user",
-            code = 201,
-            notes = "Create new user by specific parameters")
+    @Operation(summary = "Create a user",
+            description = "Create a new user by specific parameters",
+            responses = {@ApiResponse(responseCode = "201", description = "User created")},
+            tags = {"User Controller"})
     public ResponseEntity<?> createUser(@RequestBody UserEntity user) {
         log.info("Trying to create new user by specific parameters:");
         log.info("{}", user);
@@ -64,31 +58,42 @@ public class UserController {
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Update a user",
-            notes = "Update a user by specific parameters")
+    @Operation(summary = "Update a user",
+            description = "Update a specific user",
+            tags = {"User Controller"})
     public ResponseEntity<?> updateUser(@RequestBody UserEntity user) {
         log.info("Trying to update user by specific parameters");
         log.info("{}", user);
         return this.userService.updateUser(user);
     }
 
-    /*
-    In the declarative approach, we annotate the methods with the @Transactional annotation.
-    The @Transactional annotation makes use of the attributes rollbackFor or rollbackForClassName to rollback the transactions,
-    and the attributes noRollbackFor or noRollbackForClassName to avoid rollback on listed exceptions.
-     */
     @Transactional
-    @DeleteMapping("/delete")
+    @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Delete a user",
-            notes = "Delete a user by id")
-    public ResponseEntity<?> deleteUser(@RequestParam Long id) {
-        log.info("Trying to delete user with id: {}", id);
-        return this.userService.deleteUser(id);
+    @Operation(summary = "Delete a user by their ID",
+            description = "Delete a specific user by their id",
+            tags = {"User Controller"})
+    public ResponseEntity<?> deleteUserById(@RequestParam Long userId) {
+        log.info("Trying to delete user with id: {}", userId);
+        return this.userService.deleteUserById(userId);
+    }
+
+    @Transactional
+    @DeleteMapping("/deleteByEmail")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete a user by E-Mail address",
+            description = "Delete a specific user by their E-Mail address",
+            tags = {"User Controller"})
+    public ResponseEntity<?> deleteUserByEmail(@RequestParam String email) {
+        log.info("Trying to delete user with email: {}", email);
+        return this.userService.deleteUserByEmail(email);
     }
 
     @GetMapping("/find/name")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find a specific user by name",
+            description = "Delete a specific user by their first name and last name",
+            tags = {"User Controller"})
     public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
                                            @RequestParam("lastName") String lastName){
         log.info("Trying to fetch user {} {}", firstName, lastName);
@@ -99,6 +104,9 @@ public class UserController {
 
     @GetMapping("/find/location")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find a specific user by location",
+            description = "Delete a specific user by their city, street name, street number and country",
+            tags = {"User Controller"})
     public ResponseEntity<?> getUsersByLocation(@RequestParam String city,
                                                 @RequestParam String streetName,
                                                 @RequestParam String streetNumber,
@@ -108,4 +116,20 @@ public class UserController {
         log.info("{}", response);
         return response;
     }
+
+    @GetMapping("/find/advanced")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find a specific user by their age and last name",
+            description = "Find a specific user by their age and the first digit on their last name",
+            tags = {"User Controller"})
+    public ResponseEntity<?> getUserByAgeAndLastName(@RequestParam Integer lower,
+                                                @RequestParam Integer upper,
+                                                @RequestParam String startingChar) {
+        log.info("Trying to fetch users by advanced querying: Lower bound: {}, Upper bound: {}, " +
+                "Starting char at last name: {}", lower, upper, startingChar);
+        ResponseEntity<?> response = this.userService.getUserByAgeAndName(lower, upper, startingChar);
+        log.info("{}", response);
+        return response;
+    }
+
 }

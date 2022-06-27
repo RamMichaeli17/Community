@@ -1,7 +1,6 @@
 package restapi.webapp.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -10,9 +9,6 @@ import org.json.JSONObject;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.entities.UserEntity.*;
-import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -37,13 +33,13 @@ public class ApiService {
         log.info("Trying to fetch data from API");
        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
        log.info("Data fetched successfully");
-       log.info("Trying to mapping Json to Java object");
+       log.info("Trying to map JSON into a Java object");
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
             UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
-            log.info("Successfully mapped Json to Java object");
+            log.info("Successfully mapped JSON into a Java object");
             return CompletableFuture.completedFuture(user);
         }
         else {
