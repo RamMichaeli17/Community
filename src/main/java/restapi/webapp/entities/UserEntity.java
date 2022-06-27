@@ -1,6 +1,7 @@
 package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class UserEntity implements Serializable {
     @Id
     @GeneratedValue
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long userId;
     @Column(nullable = false, unique = true)
     private String email;
