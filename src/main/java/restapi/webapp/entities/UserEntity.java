@@ -1,5 +1,6 @@
 package restapi.webapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Data
-@Table(name="USERS")
+@Table(name="Users")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity implements Serializable {
     @Id
@@ -37,6 +38,14 @@ public class UserEntity implements Serializable {
     private Location location;
 
     private AvatarEntity avatarEntity;
+
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(
+            name = "Users_Companies",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "company_id")})
+    Set<CellPhoneCompany> cellPhoneCompanies = new LinkedHashSet<>();
 
     public UserEntity(String email, String md5, String gender, Integer age,
                       Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity) {

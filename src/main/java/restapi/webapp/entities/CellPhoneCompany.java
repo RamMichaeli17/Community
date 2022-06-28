@@ -1,5 +1,6 @@
 package restapi.webapp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,7 @@ import java.util.*;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name="CELL_PHONE_COMPANY")
+@Table(name="Cell_Phone_Company")
 public class CellPhoneCompany implements Serializable {
     @Id
     @GeneratedValue
@@ -23,6 +24,10 @@ public class CellPhoneCompany implements Serializable {
     // insert random countries using api (?)
     @ElementCollection
     private Set<String> operationalCountries = new LinkedHashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "cellPhoneCompanies")
+    private Set<UserEntity> users = new LinkedHashSet<>();
 
     public CellPhoneCompany(String companyName, Set<String> operationalCountries) {
         int randomAmountOfCountries = (int)Math.floor(Math.random()*(16-1+1)+1);
