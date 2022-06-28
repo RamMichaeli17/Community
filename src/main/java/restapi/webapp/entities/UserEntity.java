@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +60,10 @@ public class UserEntity implements Serializable {
     @JsonProperty("login")
     private void unpackMD5(Map<String, Object> login) {
         this.md5 = login.get("md5").toString();
+    }
+    @JsonProperty("phone")
+    private void addPhoneToSet(String phone) {
+        this.phoneNumbers.add(phone);
     }
 
     @Data

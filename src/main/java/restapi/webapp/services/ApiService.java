@@ -18,6 +18,7 @@ import restapi.webapp.repos.UserRepo;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,6 +53,7 @@ public class ApiService {
             JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
             UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
             user.setAvatarEntity(generateRandomAvatarEntity(user.getEmail()));
+            user.getPhoneNumbers().addAll(generateRandomPhoneNumbers());
             log.info("Successfully mapped JSON into a Java object");
             return CompletableFuture.completedFuture(user);
         }
@@ -78,6 +80,25 @@ public class ApiService {
         randomAvatarForUser.setHairColor(HairColorValues.get(random.nextInt(HairColorValues.size())).toString());
         randomAvatarForUser.setResultUrl(randomAvatarForUser.createResultUrl());
         return randomAvatarForUser;
+    }
+
+    public Set<String> generateRandomPhoneNumbers() {
+        Set<String> randomPhoneNumbers = new LinkedHashSet<>();
+        int num1, num2, num3;
+        DecimalFormat df3, df4;
+        String phoneNumber;
+        int randomAmountOfPhoneNumbers = (int)Math.floor(Math.random()*(25-0+1)+0);
+        Random rand = new Random();
+        for(int i=0;i<randomAmountOfPhoneNumbers;i++) {
+            num1 = (rand.nextInt(7) + 1) * 100 + (rand.nextInt(8) * 10) + rand.nextInt(8);
+            num2 = rand.nextInt(743);
+            num3 = rand.nextInt(10000);
+            df3 = new DecimalFormat("000"); // 3 zeros
+            df4 = new DecimalFormat("0000"); // 4 zeros
+            phoneNumber = df3.format(num1) + "-" + df3.format(num2) + "-" + df4.format(num3);
+            randomPhoneNumbers.add(phoneNumber);
+        }
+        return randomPhoneNumbers;
     }
 
 }
