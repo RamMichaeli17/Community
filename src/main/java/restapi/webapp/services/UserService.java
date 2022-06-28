@@ -38,8 +38,8 @@ public class UserService {
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityByUserId(Long.valueOf(id)));
-        this.methodsByParamsMap.put("phone", userRepo::getUserEntityByPhone);
-        this.methodsByParamsMap.put("phoneLike", userRepo::getUserEntityByPhoneContains);
+        this.methodsByParamsMap.put("phone", userRepo::getUserEntityByPhoneNumbers);
+        this.methodsByParamsMap.put("phoneContains", userRepo::getUserEntityByPhoneNumbersContains);
         this.methodsByParamsMap.put("age", age -> userRepo.getUserEntitiesByAge(Integer.valueOf(age)));
         this.methodsByParamsMap.put("gender", userRepo::getUserEntitiesByGender);
         this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);

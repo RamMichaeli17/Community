@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,8 +30,8 @@ public class UserEntity implements Serializable {
     private String md5;
     private String gender;
     private Integer age;
-    @Column(nullable = false, unique = true)
-    private String phone;
+    @ElementCollection
+    private Set<String> phoneNumbers = new LinkedHashSet<>();
     @Embedded
     private Name name;
     @Embedded
@@ -37,12 +40,12 @@ public class UserEntity implements Serializable {
     private AvatarEntity avatarEntity;
 
     public UserEntity(String email, String md5, String gender, Integer age,
-                      String phone, Name name, Location location,AvatarEntity avatarEntity) {
+                      Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity) {
         this.email = email;
         this.md5 = md5;
         this.gender = gender;
         this.age = age;
-        this.phone = phone;
+        this.phoneNumbers = phoneNumbers;
         this.name = name;
         this.location = location;
         this.avatarEntity = avatarEntity;
