@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import restapi.webapp.entities.AvatarEntity;
+import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.entities.UserEntity.*;
 import restapi.webapp.entities.UserEntity.Location.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.enums.HairColor;
+import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
 
 import java.util.Set;
@@ -18,10 +20,31 @@ import java.util.Set;
 @Slf4j
 @EnableRetry
 
-public class UserConfig {
+public class Config {
     @Bean
-    CommandLineRunner initDatabase(UserRepo userRepo) {
+    CommandLineRunner initDatabase(CellPhoneCompanyRepo cellPhoneCompanyRepo, UserRepo userRepo) {
         return args -> {
+
+            log.info("Creating Cell Phone Companies...");
+
+            CellPhoneCompany cellPhoneCompany1 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+                    "Cellcom",Set.of()
+            ));
+            log.info("cellPhoneCompany1 has been created: " + cellPhoneCompany1);
+
+            CellPhoneCompany cellPhoneCompany2 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+                    "Orange", Set.of("Argentina","Brazil","Israel")
+            ));
+            log.info("cellPhoneCompany2 has been created: " + cellPhoneCompany2);
+
+            CellPhoneCompany cellPhoneCompany3 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+                    "Partner",Set.of("Spain","Turkey")
+            ));
+            log.info("cellPhoneCompany3 has been created: " + cellPhoneCompany3);
+
+            log.info("All cell phone companies have been created");
+
+
             log.info("Creating Users...");
 
             UserEntity user1 = userRepo.save(new UserEntity("tal.beno@nice.com",
