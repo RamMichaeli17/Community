@@ -9,7 +9,6 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompany;
-import restapi.webapp.entities.UserEntity;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 
@@ -20,7 +19,6 @@ import java.util.function.Function;
 
 @Service
 @Slf4j
-
 public class CellPhoneService {
     private final CellPhoneCompanyRepo repo;
     private final CellPhoneCompanyAssembler assembler;
@@ -33,7 +31,7 @@ public class CellPhoneService {
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("name", repo::findCellPhoneCompanyByCompanyName);
-        this.methodsByParamsMap.put("id", repo::findCellPhoneCompanyByCellPhoneCompanyId);
+        this.methodsByParamsMap.put("id", id -> repo.findCellPhoneCompanyByCellPhoneCompanyId(Long.valueOf(id)));
     }
 
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> returnEntityList
@@ -57,9 +55,14 @@ public class CellPhoneService {
         return returnEntityList(companyEntities);
     }
 
-    public ResponseEntity<?> deleteCompany(String companyName){
+    public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
         repo.deleteCellPhoneCompanyByCompanyName(companyName);
-        return ResponseEntity.ok("Company " + companyName + "has been deleted.");
+        return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
+    }
+
+    public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
+        repo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
+        return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
 
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompany company){

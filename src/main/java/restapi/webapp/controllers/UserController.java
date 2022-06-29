@@ -70,15 +70,14 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
-    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Delete a user by their ID",
-            description = "Delete a specific user by their id",
+            description = "Delete a specific user by their ID",
             tags = {"User Controller"})
     public ResponseEntity<?> deleteUserById(@RequestParam Long userId) {
-        log.info("Trying to delete user with id: {}", userId);
+        log.info("Trying to delete user with ID: {}", userId);
         return this.userService.deleteUserById(userId);
     }
 

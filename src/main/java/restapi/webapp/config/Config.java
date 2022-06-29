@@ -27,20 +27,19 @@ public class Config {
 
             log.info("Creating Cell Phone Companies...");
 
-            CellPhoneCompany cellPhoneCompany1 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+            CellPhoneCompany cellcom = cellPhoneCompanyRepo.save(new CellPhoneCompany(
                     "Cellcom",Set.of()
             ));
-            log.info("cellPhoneCompany1 has been created: " + cellPhoneCompany1);
+            log.info("Cellcom has been created: " + cellcom);
 
-            CellPhoneCompany cellPhoneCompany2 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+            CellPhoneCompany orange = cellPhoneCompanyRepo.save(new CellPhoneCompany(
                     "Orange", Set.of("Argentina","Brazil","Israel")
             ));
-            log.info("cellPhoneCompany2 has been created: " + cellPhoneCompany2);
+            log.info("Orange has been created: " + orange);
 
-            CellPhoneCompany cellPhoneCompany3 = cellPhoneCompanyRepo.save(new CellPhoneCompany(
-                    "Partner",Set.of("Spain","Turkey")
-            ));
-            log.info("cellPhoneCompany3 has been created: " + cellPhoneCompany3);
+            CellPhoneCompany partner =
+                    cellPhoneCompanyRepo.save(new CellPhoneCompany("Partner", Set.of("Spain","Turkey")));
+            log.info("Partner has been created: " + partner);
 
             log.info("All cell phone companies have been created");
 

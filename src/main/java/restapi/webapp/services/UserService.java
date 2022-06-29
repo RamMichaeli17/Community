@@ -45,9 +45,20 @@ public class UserService {
         this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);
     }
 
+    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> returnEntityList
+            (List<UserEntity> userEntities) {
+        if (userEntities.size() == 1) {
+            UserEntity userEntity = userEntities.get(0);
+            EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
+            return ResponseEntity.of(Optional.of(userEntityModel));
+        }
+        CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
+        return ResponseEntity.of(Optional.of(userEntitiesModel));
+    }
+
     public ResponseEntity<?> getAllUsers(){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
-        return ResponseEntity.of(Optional.of(users));
+        List<UserEntity> users = userRepo.findAll();
+        return returnEntityList(users);
     }
 
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
@@ -78,16 +89,15 @@ public class UserService {
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName, @NonNull String streetNumber, @NonNull String country){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByLocation(city,streetName,streetNumber , country));
-        return ResponseEntity.of(Optional.of(users));
+    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
+                                                @NonNull String streetNumber, @NonNull String country){
+        List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
+        return returnEntityList(users);
     }
 
     public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByName(first,last));
-        return ResponseEntity.of(Optional.of(users));
+        List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
+        return returnEntityList(users);
     }
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
@@ -100,18 +110,6 @@ public class UserService {
                 upper, startingChar);
         return returnEntityList(userEntities);
     }
-
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> returnEntityList
-            (List<UserEntity> userEntities) {
-        if (userEntities.size() == 1) {
-            UserEntity userEntity = userEntities.get(0);
-            EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
-            return ResponseEntity.of(Optional.of(userEntityModel));
-        }
-        CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
-        return ResponseEntity.of(Optional.of(userEntitiesModel));
-    }
-
 
     public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
         return userRepo.findById(id)

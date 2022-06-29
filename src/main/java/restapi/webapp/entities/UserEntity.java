@@ -18,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Data
-@Table(name="Users")
+@Table(name="USERS")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity implements Serializable {
     @Id

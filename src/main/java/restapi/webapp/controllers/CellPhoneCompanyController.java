@@ -54,7 +54,7 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyByName(@RequestParam String name) {
         log.info("Trying to delete cell phone company with name: {}", name);
-        return this.cellPhoneService.deleteCompany(name);
+        return this.cellPhoneService.deleteCompanyByName(name);
     }
 
     @Transactional
@@ -63,9 +63,9 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Delete a company by its ID",
             description = "Delete a specific company by their company ID",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> deleteCompanyById(@RequestParam String id) {
+    public ResponseEntity<?> deleteCompanyById(@RequestParam Long id) {
         log.info("Trying to delete cell phone company with ID: {}", id);
-        return this.cellPhoneService.deleteCompany(id);
+        return this.cellPhoneService.deleteCompanyById(id);
     }
 
     @PutMapping("/update")
