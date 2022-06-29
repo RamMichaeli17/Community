@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.factories.UserDTOAssembler;
+import restapi.webapp.repos.UserRepo;
 import restapi.webapp.services.UserService;
 
 @RestController
@@ -18,10 +20,14 @@ import restapi.webapp.services.UserService;
 @Tag(name = "User Controller", description = "The controller of User entity")
 public class UserController {
     private final UserService userService;
+    private final UserRepo userRepo;
+    private final UserDTOAssembler userDTOAssembler;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepo userRepo,UserDTOAssembler userDTOAssembler) {
         this.userService = userService;
+        this.userRepo = userRepo;
+        this.userDTOAssembler = userDTOAssembler;
     }
 
     @GetMapping("/getAllUsers")
@@ -34,7 +40,7 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
-    @GetMapping("/find/{param}/{value}")
+    @GetMapping("/get/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a user by specific parameters By Path Variable",
             description = "Find user details by name, location, age and more",
@@ -44,6 +50,7 @@ public class UserController {
         return this.userService.getUserBySpecificParameter(param, value);
     }
 
+    //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a user",
@@ -67,6 +74,7 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
+    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
@@ -89,20 +97,20 @@ public class UserController {
         return this.userService.deleteUserByEmail(email);
     }
 
-    @GetMapping("/find/name")
+    @GetMapping("/get/name")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by name",
             description = "Delete a specific user by their first name and last name",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserByName(@RequestParam("firstName") String firstName,
-                                           @RequestParam("lastName") String lastName){
+    public ResponseEntity<?> getUserByName(@RequestParam("first") String firstName,
+                                           @RequestParam("last") String lastName){
         log.info("Trying to fetch user {} {}", firstName, lastName);
         ResponseEntity<?> response = this.userService.getUsersByName(firstName, lastName);
         log.info("{}", response);
         return response;
     }
 
-    @GetMapping("/find/location")
+    @GetMapping("/get/location")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by location",
             description = "Delete a specific user by their city, street name, street number and country",
@@ -117,7 +125,7 @@ public class UserController {
         return response;
     }
 
-    @GetMapping("/find/advanced")
+    @GetMapping("/get/advanced")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by their age and last name",
             description = "Find a specific user by their age and the first digit on their last name",
@@ -131,5 +139,27 @@ public class UserController {
         log.info("{}", response);
         return response;
     }
+
+
+    @GetMapping("/getUser/{id}/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get only social information about a specific user",
+            description = "Get a userDTO that contains only some information about a user we want to present",
+            tags = {"User Controller"})
+    public ResponseEntity<?> getUserInfo (@PathVariable Long id) {
+        log.info("Trying to get user info by ID: "+id);
+        return this.userService.getUserInfo(id);
+    }
+
+    @GetMapping("/getAllUsers/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all the social information about the users",
+            description = "Get all userDTO-s that contain only some information we to present about the users",
+            tags = {"User Controller"})
+    public ResponseEntity<?> getAllUsersInfo () {
+        log.info("Trying to get all users info");
+        return this.userService.getAllUsersInfo();
+    }
+
 
 }

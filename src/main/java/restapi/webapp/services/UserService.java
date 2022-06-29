@@ -1,5 +1,6 @@
 package restapi.webapp.services;
 
+import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
 
@@ -16,18 +19,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Slf4j
 public class UserService {
     private final UserRepo userRepo;
     private final UserEntityAssembler assembler;
+    private final UserDTOAssembler userDTOAssembler;
     private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEntityAssembler assembler) {
+    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler) {
         this.userRepo = userRepo;
         this.assembler = assembler;
+        this.userDTOAssembler = userDTOAssembler;
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("id", id -> userRepo.getUserEntityByUserId(Long.valueOf(id)));
@@ -45,15 +52,19 @@ public class UserService {
 
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
         userRepo.deleteUserEntityByUserId(id);
-        return ResponseEntity.ok("User " + id + " has been deleted.");
+        return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
     }
 
     public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
         userRepo.deleteUserEntityByEmail(email);
-        return ResponseEntity.ok("User " + email + " has been deleted.");
+        return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
     }
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
+        AvatarEntity currentAvatarEntity =user.getAvatarEntity();
+        currentAvatarEntity.setSeed(user.getEmail());
+        currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
+        user.setAvatarEntity(currentAvatarEntity);
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -98,5 +109,23 @@ public class UserService {
         }
         CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
         return ResponseEntity.of(Optional.of(userEntitiesModel));
+    }
+
+
+    public ResponseEntity<EntityModel<UserDTO>> getUserInfo (@NonNull Long id) {
+        return userRepo.findById(id)
+                .map(UserDTO::new)
+                .map(userDTOAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersInfo () {
+        return ResponseEntity.ok(
+                userDTOAssembler.toCollectionModel(
+                StreamSupport.stream(userRepo.findAll().spliterator(),
+                                false)
+                        .map(UserDTO::new)
+                        .collect(Collectors.toList())));
     }
 }
