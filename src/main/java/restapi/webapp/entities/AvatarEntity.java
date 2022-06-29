@@ -18,7 +18,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Embeddable
 @Data
-@Table(name="AVATARS")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AvatarEntity implements Serializable {
     private String seed;
@@ -26,12 +25,12 @@ public class AvatarEntity implements Serializable {
     private Integer eyes; //01-26
     @Min(1) @Max(10)
     private Integer eyebrows; //01-10
-    private String hairColor; //enum
+    private HairColor hairColor; //enum
     @Min(1) @Max(30)
     private Integer mouth; //01-30
     private String resultUrl;
 
-    public AvatarEntity(Integer eyes, Integer eyebrows, String hairColor, Integer mouth) {
+    public AvatarEntity(Integer eyes, Integer eyebrows, HairColor hairColor, Integer mouth) {
         this.eyes = eyes;
         this.eyebrows = eyebrows;
         this.hairColor = hairColor;

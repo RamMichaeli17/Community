@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,12 @@ public class ApiService {
     private final UserRepo userRepo;
     private final UserEntityAssembler assembler;
 
-    public ApiService(UserRepo userRepo, UserEntityAssembler userEntityAssembler) {
-        this.objectMapper = new ObjectMapper();
+    @Autowired
+    public ApiService(ObjectMapper objectMapper, UserRepo userRepo, UserEntityAssembler userEntityAssembler) {
         userRetrieveTypes = Map.of("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo",
                 "male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo",
                 "female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
+        this.objectMapper = objectMapper;
         this.userRepo = userRepo;
         this.assembler = userEntityAssembler;
     }
@@ -75,7 +77,7 @@ public class ApiService {
         final List<HairColor> HairColorValues =
                 List.of(HairColor.values());
         final Random random = new Random();
-        randomAvatarForUser.setHairColor(HairColorValues.get(random.nextInt(HairColorValues.size())).toString());
+        randomAvatarForUser.setHairColor(HairColorValues.get(random.nextInt(HairColorValues.size())));
         randomAvatarForUser.setResultUrl(randomAvatarForUser.createResultUrl());
         return randomAvatarForUser;
     }
