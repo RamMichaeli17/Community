@@ -20,14 +20,10 @@ import restapi.webapp.services.UserService;
 @Tag(name = "User Controller", description = "The controller of User entity")
 public class UserController {
     private final UserService userService;
-    private final UserRepo userRepo;
-    private final UserDTOAssembler userDTOAssembler;
 
     @Autowired
     public UserController(UserService userService, UserRepo userRepo,UserDTOAssembler userDTOAssembler) {
         this.userService = userService;
-        this.userRepo = userRepo;
-        this.userDTOAssembler = userDTOAssembler;
     }
 
     @GetMapping("/getAllUsers")
@@ -58,7 +54,7 @@ public class UserController {
             responses = {@ApiResponse(responseCode = "201", description = "User created")},
             tags = {"User Controller"})
     public ResponseEntity<?> createUser(@RequestBody UserEntity user) {
-        log.info("Trying to create new user by specific parameters:");
+        log.info("Trying to create a new user by specific parameters:");
         log.info("{}", user);
         return this.userService.createUser(user);
     }
@@ -140,15 +136,16 @@ public class UserController {
         return response;
     }
 
-
     @GetMapping("/getUser/{id}/info")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get only social information about a specific user",
             description = "Get a userDTO that contains only some information about a user we want to present",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserInfo (@PathVariable Long id) {
-        log.info("Trying to get user info by ID: "+id);
-        return this.userService.getUserInfo(id);
+    public ResponseEntity<?> getUserInfo(@PathVariable Long id) {
+        log.info("Trying to get user info by ID: " + id);
+        ResponseEntity<?> response = this.userService.getUserDtoInfo(id);
+        log.info("{}", response);
+        return response;
     }
 
     @GetMapping("/getAllUsers/info")
@@ -156,10 +153,10 @@ public class UserController {
     @Operation(summary = "Get all the social information about the users",
             description = "Get all userDTO-s that contain only some information we to present about the users",
             tags = {"User Controller"})
-    public ResponseEntity<?> getAllUsersInfo () {
+    public ResponseEntity<?> getAllUsersInfo() {
         log.info("Trying to get all users info");
-        return this.userService.getAllUsersInfo();
+        ResponseEntity<?> response = this.userService.getAllUsersDtoInfo();
+        log.info("{}", response);
+        return response;
     }
-
-
 }

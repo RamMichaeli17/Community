@@ -61,10 +61,11 @@ public class UserService {
     }
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
-        AvatarEntity currentAvatarEntity =user.getAvatarEntity();
+        AvatarEntity currentAvatarEntity = user.getAvatarEntity();
         currentAvatarEntity.setSeed(user.getEmail());
         currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
         user.setAvatarEntity(currentAvatarEntity);
+
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -91,16 +92,16 @@ public class UserService {
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        return checkEntityList(userEntities);
+        return returnEntityList(userEntities);
     }
 
     public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
-        return checkEntityList(userEntities);
+        return returnEntityList(userEntities);
     }
 
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> checkEntityList
+    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> returnEntityList
             (List<UserEntity> userEntities) {
         if (userEntities.size() == 1) {
             UserEntity userEntity = userEntities.get(0);
@@ -112,7 +113,7 @@ public class UserService {
     }
 
 
-    public ResponseEntity<EntityModel<UserDTO>> getUserInfo (@NonNull Long id) {
+    public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
         return userRepo.findById(id)
                 .map(UserDTO::new)
                 .map(userDTOAssembler::toModel)
@@ -120,11 +121,9 @@ public class UserService {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersInfo () {
-        return ResponseEntity.ok(
-                userDTOAssembler.toCollectionModel(
-                StreamSupport.stream(userRepo.findAll().spliterator(),
-                                false)
+    public ResponseEntity<?> getAllUsersDtoInfo() {
+        return ResponseEntity.ok(userDTOAssembler.toCollectionModel(
+                userRepo.findAll().stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
     }
