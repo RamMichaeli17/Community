@@ -17,7 +17,7 @@ import java.util.*;
 @Table(name="Cell_Phone_Company")
 public class CellPhoneCompany implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cellPhoneCompanyId;
     @Column(nullable = false, unique = true)
     private String companyName;

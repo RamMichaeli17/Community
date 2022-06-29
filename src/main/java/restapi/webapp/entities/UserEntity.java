@@ -22,7 +22,7 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserEntity implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long userId;
     @Column(nullable = false, unique = true)
