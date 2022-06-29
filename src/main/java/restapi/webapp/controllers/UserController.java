@@ -24,7 +24,7 @@ public class UserController {
     private final UserDTOAssembler userDTOAssembler;
 
     @Autowired
-    public UserController(UserService userService, UserRepo userRepo,UserDTOAssembler userDTOAssembler) {
+    public UserController(UserService userService) {
         this.userService = userService;
         this.userRepo = userRepo;
         this.userDTOAssembler = userDTOAssembler;
