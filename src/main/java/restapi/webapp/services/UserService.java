@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+//todo: Change ResponseEntity<?
 
 @Service
 @Slf4j
@@ -45,6 +46,17 @@ public class UserService {
         this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);
     }
 
+    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
+            (List<UserEntity> userEntities) {
+        if (userEntities.size() == 1) {
+            UserEntity userEntity = userEntities.get(0);
+            EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
+            return ResponseEntity.of(Optional.of(userEntityModel));
+        }
+        CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
+        return ResponseEntity.of(Optional.of(userEntitiesModel));
+    }
+
     public ResponseEntity<?> getAllUsers(){
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
         return ResponseEntity.of(Optional.of(users));
@@ -61,10 +73,11 @@ public class UserService {
     }
 
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
-        AvatarEntity currentAvatarEntity =user.getAvatarEntity();
+        AvatarEntity currentAvatarEntity = user.getAvatarEntity();
         currentAvatarEntity.setSeed(user.getEmail());
         currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
         user.setAvatarEntity(currentAvatarEntity);
+
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -77,42 +90,29 @@ public class UserService {
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
-    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName, @NonNull String streetNumber, @NonNull String country){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByLocation(city,streetName,streetNumber , country));
-        return ResponseEntity.of(Optional.of(users));
+    public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
+                                                @NonNull String streetNumber, @NonNull String country){
+        List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
+        return getCorrespondingEntityType(users);
     }
 
     public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(
-                userRepo.getUserEntitiesByName(first,last));
-        return ResponseEntity.of(Optional.of(users));
+        List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
+        return getCorrespondingEntityType(users);
     }
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        return checkEntityList(userEntities);
+        return getCorrespondingEntityType(userEntities);
     }
 
     public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
-        return checkEntityList(userEntities);
+        return getCorrespondingEntityType(userEntities);
     }
 
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> checkEntityList
-            (List<UserEntity> userEntities) {
-        if (userEntities.size() == 1) {
-            UserEntity userEntity = userEntities.get(0);
-            EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
-            return ResponseEntity.of(Optional.of(userEntityModel));
-        }
-        CollectionModel<EntityModel<UserEntity>> userEntitiesModel = assembler.toCollectionModel(userEntities);
-        return ResponseEntity.of(Optional.of(userEntitiesModel));
-    }
-
-
-    public ResponseEntity<EntityModel<UserDTO>> getUserInfo (@NonNull Long id) {
+    public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
         return userRepo.findById(id)
                 .map(UserDTO::new)
                 .map(userDTOAssembler::toModel)
@@ -120,11 +120,9 @@ public class UserService {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersInfo () {
-        return ResponseEntity.ok(
-                userDTOAssembler.toCollectionModel(
-                StreamSupport.stream(userRepo.findAll().spliterator(),
-                                false)
+    public ResponseEntity<?> getAllUsersDtoInfo() {
+        return ResponseEntity.ok(userDTOAssembler.toCollectionModel(
+                userRepo.findAll().stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
     }

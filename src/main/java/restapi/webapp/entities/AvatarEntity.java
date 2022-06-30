@@ -22,12 +22,14 @@ import java.io.Serializable;
 public class AvatarEntity implements Serializable {
     private String seed;
     @Min(1) @Max(26)
-    private Integer eyes; //01-26
+    private Integer eyes; // Range between 01-26
     @Min(1) @Max(10)
-    private Integer eyebrows; //01-10
-    private HairColor hairColor; //enum
+    private Integer eyebrows; // Range between 01-10
+
+    private HairColor hairColor; // Enum
     @Min(1) @Max(30)
-    private Integer mouth; //01-30
+    private Integer mouth; // Range between 01-30
+
     private String resultUrl;
 
     public AvatarEntity(Integer eyes, Integer eyebrows, HairColor hairColor, Integer mouth) {
@@ -38,6 +40,7 @@ public class AvatarEntity implements Serializable {
     }
 
     public String createResultUrl() {
-        return String.format("https://avatars.dicebear.com/api/adventurer/%s.svg?eyes=variant%02d&eyebrows=variant%02d&hairColor=%s&mouth=variant%02d",seed,eyes,eyebrows,hairColor,mouth);
+        return String.format("https://avatars.dicebear.com/api/adventurer/%s.svg?eyes=variant%02d&eyebrows=variant%02d&hairColor=%s&mouth=variant%02d"
+                , seed, eyes, eyebrows, hairColor, mouth);
     }
 }

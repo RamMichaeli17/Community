@@ -16,7 +16,6 @@ import restapi.webapp.entities.UserEntity;
 import restapi.webapp.enums.HairColor;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
-
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -43,12 +42,12 @@ public class ApiService {
 
     @SneakyThrows
     @Async
-    public CompletableFuture<UserEntity> getUserByType(String userType) {
+    public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
         log.info("Trying to fetch data from API");
-       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
-       log.info("Data fetched successfully");
-       log.info("Trying to map JSON into a Java object");
-       //todo: talk about this if statement
+        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
+        log.info("Data fetched successfully");
+        log.info("Trying to map JSON into a Java object");
+        //todo: talk about this if statement
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
             JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
@@ -68,16 +67,15 @@ public class ApiService {
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
-        }
+    }
 
-    public AvatarEntity generateRandomAvatarEntity(String seed) {
+    public AvatarEntity generateRandomAvatarEntity(@NonNull String seed) {
         AvatarEntity randomAvatarForUser = new AvatarEntity();
         randomAvatarForUser.setSeed(seed);
         randomAvatarForUser.setEyes((int)Math.floor(Math.random()*(26-1+1)+1));
         randomAvatarForUser.setEyebrows((int)Math.floor(Math.random()*(10-1+1)+1));
         randomAvatarForUser.setMouth((int)Math.floor(Math.random()*(30-1+1)+1));
-        final List<HairColor> HairColorValues =
-                List.of(HairColor.values());
+        final List<HairColor> HairColorValues = List.of(HairColor.values());
         final Random random = new Random();
         randomAvatarForUser.setHairColor(HairColorValues.get(random.nextInt(HairColorValues.size())));
         randomAvatarForUser.setResultUrl(randomAvatarForUser.createResultUrl());
@@ -89,9 +87,9 @@ public class ApiService {
         int num1, num2, num3;
         DecimalFormat df3, df4;
         String phoneNumber;
-        int randomAmountOfPhoneNumbers = (int)Math.floor(Math.random()*(25-0+1)+0);
+        int randomAmountOfPhoneNumbers = (int)Math.floor(Math.random()*(20+1)+0);
         Random rand = new Random();
-        for(int i=0;i<randomAmountOfPhoneNumbers;i++) {
+        for(int i=0; i<randomAmountOfPhoneNumbers; i++) {
             num1 = (rand.nextInt(7) + 1) * 100 + (rand.nextInt(8) * 10) + rand.nextInt(8);
             num2 = rand.nextInt(743);
             num3 = rand.nextInt(10000);

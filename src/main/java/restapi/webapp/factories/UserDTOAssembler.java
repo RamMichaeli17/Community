@@ -6,7 +6,6 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.UserController;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -18,7 +17,6 @@ public class UserDTOAssembler implements SimpleRepresentationModelAssembler<User
         resource.add(linkTo(methodOn(UserController.class).getUserInfo(resource.getContent().getUser().getUserId()))
                         .withSelfRel()
         );
-
     }
 
     @Override

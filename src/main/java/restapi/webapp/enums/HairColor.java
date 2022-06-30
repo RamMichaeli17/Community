@@ -10,5 +10,4 @@ public enum HairColor {
     blue,
     pink,
     purple
-
 }
