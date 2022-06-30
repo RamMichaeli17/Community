@@ -1,6 +1,5 @@
 package restapi.webapp.repos;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -34,8 +33,9 @@ public interface UserRepo extends CrudRepository<UserEntity, Long> {
     List<UserEntity> getUserEntitiesByAge(Integer age);
     List<UserEntity> getUserEntityByUserId(Long userId);
     List<UserEntity> getUserEntityByEmail(String email);
-    List<UserEntity> getUserEntityByPhone(String phone);
-    List<UserEntity> getUserEntityByPhoneContains(String phone);
+    List<UserEntity> getUserEntityByPhoneNumbers(String phone);
+    //todo: fix this method - BENO
+    List<UserEntity> getUserEntityByPhoneNumbersContains(String phone);
     void deleteUserEntityByUserId(Long userId);
     void deleteUserEntityByEmail(String email);
 }
