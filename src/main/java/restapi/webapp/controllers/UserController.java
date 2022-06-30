@@ -20,14 +20,11 @@ import restapi.webapp.services.UserService;
 @Tag(name = "User Controller", description = "The controller of User entity")
 public class UserController {
     private final UserService userService;
-    private final UserRepo userRepo;
-    private final UserDTOAssembler userDTOAssembler;
+
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepo = userRepo;
-        this.userDTOAssembler = userDTOAssembler;
     }
 
     @GetMapping("/getAllUsers")
