@@ -22,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService, UserRepo userRepo,UserDTOAssembler userDTOAssembler) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -70,6 +70,7 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
+    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)

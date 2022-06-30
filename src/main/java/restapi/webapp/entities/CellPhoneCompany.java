@@ -13,7 +13,7 @@ import java.util.*;
 @Table(name="CELL_PHONE_COMPANY")
 public class CellPhoneCompany implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cellPhoneCompanyId;
 
     @Column(nullable = false, unique = true)
