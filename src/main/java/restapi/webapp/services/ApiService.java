@@ -32,7 +32,7 @@ public class ApiService {
 
     @Autowired
     public ApiService(ObjectMapper objectMapper, UserRepo userRepo, UserEntityAssembler userEntityAssembler) {
-        userRetrieveTypes = Map.of("random", "https://randofdsmuser.me/api?exc=picture,cell,nat,registered&noinfo",
+        userRetrieveTypes = Map.of("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo",
                 "male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo",
                 "female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
         this.objectMapper = objectMapper;
