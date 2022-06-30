@@ -69,11 +69,13 @@ public class UserService {
     }
 
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
+        userRepo.findById(id).stream().findAny().orElseThrow(() -> new UserNotFoundException(id));
         userRepo.deleteUserEntityByUserId(id);
         return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
     }
 
     public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
+        userRepo.getUserEntityByEmail(email).stream().findAny().orElseThrow(() -> new UserNotFoundException(email));
         userRepo.deleteUserEntityByEmail(email);
         return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
     }
@@ -91,6 +93,7 @@ public class UserService {
 
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, it will save the changes.
+        userRepo.findById(user.getUserId()).stream().findAny().orElseThrow(() -> new UserNotFoundException(user.getUserId()));
         userRepo.save(user);
         log.info("User {} has been updated", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));

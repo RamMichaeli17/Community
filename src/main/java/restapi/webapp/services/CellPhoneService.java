@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.exceptions.CompaniesNotFoundException;
+import restapi.webapp.exceptions.CompanyNotFoundException;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 
@@ -61,16 +62,19 @@ public class CellPhoneService {
     }
 
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
+        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(companyName));
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCompanyName(companyName);
         return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
     }
 
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
+        cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(id).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(id));
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
         return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
 
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompany company){
+        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(company.getCompanyName()));
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
