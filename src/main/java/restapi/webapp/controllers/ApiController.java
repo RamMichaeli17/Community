@@ -1,9 +1,7 @@
 package restapi.webapp.controllers;
 
-/*import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;*/
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import restapi.webapp.services.ApiService;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import static java.net.HttpURLConnection.*;
 
 @Component
 @RestController
@@ -34,7 +31,7 @@ public class ApiController {
     @GetMapping("/get/{type}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Fetch a random user by requested type",
-            description = "Fetch a random user from external API by specified type (male/female)",
+            description = "Fetch a random user from external API by specified type (random/male/female)",
             tags = {"API Controller"})
     public ResponseEntity<?> getUserByType(@PathVariable String type) {
         log.info("Trying to get {} user", type);
@@ -48,15 +45,15 @@ public class ApiController {
         }
     }
 
-   /* @PostMapping("/saveBySeed/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @ApiOperation(value = "Get and save user by specific seed",
-            code = 200,
-            notes = "Get female user from external API") // change notes
-    public ResponseEntity<?> saveBySeed(@PathVariable String id) {
-        log.info("Trying to save user by seed: {}", id);
-        //ResponseEntity<?> response = this.apiService.saveBySeed(String id);
-        return null;
-    }*/
+    @PostMapping("/save/{type}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Save a Random user by requested type",
+            description = "Save a random user from external API by specified type (random/male/female)",
+            responses = {@ApiResponse(responseCode = "201", description = "User created")},
+            tags = {"API Controller"})
+    public ResponseEntity<?> saveBySeed(@PathVariable String type) {
+        log.info("Trying to save user by type: {}", type);
+        return this.apiService.saveUser(this.apiService.getUserByType(type).join());
+    }
 
 }

@@ -1,7 +1,7 @@
 package restapi.webapp.repos;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import restapi.webapp.entities.UserEntity;
@@ -14,7 +14,7 @@ import java.util.List;
  * implemented according to the specific database
  */
 @Repository
-public interface UserRepo extends JpaRepository<UserEntity, Long> {
+public interface UserRepo extends CrudRepository<UserEntity, Long> {
     @Query(value = "select u from UserEntity u where u.name.first = :first and u.name.last = :last")
     List<UserEntity> getUserEntitiesByName(@Param("first") String first, @Param("last") String last);
 
@@ -33,8 +33,9 @@ public interface UserRepo extends JpaRepository<UserEntity, Long> {
     List<UserEntity> getUserEntitiesByAge(Integer age);
     List<UserEntity> getUserEntityByUserId(Long userId);
     List<UserEntity> getUserEntityByEmail(String email);
-    List<UserEntity> getUserEntityByPhone(String phone);
-    List<UserEntity> getUserEntityByPhoneContains(String phone);
+    List<UserEntity> getUserEntityByPhoneNumbers(String phone);
+    //todo: fix this method - BENO
+    List<UserEntity> getUserEntityByPhoneNumbersContains(String phone);
     void deleteUserEntityByUserId(Long userId);
     void deleteUserEntityByEmail(String email);
 }
