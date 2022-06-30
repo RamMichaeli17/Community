@@ -1,5 +1,6 @@
 package restapi.webapp.services;
 
+import org.apache.catalina.User;
 import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UserNotFoundException;
+import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
@@ -48,6 +51,7 @@ public class UserService {
 
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<UserEntity> userEntities) {
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         if (userEntities.size() == 1) {
             UserEntity userEntity = userEntities.get(0);
             EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
@@ -58,7 +62,9 @@ public class UserService {
     }
 
     public ResponseEntity<?> getAllUsers(){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
+        List<UserEntity> userEntities = userRepo.findAll();
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
+        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userEntities);
         return ResponseEntity.of(Optional.of(users));
     }
 
@@ -117,12 +123,15 @@ public class UserService {
                 .map(UserDTO::new)
                 .map(userDTOAssembler::toModel)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public ResponseEntity<?> getAllUsersDtoInfo() {
+        List<UserEntity> userEntities = userRepo.findAll();
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         return ResponseEntity.ok(userDTOAssembler.toCollectionModel(
-                userRepo.findAll().stream()
+                        userEntities
+                        .stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
     }

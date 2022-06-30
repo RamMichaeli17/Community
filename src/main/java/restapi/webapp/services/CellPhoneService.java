@@ -9,6 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.exceptions.CompaniesNotFoundException;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 
@@ -37,6 +38,7 @@ public class CellPhoneService {
     //todo: extract to public class utilities
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<CellPhoneCompany> companyEntities) {
+        companyEntities.stream().findAny().orElseThrow(() -> new CompaniesNotFoundException());
         if (companyEntities.size() == 1) {
             CellPhoneCompany companyEntity = companyEntities.get(0);
             EntityModel<CellPhoneCompany> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
@@ -47,7 +49,9 @@ public class CellPhoneService {
     }
 
     public ResponseEntity<?> getAllCompanies(){
-        CollectionModel<EntityModel<CellPhoneCompany>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.findAll());
+        List<CellPhoneCompany> companyEntities = cellPhoneCompanyRepo.findAll();
+        companyEntities.stream().findAny().orElseThrow(() -> new CompaniesNotFoundException());
+        CollectionModel<EntityModel<CellPhoneCompany>> companies = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
         return ResponseEntity.of(Optional.of(companies));
     }
 

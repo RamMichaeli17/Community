@@ -32,7 +32,7 @@ public class ApiService {
 
     @Autowired
     public ApiService(ObjectMapper objectMapper, UserRepo userRepo, UserEntityAssembler userEntityAssembler) {
-        userRetrieveTypes = Map.of("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo",
+        userRetrieveTypes = Map.of("random", "https://randofdsmuser.me/api?exc=picture,cell,nat,registered&noinfo",
                 "male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo",
                 "female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
         this.objectMapper = objectMapper;
@@ -44,9 +44,10 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
         log.info("Trying to fetch data from API");
-        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
-        log.info("Data fetched successfully");
-        log.info("Trying to map JSON into a Java object");
+       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
+               StandardCharsets.UTF_8);
+       log.info("Data fetched successfully");
+       log.info("Trying to map JSON into a Java object");
         //todo: talk about this if statement
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
