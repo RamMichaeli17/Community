@@ -27,6 +27,7 @@ public class CellPhoneCompany implements Serializable {
     private Set<UserEntity> users = new LinkedHashSet<>();
 
     public CellPhoneCompany(String companyName, Set<String> operationalCountries) {
+        //todo: extract this function to public class: utilities
         int randomAmountOfCountries = (int)Math.floor(Math.random()*(12-1+1)+1);
 
         String[] isoCountries = Locale.getISOCountries();

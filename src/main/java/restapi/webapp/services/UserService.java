@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+
+//todo: Change ResponseEntity<?
 
 @Service
 @Slf4j
@@ -45,7 +46,7 @@ public class UserService {
         this.methodsByParamsMap.put("email", userRepo::getUserEntityByEmail);
     }
 
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> returnEntityList
+    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<UserEntity> userEntities) {
         if (userEntities.size() == 1) {
             UserEntity userEntity = userEntities.get(0);
@@ -57,8 +58,8 @@ public class UserService {
     }
 
     public ResponseEntity<?> getAllUsers(){
-        List<UserEntity> users = userRepo.findAll();
-        return returnEntityList(users);
+        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
+        return ResponseEntity.of(Optional.of(users));
     }
 
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
@@ -92,23 +93,23 @@ public class UserService {
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
                                                 @NonNull String streetNumber, @NonNull String country){
         List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
-        return returnEntityList(users);
+        return getCorrespondingEntityType(users);
     }
 
     public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
         List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
-        return returnEntityList(users);
+        return getCorrespondingEntityType(users);
     }
 
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        return returnEntityList(userEntities);
+        return getCorrespondingEntityType(userEntities);
     }
 
     public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
-        return returnEntityList(userEntities);
+        return getCorrespondingEntityType(userEntities);
     }
 
     public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
