@@ -8,7 +8,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
-    private final HashMap<String, Function<String, List<CellPhoneCompany>>> methodsByParamsMap;
+    private final HashMap<String, Function<String, List<CellPhoneCompanyEntity>>> methodsByParamsMap;
 
     @Autowired
     public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
@@ -46,13 +46,13 @@ public class CellPhoneCompanyService {
      */
     //todo: extract to public class utilities
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
-            (List<CellPhoneCompany> companyEntities) {
+            (List<CellPhoneCompanyEntity> companyEntities) {
         if (companyEntities.size() == 1) {
-            CellPhoneCompany companyEntity = companyEntities.get(0);
-            EntityModel<CellPhoneCompany> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
+            CellPhoneCompanyEntity companyEntity = companyEntities.get(0);
+            EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
             return ResponseEntity.of(Optional.of(companyEntityModel));
         }
-        CollectionModel<EntityModel<CellPhoneCompany>> companyEntitiesModel = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companyEntitiesModel = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
         return ResponseEntity.of(Optional.of(companyEntitiesModel));
     }
 
@@ -61,7 +61,7 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of returned cell phone companies.
      */
     public ResponseEntity<?> getAllCompanies(){
-        CollectionModel<EntityModel<CellPhoneCompany>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.findAll());
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.findAll());
         return ResponseEntity.of(Optional.of(companies));
     }
 
@@ -73,7 +73,7 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the cell phone company, if exists.
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
-        List<CellPhoneCompany> companyEntities = this.methodsByParamsMap.get(param).apply(value);
+        List<CellPhoneCompanyEntity> companyEntities = this.methodsByParamsMap.get(param).apply(value);
         return getCorrespondingEntityType(companyEntities);
     }
 
@@ -103,7 +103,7 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be updated.
      * @return ResponseEntity of the updated cell phone company.
      */
-    public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompany company){
+    public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
@@ -115,7 +115,7 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be inserted into the DB.
      * @return ResponseEntity of the created cell phone company.
      */
-    public ResponseEntity<?> createCompany(@NonNull CellPhoneCompany company){
+    public ResponseEntity<?> createCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.save(company);
         log.info("company {} has been created", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));

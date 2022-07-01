@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.services.CellPhoneCompanyService;
 
 /**
@@ -19,7 +19,7 @@ import restapi.webapp.services.CellPhoneCompanyService;
  * as well as creation and deletion of companies
  */
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/companies")
 @Slf4j
 @Tag(name = "Cell Phone Company Controller", description = "The controller of CellPhone Company entity")
 public class CellPhoneCompanyController {
@@ -105,7 +105,7 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Update a cell phone company",
             description = "Update a specific cell phone company",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompany company) {
+    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
         return this.cellPhoneCompanyService.updateCompany(company);
     }
@@ -121,7 +121,7 @@ public class CellPhoneCompanyController {
             description = "Create a new company by specific parameters",
             responses = {@ApiResponse(responseCode = "201", description = "Cell Phone Company created")},
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompany company) {
+    public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to create a new company by specific parameters:");
         log.info("{}", company);
         return this.cellPhoneCompanyService.createCompany(company);

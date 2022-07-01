@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 import restapi.webapp.entities.AvatarEntity;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.entities.UserEntity.*;
 import restapi.webapp.entities.UserEntity.Location.*;
 import restapi.webapp.entities.UserEntity;
@@ -28,18 +28,18 @@ public class Config {
 
             log.info("Creating Cell Phone Companies...");
 
-            CellPhoneCompany cellcom = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+            CellPhoneCompanyEntity cellcom = cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity(
                     "Cellcom",Set.of()
             ));
             log.info("Cellcom has been created: " + cellcom);
 
-            CellPhoneCompany orange = cellPhoneCompanyRepo.save(new CellPhoneCompany(
+            CellPhoneCompanyEntity orange = cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity(
                     "Orange", Set.of("Argentina","Brazil","Israel")
             ));
             log.info("Orange has been created: " + orange);
 
-            CellPhoneCompany partner =
-                    cellPhoneCompanyRepo.save(new CellPhoneCompany("Partner", Set.of("Spain","Turkey")));
+            CellPhoneCompanyEntity partner =
+                    cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity("Partner", Set.of("Spain","Turkey")));
             log.info("Partner has been created: " + partner);
 
             log.info("All cell phone companies have been created");

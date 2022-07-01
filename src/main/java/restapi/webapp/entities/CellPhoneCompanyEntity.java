@@ -14,7 +14,7 @@ import java.util.*;
 @Entity
 @NoArgsConstructor
 @Table(name="CELL_PHONE_COMPANY")
-public class CellPhoneCompany implements Serializable {
+public class CellPhoneCompanyEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cellPhoneCompanyId;
@@ -29,7 +29,7 @@ public class CellPhoneCompany implements Serializable {
     @ManyToMany(mappedBy = "cellPhoneCompanies")
     private Set<UserEntity> users = new LinkedHashSet<>();
 
-    public CellPhoneCompany(String companyName, Set<String> operationalCountries) {
+    public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
         //todo: extract this function to public class: utilities
         int randomAmountOfCountries = (int)Math.floor(Math.random()*(12-1+1)+1);
 

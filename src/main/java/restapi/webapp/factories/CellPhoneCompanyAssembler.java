@@ -5,7 +5,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.CellPhoneCompanyController;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -14,8 +14,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * or a CollectionModel<EntityModel<CellPhoneCompany>>.
  */
 @Component
-public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<CellPhoneCompany,
-        EntityModel<CellPhoneCompany>> {
+public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<CellPhoneCompanyEntity,
+        EntityModel<CellPhoneCompanyEntity>> {
 
     /**
      * A method that gets a cell phone company entity and returns an EntityModel of it.
@@ -23,7 +23,7 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
      * @return EntityModel of the cell phone company.
      */
     @Override
-    public EntityModel<CellPhoneCompany> toModel(CellPhoneCompany entity) {
+    public EntityModel<CellPhoneCompanyEntity> toModel(CellPhoneCompanyEntity entity) {
         return EntityModel.of(entity)
                 .add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies()).withRel("Get all companies"))
                 .add(linkTo(methodOn(CellPhoneCompanyController.class)
@@ -36,8 +36,8 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
      * @return CollectionModel of the cell phone companies.
      */
     @Override
-    public CollectionModel<EntityModel<CellPhoneCompany>> toCollectionModel
-            (Iterable<? extends CellPhoneCompany> entities) {
+    public CollectionModel<EntityModel<CellPhoneCompanyEntity>> toCollectionModel
+            (Iterable<? extends CellPhoneCompanyEntity> entities) {
 
         return RepresentationModelAssembler.super.toCollectionModel(entities)
                 .add((linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies())

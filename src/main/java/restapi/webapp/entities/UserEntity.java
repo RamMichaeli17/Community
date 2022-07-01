@@ -47,7 +47,7 @@ public class UserEntity implements Serializable {
             name = "Users_Companies",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "company_id")})
-    Set<CellPhoneCompany> cellPhoneCompanies = new LinkedHashSet<>();
+    Set<CellPhoneCompanyEntity> cellPhoneCompanies = new LinkedHashSet<>();
 
     public UserEntity(String email, String md5, String gender, Integer age,
                       Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity) {
