@@ -7,13 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A class that represents the User entity, and contains its various characteristics and methods
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

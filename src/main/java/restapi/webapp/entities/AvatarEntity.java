@@ -2,19 +2,17 @@ package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import restapi.webapp.enums.HairColor;
-
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 
+/**
+ * A class that represents the Avatar entity, and contains its various characteristics and methods
+ */
 @NoArgsConstructor
 @Embeddable
 @Data

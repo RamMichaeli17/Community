@@ -15,6 +15,9 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * A class that represents the controller of the API, containing various endpoints for getting users and saving them
+ */
 @Component
 @RestController
 @RequestMapping("/api")
@@ -28,14 +31,21 @@ public class ApiController {
         this.apiService = apiService;
     }
 
-    @GetMapping("/get/{type}")
+    /**
+     * A method that fetches a random user from external API by requested type (random/male/female)
+     * @param gender Requested gender of user to fetch
+     * @return ResponseEntity of the returned user
+     */
+    @GetMapping("/get/{gender}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Fetch a random user by requested type",
             description = "Fetch a random user from external API by specified type (random/male/female)",
             tags = {"API Controller"})
-    public ResponseEntity<?> getUserByType(@PathVariable String type) {
-        log.info("Trying to get {} user", type);
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType(type);
+    public ResponseEntity<?> getUserByGender(@PathVariable String gender) {
+        log.info("Trying to get {} user", gender);
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType(gender);
+
+        // Get the result of CompletableFuture
         response.join();
         log.info("{}", response);
         try {
@@ -45,15 +55,29 @@ public class ApiController {
         }
     }
 
-    @PostMapping("/save/{type}")
+    /**
+     * A method that fetches a random user by requested type from external API, and saves it to the DB.
+     * @param gender Requested gender of user to fetch
+     * @return ResponseEntity of the saved user
+     */
+    @PostMapping("/save/{gender}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Save a Random user by requested type",
             description = "Save a random user from external API by specified type (random/male/female)",
             responses = {@ApiResponse(responseCode = "201", description = "User created")},
             tags = {"API Controller"})
-    public ResponseEntity<?> saveBySeed(@PathVariable String type) {
-        log.info("Trying to save user by type: {}", type);
-        return this.apiService.saveUser(this.apiService.getUserByType(type).join());
+    public ResponseEntity<?> saveUserByGender(@PathVariable String gender) {
+        log.info("Trying to save user by type: {}", gender);
+        CompletableFuture<UserEntity> response = this.apiService.getUserByType(gender);
+
+        // Get the result of CompletableFuture
+        response.join();
+        log.info("{}", response);
+        try {
+            return this.apiService.saveUser(response.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -10,8 +10,8 @@ import java.util.List;
 
 /**
  * This class is a Data Access Layer class (DAL)
- * Basic CRUD functionality (Create,Read,Update,Delete) is
- * implemented according to the specific database
+ * Basic CRUD functionality (Create,Read,Update,Delete) is implemented according to the specific database,
+ * in addition to more complex queries.
  */
 @Repository
 public interface UserRepo extends CrudRepository<UserEntity, Long> {
@@ -28,8 +28,8 @@ public interface UserRepo extends CrudRepository<UserEntity, Long> {
     List<UserEntity> getUserEntityByAgeBetweenAndLastNameStartingWith(@Param("lower")Integer lower,
                                                                   @Param("upper")Integer upper,
                                                                   @Param("startingChar") String startingChar);
-    List<UserEntity> getUserEntitiesByGender(String gender);
     List<UserEntity> findAll();
+    List<UserEntity> getUserEntitiesByGender(String gender);
     List<UserEntity> getUserEntitiesByAge(Integer age);
     List<UserEntity> getUserEntityByUserId(Long userId);
     List<UserEntity> getUserEntityByEmail(String email);

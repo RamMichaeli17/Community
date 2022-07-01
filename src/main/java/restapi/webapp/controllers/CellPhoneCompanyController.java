@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.services.CellPhoneService;
 
+/**
+ * A class that represents the controller of a cell phone company,
+ * containing various endpoints for getting information about companies,
+ * searching companies by specific parameters, editing company's information,
+ * as well as creation and deletion of companies
+ */
 @RestController
 @RequestMapping("/company")
 @Slf4j
@@ -24,6 +30,10 @@ public class CellPhoneCompanyController {
         this.cellPhoneService = cellPhoneService;
     }
 
+    /**
+     * A method that returns all the cell phone companies that exist in the DB, if any.
+     * @return ResponseEntity of the returned cell phone companies
+     */
     @GetMapping("/getAllCompanies")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all companies",
@@ -36,6 +46,13 @@ public class CellPhoneCompanyController {
         return response;
     }
 
+    /**
+     * A method that fetches a cell phone company from the DB according to the requested parameter and value that
+     * the user inputs, if exists.
+     * @param param The requested parameter that the search is based on
+     * @param value The requested value of the inputted parameter
+     * @return ResponseEntity of the cell phone company, if exists.
+     */
     @GetMapping("/get/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a Cell Phone company by Path Variable params",
@@ -46,6 +63,11 @@ public class CellPhoneCompanyController {
         return this.cellPhoneService.getCompanyBySpecificParameter(param, value);
     }
 
+    /**
+     * A method that deletes a cell phone company from the DB based on the company's name, if exists.
+     * @param name Name of the requested cell phone company to be deleted.
+     * @return ResponseEntity that contains the corresponding message for the deletion request.
+     */
     @Transactional
     @DeleteMapping("/deleteByName")
     @ResponseStatus(HttpStatus.OK)
@@ -57,6 +79,11 @@ public class CellPhoneCompanyController {
         return this.cellPhoneService.deleteCompanyByName(name);
     }
 
+    /**
+     * A method that deletes a cell phone company from the DB based on the company's ID, if exists.
+     * @param id ID of the requested company to be deleted.
+     * @return ResponseEntity that contains the corresponding message for the deletion request.
+     */
     @Transactional
     @DeleteMapping("/deleteById")
     @ResponseStatus(HttpStatus.OK)
@@ -68,6 +95,11 @@ public class CellPhoneCompanyController {
         return this.cellPhoneService.deleteCompanyById(id);
     }
 
+    /**
+     * A method that updates a cell phone company based on the content that is given in the request body, if exists.
+     * @param company Cell phone company to be updated.
+     * @return ResponseEntity of the updated company, if exists.
+     */
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update a cell phone company",
@@ -75,10 +107,14 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompany company) {
         log.info("Trying to update company by specific parameters");
-        log.info("{}", company);
         return this.cellPhoneService.updateCompany(company);
     }
 
+    /**
+     * A method that creates a cell phone company based on the content that is given in the request body.
+     * @param company Cell phone company to be created.
+     * @return ResponseEntity of the created cell phone company.
+     */
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a cell phone company",

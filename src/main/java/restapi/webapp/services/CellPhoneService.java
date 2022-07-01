@@ -34,6 +34,13 @@ public class CellPhoneService {
         this.methodsByParamsMap.put("id", id -> cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(Long.valueOf(id)));
     }
 
+    /**
+     * A method that gets a list of cell phone company entities, and converts the entities into an
+     * EntityModel or a CollectionModel, according to the size of the list,
+     * then putting the object within a ResponseEntity
+     * @param companyEntities List of cell phone company entities to be checked
+     * @return ResponseEntity the corresponding type of cell phone companies
+     */
     //todo: extract to public class utilities
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<CellPhoneCompany> companyEntities) {
@@ -46,32 +53,65 @@ public class CellPhoneService {
         return ResponseEntity.of(Optional.of(companyEntitiesModel));
     }
 
+    /**
+     * A method that fetches all the cell phone companies that the DB contains, if any.
+     * @return ResponseEntity of returned cell phone companies.
+     */
     public ResponseEntity<?> getAllCompanies(){
         CollectionModel<EntityModel<CellPhoneCompany>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.findAll());
         return ResponseEntity.of(Optional.of(companies));
     }
 
+    /**
+     * A method that fetches a cell phone company from the DB according to the requested parameter
+     * and value that the user inputs, if exists.
+     * @param param The requested parameter that the search is based on
+     * @param value The requested value of the inputted parameter
+     * @return ResponseEntity of the cell phone company, if exists.
+     */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<CellPhoneCompany> companyEntities = this.methodsByParamsMap.get(param).apply(value);
         return getCorrespondingEntityType(companyEntities);
     }
 
+    /**
+     * A method that deletes a cell phone company from the DB according to inputted company name, if exists.
+     * @param companyName Company name of wanted cell phone company to be deleted
+     * @return ResponseEntity of corresponding message.
+     */
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCompanyName(companyName);
         return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
     }
 
+    /**
+     * A method that deletes a cell phone company from the DB according to inputted ID, if exists.
+     * @param id ID of wanted cell phone company to be deleted
+     * @return ResponseEntity of corresponding message.
+     */
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
         return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
 
+    /**
+     * A method that gets a cell phone company entity as a parameter,
+     * updates the corresponding fields and saves into the DB.
+     * @param company Cell phone company entity to be updated.
+     * @return ResponseEntity of the updated cell phone company.
+     */
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompany company){
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
     }
 
+    /**
+     * A method that gets a cell phone company entity as a parameter, saves it into the DB,
+     * and returns the created cell phone company
+     * @param company Cell phone company entity to be inserted into the DB
+     * @return ResponseEntity of the created cell phone company
+     */
     public ResponseEntity<?> createCompany(@NonNull CellPhoneCompany company){
         cellPhoneCompanyRepo.save(company);
         log.info("company {} has been created", company.getCompanyName());

@@ -40,6 +40,12 @@ public class ApiService {
         this.assembler = userEntityAssembler;
     }
 
+    /**
+     * A function that fetches a random user from external API by requested type,
+     * converts it into a UserEntity with all the needed values and returns it.
+     * @param userType Type of user to be fetched from API (random/male/female).
+     * @return CompletableFuture of UserEntity.
+     */
     @SneakyThrows
     @Async
     public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
@@ -63,12 +69,23 @@ public class ApiService {
         }
     }
 
+    /**
+     * A method that gets a user entity as a parameter and saves it into the DB.
+     * @param user User entity to be saved into the DB.
+     * @return ResponseEntity of the saved user entity.
+     */
     public ResponseEntity<?> saveUser(@NonNull UserEntity user) {
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
+    /**
+     * A function that generated random Avatar entity according to various characteristics.
+     * The user inputs a seed that determines the basic looks of the avatar.
+     * @param seed Seed to be injected into the AvatarEntity
+     * @return A random AvatarEntity that was generated, based on seed.
+     */
     public AvatarEntity generateRandomAvatarEntity(@NonNull String seed) {
         AvatarEntity randomAvatarForUser = new AvatarEntity();
         randomAvatarForUser.setSeed(seed);
@@ -82,6 +99,11 @@ public class ApiService {
         return randomAvatarForUser;
     }
 
+    /**
+     * A method that generates random amount of cell phone numbers,
+     * that will be inserted into a set of cell phone numbers that will be returned.
+     * @return A set of random cell phone numbers
+     */
     public Set<String> generateRandomPhoneNumbers() {
         Set<String> randomPhoneNumbers = new LinkedHashSet<>();
         int num1, num2, num3;

@@ -6,6 +6,10 @@ import restapi.webapp.entities.CellPhoneCompany;
 
 import java.util.List;
 
+/**
+ * This class is a Data Access Layer class (DAL)
+ * Basic CRUD functionality (Create,Read,Update,Delete) is implemented according to the specific database.
+ */
 @Repository
 public interface CellPhoneCompanyRepo extends CrudRepository<CellPhoneCompany,Long> {
     List<CellPhoneCompany> findAll();
