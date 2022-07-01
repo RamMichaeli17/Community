@@ -16,7 +16,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
- * A class that represents the controller of the API, containing various endpoints for getting users and saving them
+ * A class that represents the controller of the API,
+ * containing various endpoints for getting users and saving them.
  */
 @Component
 @RestController
@@ -32,9 +33,9 @@ public class ApiController {
     }
 
     /**
-     * A method that fetches a random user from external API by requested type (random/male/female)
-     * @param gender Requested gender of user to fetch
-     * @return ResponseEntity of the returned user
+     * A method that fetches a random user from external API by requested type (random/male/female).
+     * @param gender Requested gender of user to be fetched.
+     * @return ResponseEntity of the returned user.
      */
     @GetMapping("/get/{gender}")
     @ResponseStatus(HttpStatus.OK)
@@ -57,8 +58,8 @@ public class ApiController {
 
     /**
      * A method that fetches a random user by requested type from external API, and saves it to the DB.
-     * @param gender Requested gender of user to fetch
-     * @return ResponseEntity of the saved user
+     * @param gender Requested gender of user to fetch.
+     * @return ResponseEntity of the saved user.
      */
     @PostMapping("/save/{gender}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -67,17 +68,8 @@ public class ApiController {
             responses = {@ApiResponse(responseCode = "201", description = "User created")},
             tags = {"API Controller"})
     public ResponseEntity<?> saveUserByGender(@PathVariable String gender) {
-        log.info("Trying to save user by type: {}", gender);
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType(gender);
-
-        // Get the result of CompletableFuture
-        response.join();
-        log.info("{}", response);
-        try {
-            return this.apiService.saveUser(response.get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        log.info("Trying to save user by gender: {}", gender);
+        return this.apiService.saveUser(this.apiService.getUserByType(gender).join());
     }
 
 }

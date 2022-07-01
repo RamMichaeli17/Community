@@ -11,7 +11,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * A class that converts a CellPhoneCompany entity into an EntityModel<CellPhoneCompany>
- * or a CollectionModel<EntityModel<CellPhoneCompany>>
+ * or a CollectionModel<EntityModel<CellPhoneCompany>>.
  */
 @Component
 public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<CellPhoneCompany,
@@ -20,7 +20,7 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
     /**
      * A method that gets a cell phone company entity and returns an EntityModel of it.
      * @param entity Entity to be converted.
-     * @return EntityModel of the cell phone company
+     * @return EntityModel of the cell phone company.
      */
     @Override
     public EntityModel<CellPhoneCompany> toModel(CellPhoneCompany entity) {
@@ -33,7 +33,7 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
     /**
      * A method that gets a cell phone company entity and returns a CollectionModel of it.
      * @param entities Entities to be converted.
-     * @return CollectionModel of the cell phone companies
+     * @return CollectionModel of the cell phone companies.
      */
     @Override
     public CollectionModel<EntityModel<CellPhoneCompany>> toCollectionModel

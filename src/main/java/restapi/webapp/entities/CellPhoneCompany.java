@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods
+ * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods.
  */
 @Data
 @Entity

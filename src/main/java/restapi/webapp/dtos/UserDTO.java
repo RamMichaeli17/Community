@@ -7,7 +7,7 @@ import lombok.Value;
 import restapi.webapp.entities.UserEntity;
 
 /**
- * A class that represents the DTO representation of a UserEntity.
+ * A class that represents the DTO form of a UserEntity.
  */
 @Value
 @JsonPropertyOrder({"Full Name","Email", "Age","Full Location","Avatar URL","Summary"})

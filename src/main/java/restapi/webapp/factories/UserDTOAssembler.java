@@ -10,14 +10,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
- * A class that add links to an UserDTO entity
+ * A class that add links to an UserDTO entity.
  */
 @Component
 public class UserDTOAssembler implements SimpleRepresentationModelAssembler<UserDTO> {
 
     /**
-     * A method that adds links to an entity of UserDTO
-     * @param resource Entity to add links to
+     * A method that adds links to an entity of UserDTO.
+     * @param resource Entity to add links to.
      */
     @Override
     public void addLinks(EntityModel<UserDTO> resource) {
@@ -28,8 +28,8 @@ public class UserDTOAssembler implements SimpleRepresentationModelAssembler<User
     }
 
     /**
-     * A method that adds links to a collection of entities of UserDTOs
-     * @param resources Entities to add links to
+     * A method that adds links to a collection of entities of UserDTOs.
+     * @param resources Entities to add links to.
      */
     @Override
     public void addLinks(CollectionModel<EntityModel<UserDTO>> resources) {

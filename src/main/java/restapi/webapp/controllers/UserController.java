@@ -16,7 +16,7 @@ import restapi.webapp.services.UserService;
  * A class that represents the controller of the UserEntity,
  * containing various endpoints for getting information about users,
  * searching users by specific parameters or by combination of parameters, editing user's information,
- * as well as creation and deletion of users
+ * as well as creation and deletion of users.
  */
 @RestController
 @RequestMapping("/users")
@@ -32,7 +32,7 @@ public class UserController {
 
     /**
      * A method that returns all the users that exist in the DB, if any.
-     * @return ResponseEntity of the returned users
+     * @return ResponseEntity of the returned users.
      */
     @GetMapping("/getAllUsers")
     @ResponseStatus(HttpStatus.OK)
@@ -47,8 +47,8 @@ public class UserController {
     /**
      * A method that fetches a user according to the requested parameter
      * and value that the user inputs, if exists.
-     * @param param The requested parameter that the search is based on
-     * @param value The requested value of the inputted parameter
+     * @param param The requested parameter that the search is based on.
+     * @param value The requested value of the inputted parameter.
      * @return ResponseEntity of the user, if exists.
      */
     @GetMapping("/get/{param}/{value}")
@@ -63,8 +63,8 @@ public class UserController {
 
     /**
      * A method that creates a UserEntity based on the content that is given in the request body.
-     * @param user User to be created
-     * @return ResponseEntity of the created user
+     * @param user User to be created.
+     * @return ResponseEntity of the created user.
      */
     //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
@@ -81,7 +81,7 @@ public class UserController {
 
     /**
      * A method that updates a UserEntity based on the content that is given in the request body, if exists.
-     * @param user User to be updated
+     * @param user User to be updated.
      * @return ResponseEntity of the updated user, if exists.
      */
     @PutMapping("/update")
@@ -97,7 +97,7 @@ public class UserController {
 
     /**
      * A method that deletes a user according to the inputted user ID given, if exists.
-     * @param userId User ID to be checked
+     * @param userId User ID to be deleted.
      * @return ResponseEntity that contains the corresponding message for the deletion request.
      */
     //todo: maybe merge with deleteByEmail if we want
@@ -114,7 +114,7 @@ public class UserController {
 
     /**
      * A method that deletes a user according to the inputted email given, if exists.
-     * @param email E-Mail address to be checked
+     * @param email E-Mail address that belongs to the user to be deleted.
      * @return ResponseEntity that contains the corresponding message for the deletion request.
      */
     @Transactional
@@ -130,8 +130,8 @@ public class UserController {
 
     /**
      * A method that gets a specific user by first name and last name, if exists.
-     * @param firstName First name to be checked.
-     * @param lastName Last name to be checked.
+     * @param firstName First name of the wanted user.
+     * @param lastName Last name of the wanted user.
      * @return ResponseEntity of the requested user, if exists.
      */
     @GetMapping("/get/name")
@@ -149,10 +149,10 @@ public class UserController {
 
     /**
      * A method that gets a specific user by specific location, if exists.
-     * @param city City to be checked.
-     * @param streetName Street name to be checked.
-     * @param streetNumber Street number to be checked.
-     * @param country Country to be checked.
+     * @param city City of the user to be fetched.
+     * @param streetName Street name of the user to be fetched.
+     * @param streetNumber Street number of the user to be fetched.
+     * @param country Country of the user to be fetched.
      * @return ResponseEntity of the requested user, if exists.
      */
     @GetMapping("/get/location")
@@ -172,10 +172,10 @@ public class UserController {
 
     /**
      * A method that fetches a specific user by lower and upper range of age,
-     * and the first letter of the requested user's last name
-     * @param lower Lower bound of user's age to be checked.
-     * @param upper Upper bound of user's age to be checked.
-     * @param startingChar Starting character of user's last name to be checked.
+     * and the first letter of the requested user's last name.
+     * @param lower Lower bound of user's age to be fetched.
+     * @param upper Upper bound of user's age to be fetched.
+     * @param startingChar Starting character of user's last name to be fetched.
      * @return ResponseEntity of the requested user, if exists.
      */
     @GetMapping("/get/advanced")
@@ -195,7 +195,7 @@ public class UserController {
 
     /**
      * A method that gets a user's DTO representation based on its user ID, if exists.
-     * @param id ID of user to be fetched
+     * @param id ID of user to be fetched.
      * @return ResponseEntity of the requested user, if exists.
      */
     @GetMapping("/getUser/{id}/info")

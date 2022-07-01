@@ -1,7 +1,7 @@
 package restapi.webapp.enums;
 
 /**
- * An enum class that contains all the possible hair colors that a user's avatar might have
+ * An enum class that contains all the possible hair colors that a user's avatar might have.
  */
 public enum HairColor {
     red01,

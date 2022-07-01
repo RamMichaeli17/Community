@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A class that represents the User entity, and contains its various characteristics and methods
+ * A class that represents the User entity, and contains its various characteristics and methods.
  */
 @NoArgsConstructor
 @AllArgsConstructor

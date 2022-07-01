@@ -11,7 +11,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 /**
  * A class that converts a user entity into an EntityModel<UserEntity>
- * or a CollectionModel<EntityModel<UserEntity>>
+ * or a CollectionModel<EntityModel<UserEntity>>.
  */
 @Component
 public class UserEntityAssembler implements RepresentationModelAssembler<UserEntity, EntityModel<UserEntity>> {
@@ -19,7 +19,7 @@ public class UserEntityAssembler implements RepresentationModelAssembler<UserEnt
     /**
      * A method that gets a user entity and returns an EntityModel of it.
      * @param entity User entity to be converted.
-     * @return EntityModel of the user entity
+     * @return EntityModel of the user entity.
      */
     @Override
     public EntityModel<UserEntity> toModel(UserEntity entity) {
@@ -32,7 +32,7 @@ public class UserEntityAssembler implements RepresentationModelAssembler<UserEnt
     /**
      * A method that gets a user entity and returns a CollectionModel of it.
      * @param entities User entities to be converted.
-     * @return CollectionModel of the user entities
+     * @return CollectionModel of the user entities.
      */
     @Override
     public CollectionModel<EntityModel<UserEntity>> toCollectionModel(Iterable<? extends UserEntity> entities) {

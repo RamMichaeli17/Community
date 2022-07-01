@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * A class that operates as the service of the user entity, containing the business logic of
- * the operations that are given to the user
+ * the operations that are given to the user.
  */
 @Service
 @Slf4j

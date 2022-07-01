@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.CellPhoneCompany;
-import restapi.webapp.services.CellPhoneService;
+import restapi.webapp.services.CellPhoneCompanyService;
 
 /**
  * A class that represents the controller of a cell phone company,
@@ -23,16 +23,16 @@ import restapi.webapp.services.CellPhoneService;
 @Slf4j
 @Tag(name = "Cell Phone Company Controller", description = "The controller of CellPhone Company entity")
 public class CellPhoneCompanyController {
-    private final CellPhoneService cellPhoneService;
+    private final CellPhoneCompanyService cellPhoneCompanyService;
 
     @Autowired
-    public CellPhoneCompanyController(CellPhoneService cellPhoneService) {
-        this.cellPhoneService = cellPhoneService;
+    public CellPhoneCompanyController(CellPhoneCompanyService cellPhoneCompanyService) {
+        this.cellPhoneCompanyService = cellPhoneCompanyService;
     }
 
     /**
-     * A method that returns all the cell phone companies that exist in the DB, if any.
-     * @return ResponseEntity of the returned cell phone companies
+     * A method that returns all the cell phone companies that exist in the DB, if there are any.
+     * @return ResponseEntity of the returned cell phone companies that exist.
      */
     @GetMapping("/getAllCompanies")
     @ResponseStatus(HttpStatus.OK)
@@ -41,16 +41,16 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getAllCompanies() {
         log.info("Trying to fetch all cell phone companies");
-        ResponseEntity<?> response = this.cellPhoneService.getAllCompanies();
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCompanies();
         log.info("{}", response);
         return response;
     }
 
     /**
      * A method that fetches a cell phone company from the DB according to the requested parameter and value that
-     * the user inputs, if exists.
-     * @param param The requested parameter that the search is based on
-     * @param value The requested value of the inputted parameter
+     * the user inserted, if exists.
+     * @param param The requested parameter that the search is based on.
+     * @param value The requested value of the inserted parameter.
      * @return ResponseEntity of the cell phone company, if exists.
      */
     @GetMapping("/get/{param}/{value}")
@@ -60,7 +60,7 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getCompanyWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get company by param \"{}\" and value \"{}\"", param, value);
-        return this.cellPhoneService.getCompanyBySpecificParameter(param, value);
+        return this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
     }
 
     /**
@@ -76,7 +76,7 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyByName(@RequestParam String name) {
         log.info("Trying to delete cell phone company with name: {}", name);
-        return this.cellPhoneService.deleteCompanyByName(name);
+        return this.cellPhoneCompanyService.deleteCompanyByName(name);
     }
 
     /**
@@ -92,7 +92,7 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyById(@RequestParam Long id) {
         log.info("Trying to delete cell phone company with ID: {}", id);
-        return this.cellPhoneService.deleteCompanyById(id);
+        return this.cellPhoneCompanyService.deleteCompanyById(id);
     }
 
     /**
@@ -107,7 +107,7 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompany company) {
         log.info("Trying to update company by specific parameters");
-        return this.cellPhoneService.updateCompany(company);
+        return this.cellPhoneCompanyService.updateCompany(company);
     }
 
     /**
@@ -124,6 +124,6 @@ public class CellPhoneCompanyController {
     public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompany company) {
         log.info("Trying to create a new company by specific parameters:");
         log.info("{}", company);
-        return this.cellPhoneService.createCompany(company);
+        return this.cellPhoneCompanyService.createCompany(company);
     }
 }

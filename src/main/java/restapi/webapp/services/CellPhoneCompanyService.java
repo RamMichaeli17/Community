@@ -11,21 +11,24 @@ import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * A class that operates as the service of a cell phone company entity, containing the business logic of
+ * the operations that are given to the cell phone company.
+ */
 @Service
 @Slf4j
-public class CellPhoneService {
+public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
     private final HashMap<String, Function<String, List<CellPhoneCompany>>> methodsByParamsMap;
 
     @Autowired
-    public CellPhoneService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
+    public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
         this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
         this.cellPhoneCompanyAssembler = cellPhoneCompanyAssembler;
 
@@ -37,7 +40,7 @@ public class CellPhoneService {
     /**
      * A method that gets a list of cell phone company entities, and converts the entities into an
      * EntityModel or a CollectionModel, according to the size of the list,
-     * then putting the object within a ResponseEntity
+     * and returns the corresponding object within a ResponseEntity
      * @param companyEntities List of cell phone company entities to be checked
      * @return ResponseEntity the corresponding type of cell phone companies
      */
@@ -86,7 +89,7 @@ public class CellPhoneService {
 
     /**
      * A method that deletes a cell phone company from the DB according to inputted ID, if exists.
-     * @param id ID of wanted cell phone company to be deleted
+     * @param id ID of wanted cell phone company to be deleted.
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
@@ -108,9 +111,9 @@ public class CellPhoneService {
 
     /**
      * A method that gets a cell phone company entity as a parameter, saves it into the DB,
-     * and returns the created cell phone company
-     * @param company Cell phone company entity to be inserted into the DB
-     * @return ResponseEntity of the created cell phone company
+     * and returns the created cell phone company.
+     * @param company Cell phone company entity to be inserted into the DB.
+     * @return ResponseEntity of the created cell phone company.
      */
     public ResponseEntity<?> createCompany(@NonNull CellPhoneCompany company){
         cellPhoneCompanyRepo.save(company);

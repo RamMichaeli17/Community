@@ -22,6 +22,10 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * A class that operates as the service of the API, containing the business logic of the operations
+ * that are given by the external API.
+ */
 @Service
 @Slf4j
 public class ApiService {
@@ -81,7 +85,7 @@ public class ApiService {
     }
 
     /**
-     * A function that generated random Avatar entity according to various characteristics.
+     * A function that generates random Avatar entity according to various characteristics.
      * The user inputs a seed that determines the basic looks of the avatar.
      * @param seed Seed to be injected into the AvatarEntity
      * @return A random AvatarEntity that was generated, based on seed.
