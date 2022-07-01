@@ -10,12 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.factories.UserDTOAssembler;
-import restapi.webapp.repos.UserRepo;
 import restapi.webapp.services.UserService;
 
+/**
+ * A class that represents the controller of the UserEntity,
+ * containing various endpoints for getting information about users,
+ * searching users by specific parameters or by combination of parameters, editing user's information,
+ * as well as creation and deletion of users.
+ */
 @RestController
-@RequestMapping("/control")
+@RequestMapping("/users")
 @Slf4j
 @Tag(name = "User Controller", description = "The controller of User entity")
 public class UserController {
@@ -26,6 +30,10 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * A method that returns all the users that exist in the DB, if any.
+     * @return ResponseEntity of the returned users.
+     */
     @GetMapping("/getAllUsers")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all users",
@@ -36,6 +44,13 @@ public class UserController {
         return this.userService.getAllUsers();
     }
 
+    /**
+     * A method that fetches a user according to the requested parameter
+     * and value that the user inputs, if exists.
+     * @param param The requested parameter that the search is based on.
+     * @param value The requested value of the inputted parameter.
+     * @return ResponseEntity of the user, if exists.
+     */
     @GetMapping("/get/{param}/{value}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a user by specific parameters By Path Variable",
@@ -46,6 +61,11 @@ public class UserController {
         return this.userService.getUserBySpecificParameter(param, value);
     }
 
+    /**
+     * A method that creates a UserEntity based on the content that is given in the request body.
+     * @param user User to be created.
+     * @return ResponseEntity of the created user.
+     */
     //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -59,6 +79,11 @@ public class UserController {
         return this.userService.createUser(user);
     }
 
+    /**
+     * A method that updates a UserEntity based on the content that is given in the request body, if exists.
+     * @param user User to be updated.
+     * @return ResponseEntity of the updated user, if exists.
+     */
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update a user",
@@ -70,6 +95,11 @@ public class UserController {
         return this.userService.updateUser(user);
     }
 
+    /**
+     * A method that deletes a user according to the inputted user ID given, if exists.
+     * @param userId User ID to be deleted.
+     * @return ResponseEntity that contains the corresponding message for the deletion request.
+     */
     //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
@@ -82,6 +112,11 @@ public class UserController {
         return this.userService.deleteUserById(userId);
     }
 
+    /**
+     * A method that deletes a user according to the inputted email given, if exists.
+     * @param email E-Mail address that belongs to the user to be deleted.
+     * @return ResponseEntity that contains the corresponding message for the deletion request.
+     */
     @Transactional
     @DeleteMapping("/deleteByEmail")
     @ResponseStatus(HttpStatus.OK)
@@ -93,6 +128,12 @@ public class UserController {
         return this.userService.deleteUserByEmail(email);
     }
 
+    /**
+     * A method that gets a specific user by first name and last name, if exists.
+     * @param firstName First name of the wanted user.
+     * @param lastName Last name of the wanted user.
+     * @return ResponseEntity of the requested user, if exists.
+     */
     @GetMapping("/get/name")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by name",
@@ -106,6 +147,14 @@ public class UserController {
         return response;
     }
 
+    /**
+     * A method that gets a specific user by specific location, if exists.
+     * @param city City of the user to be fetched.
+     * @param streetName Street name of the user to be fetched.
+     * @param streetNumber Street number of the user to be fetched.
+     * @param country Country of the user to be fetched.
+     * @return ResponseEntity of the requested user, if exists.
+     */
     @GetMapping("/get/location")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by location",
@@ -121,6 +170,14 @@ public class UserController {
         return response;
     }
 
+    /**
+     * A method that fetches a specific user by lower and upper range of age,
+     * and the first letter of the requested user's last name.
+     * @param lower Lower bound of user's age to be fetched.
+     * @param upper Upper bound of user's age to be fetched.
+     * @param startingChar Starting character of user's last name to be fetched.
+     * @return ResponseEntity of the requested user, if exists.
+     */
     @GetMapping("/get/advanced")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by their age and last name",
@@ -136,6 +193,11 @@ public class UserController {
         return response;
     }
 
+    /**
+     * A method that gets a user's DTO representation based on its user ID, if exists.
+     * @param id ID of user to be fetched.
+     * @return ResponseEntity of the requested user, if exists.
+     */
     @GetMapping("/getUser/{id}/info")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get only social information about a specific user",
@@ -148,6 +210,10 @@ public class UserController {
         return response;
     }
 
+    /**
+     * A method that gets the DTO representation of the users that exist on DB, if they exist.
+     * @return ResponseEntity of the requested users, if they exist.
+     */
     @GetMapping("/getAllUsers/info")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all the social information about the users",

@@ -1,18 +1,14 @@
 package restapi.webapp.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Value;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.entities.UserEntity.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
+/**
+ * A class that represents the DTO form of a UserEntity.
+ */
 @Value
 @JsonPropertyOrder({"Full Name","Email", "Age","Full Location","Avatar URL","Summary"})
 public class UserDTO {
