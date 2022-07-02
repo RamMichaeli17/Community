@@ -54,9 +54,10 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
         log.info("Trying to fetch data from API");
-        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)), StandardCharsets.UTF_8);
-        log.info("Data fetched successfully");
-        log.info("Trying to map JSON into a Java object");
+       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
+               StandardCharsets.UTF_8);
+       log.info("Data fetched successfully");
+       log.info("Trying to map JSON into a Java object");
         //todo: talk about this if statement
         if (jsonStringRepresentation!=null) {
             JSONObject rawJson = new JSONObject(jsonStringRepresentation);
