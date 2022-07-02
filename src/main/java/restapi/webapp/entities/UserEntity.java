@@ -42,7 +42,7 @@ public class UserEntity implements Serializable {
     private AvatarEntity avatarEntity;
 
     @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany
     @JoinTable(
             name = "Users_Companies",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -50,7 +50,7 @@ public class UserEntity implements Serializable {
     Set<CellPhoneCompanyEntity> cellPhoneCompanies = new LinkedHashSet<>();
 
     public UserEntity(String email, String md5, String gender, Integer age,
-                      Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity) {
+                      Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity, Set<CellPhoneCompanyEntity> cellPhoneCompanies) {
         this.email = email;
         this.md5 = md5;
         this.gender = gender;
@@ -61,6 +61,7 @@ public class UserEntity implements Serializable {
         this.avatarEntity = avatarEntity;
         this.avatarEntity.setSeed(email);
         this.avatarEntity.setResultUrl(this.avatarEntity.createResultUrl());
+        this.cellPhoneCompanies = cellPhoneCompanies;
     }
 
     @JsonProperty("dob")
