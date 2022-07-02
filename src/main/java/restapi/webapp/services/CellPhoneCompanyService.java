@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.exceptions.CompaniesNotFoundException;
+import restapi.webapp.exceptions.CompanyExistsException;
 import restapi.webapp.exceptions.CompanyNotFoundException;
+import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import java.util.HashMap;
@@ -124,6 +126,8 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the created cell phone company.
      */
     public ResponseEntity<?> createCompany(@NonNull CellPhoneCompany company){
+        if (!cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).isEmpty()) { throw new CompanyExistsException(company.getCompanyName()); }
+
         cellPhoneCompanyRepo.save(company);
         log.info("company {} has been created", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));

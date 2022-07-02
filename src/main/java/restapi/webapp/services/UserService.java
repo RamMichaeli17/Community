@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.exceptions.UserNotFoundException;
 import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserDTOAssembler;
@@ -112,6 +113,8 @@ public class UserService {
      * @return ResponseEntity of the created user
      */
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
+        if (!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()) { throw new UserExistsException(user.getEmail()); }
+
         AvatarEntity currentAvatarEntity = user.getAvatarEntity();
         currentAvatarEntity.setSeed(user.getEmail());
         currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());

@@ -15,6 +15,15 @@ import java.net.UnknownHostException;
 public class GlobalAdvice {
 
     @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(UserExistsException.class)
+    String UserExistsHandler(UserExistsException uee){
+        String message = uee.getMessage();
+        log.error(message);
+        return message;
+    }
+
+    @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     String userNotFoundHandler(UserNotFoundException unfe){
@@ -28,6 +37,15 @@ public class GlobalAdvice {
     @ExceptionHandler(UsersNotFoundException.class)
     String usersNotFoundHandler(UsersNotFoundException unfe){
         String message = unfe.getMessage();
+        log.error(message);
+        return message;
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(CompanyExistsException.class)
+    String CompanyExistsHandler(CompanyExistsException cee){
+        String message = cee.getMessage();
         log.error(message);
         return message;
     }
