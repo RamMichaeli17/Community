@@ -49,7 +49,6 @@ public class CellPhoneCompanyService {
     //todo: extract to public class utilities
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<CellPhoneCompany> companyEntities) {
-        companyEntities.stream().findAny().orElseThrow(() -> new CompaniesNotFoundException());
         if (companyEntities.size() == 1) {
             CellPhoneCompany companyEntity = companyEntities.get(0);
             EntityModel<CellPhoneCompany> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
@@ -79,6 +78,7 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<CellPhoneCompany> companyEntities = this.methodsByParamsMap.get(param).apply(value);
+        companyEntities.stream().findAny().orElseThrow(() -> new CompanyNotFoundException(value));
         return getCorrespondingEntityType(companyEntities);
     }
 

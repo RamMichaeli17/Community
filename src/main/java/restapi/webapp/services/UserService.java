@@ -63,7 +63,6 @@ public class UserService {
      */
     private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
             (List<UserEntity> userEntities) {
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         if (userEntities.size() == 1) {
             UserEntity userEntity = userEntities.get(0);
             EntityModel<UserEntity> userEntityModel = assembler.toModel(userEntity);
@@ -148,6 +147,7 @@ public class UserService {
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
                                                 @NonNull String streetNumber, @NonNull String country){
         List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
+        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("City %s, Street %s %s, Country %s", city, streetName, streetNumber, country)));
         return getCorrespondingEntityType(users);
     }
 
@@ -159,6 +159,7 @@ public class UserService {
      */
     public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
         List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
+        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", first, last)));
         return getCorrespondingEntityType(users);
     }
 
@@ -171,6 +172,7 @@ public class UserService {
      */
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
+        userEntities.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", param, value)));
         return getCorrespondingEntityType(userEntities);
     }
 
@@ -185,6 +187,7 @@ public class UserService {
     public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         return getCorrespondingEntityType(userEntities);
     }
 
