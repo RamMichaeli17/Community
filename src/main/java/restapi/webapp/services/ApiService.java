@@ -61,8 +61,8 @@ public class ApiService {
         log.info("Data fetched successfully");
         log.info("Trying to map JSON into a Java object");
         JSONObject rawJson = new JSONObject(jsonStringRepresentation);
-        if (rawJson.has("error")) { // There is an error
-            throw new UserAPIException();
+        if (rawJson.has("results")) { // There is an error
+            return CompletableFuture.failedFuture(new UserAPIException());
         }
         JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
         JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
