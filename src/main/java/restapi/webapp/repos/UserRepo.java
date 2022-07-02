@@ -28,14 +28,16 @@ public interface UserRepo extends CrudRepository<UserEntity, Long> {
     List<UserEntity> getUserEntityByAgeBetweenAndLastNameStartingWith(@Param("lower")Integer lower,
                                                                   @Param("upper")Integer upper,
                                                                   @Param("startingChar") String startingChar);
+
+    @Query(value = "SELECT * FROM USERS WHERE USER_ID IN (SELECT USER_ENTITY_USER_ID FROM USER_ENTITY_PHONE_NUMBERS WHERE PHONE_NUMBERS LIKE %:phone%)", nativeQuery = true)
+    List<UserEntity> getUserEntityByPhoneNumbersContains(@Param("phone") String phone);
+
     List<UserEntity> findAll();
     List<UserEntity> getUserEntitiesByGender(String gender);
     List<UserEntity> getUserEntitiesByAge(Integer age);
     List<UserEntity> getUserEntityByUserId(Long userId);
     List<UserEntity> getUserEntityByEmail(String email);
     List<UserEntity> getUserEntityByPhoneNumbers(String phone);
-    //todo: fix this method - BENO
-    List<UserEntity> getUserEntityByPhoneNumbersContains(String phone);
     void deleteUserEntityByUserId(Long userId);
     void deleteUserEntityByEmail(String email);
 }

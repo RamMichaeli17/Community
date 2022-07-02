@@ -1,5 +1,6 @@
 package restapi.webapp.services;
 
+import org.apache.catalina.User;
 import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UserExistsException;
+import restapi.webapp.exceptions.UserNotFoundException;
+import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
@@ -74,7 +78,9 @@ public class UserService {
      * @return ResponseEntity of returned users.
      */
     public ResponseEntity<?> getAllUsers(){
-        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userRepo.findAll());
+        List<UserEntity> userEntities = userRepo.findAll();
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
+        CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userEntities);
         return ResponseEntity.of(Optional.of(users));
     }
 
@@ -84,6 +90,7 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
+        userRepo.findById(id).stream().findAny().orElseThrow(() -> new UserNotFoundException(id));
         userRepo.deleteUserEntityByUserId(id);
         return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
     }
@@ -94,6 +101,7 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
+        userRepo.getUserEntityByEmail(email).stream().findAny().orElseThrow(() -> new UserNotFoundException(email));
         userRepo.deleteUserEntityByEmail(email);
         return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
     }
@@ -105,6 +113,8 @@ public class UserService {
      * @return ResponseEntity of the created user
      */
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
+        if (!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()) { throw new UserExistsException(user.getEmail()); }
+
         AvatarEntity currentAvatarEntity = user.getAvatarEntity();
         currentAvatarEntity.setSeed(user.getEmail());
         currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
@@ -123,6 +133,7 @@ public class UserService {
      */
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, it will save the changes.
+        userRepo.findById(user.getUserId()).stream().findAny().orElseThrow(() -> new UserNotFoundException(user.getUserId()));
         userRepo.save(user);
         log.info("User {} has been updated", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -139,6 +150,7 @@ public class UserService {
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
                                                 @NonNull String streetNumber, @NonNull String country){
         List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
+        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("City %s, Street %s %s, Country %s", city, streetName, streetNumber, country)));
         return getCorrespondingEntityType(users);
     }
 
@@ -150,6 +162,7 @@ public class UserService {
      */
     public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
         List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
+        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", first, last)));
         return getCorrespondingEntityType(users);
     }
 
@@ -162,6 +175,7 @@ public class UserService {
      */
     public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
+        userEntities.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", param, value)));
         return getCorrespondingEntityType(userEntities);
     }
 
@@ -176,6 +190,7 @@ public class UserService {
     public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         return getCorrespondingEntityType(userEntities);
     }
 
@@ -190,7 +205,7 @@ public class UserService {
                 .map(UserDTO::new)
                 .map(userDTOAssembler::toModel)
                 .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     /**
@@ -199,8 +214,11 @@ public class UserService {
      * @return ResponseEntity of all the users on DB, if they exist.
      */
     public ResponseEntity<?> getAllUsersDtoInfo() {
+        List<UserEntity> userEntities = userRepo.findAll();
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
         return ResponseEntity.ok(userDTOAssembler.toCollectionModel(
-                userRepo.findAll().stream()
+                        userEntities
+                        .stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
     }
