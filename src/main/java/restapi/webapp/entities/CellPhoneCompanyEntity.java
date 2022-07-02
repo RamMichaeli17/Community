@@ -45,4 +45,13 @@ public class CellPhoneCompanyEntity implements Serializable {
         this.companyName = companyName;
         this.operationalCountries.addAll(operationalCountries);
     }
+
+    @Override
+    public String toString() {
+        return "CellPhoneCompanyEntity{" +
+                "cellPhoneCompanyId=" + cellPhoneCompanyId +
+                ", companyName='" + companyName + '\'' +
+                ", operationalCountries=" + operationalCountries +
+                '}';
+    }
 }

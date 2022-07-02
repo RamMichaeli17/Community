@@ -37,7 +37,7 @@ public class CellPhoneCompanyController {
     @GetMapping("/getAllCompanies")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all companies",
-            description = "Find all of Cell Phone companies and their details",
+            description = "Find all of cell phone companies and their details",
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getAllCompanies() {
         log.info("Trying to fetch all cell phone companies");
@@ -126,4 +126,22 @@ public class CellPhoneCompanyController {
         log.info("{}", company);
         return this.cellPhoneCompanyService.createCompany(company);
     }
+
+    /**
+     * A method that returns all the cell phone companies that belong to a user, if there are any.
+     * @param id The ID of the user that the search is based on.
+     * @return ResponseEntity of the returned cell phone companies that exist.
+     */
+    @GetMapping("/get/userId/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find all cell phone companies that belong to a specific user",
+            description = "Find all the companies and their details in accordance with a specific user ID",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@PathVariable("id") Long id) {
+        log.info("Trying to fetch all cell phone companies");
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompaniesByUserId(id);
+        log.info("{}", response);
+        return response;
+    }
+
 }

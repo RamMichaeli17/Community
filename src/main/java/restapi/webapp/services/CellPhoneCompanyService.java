@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A class that operates as the service of a cell phone company entity, containing the business logic of
@@ -25,7 +26,7 @@ import java.util.function.Function;
 public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
-    private final HashMap<String, Function<String, List<CellPhoneCompanyEntity>>> methodsByParamsMap;
+    private final HashMap<String, Function<String, CellPhoneCompanyEntity>> methodsByParamsMap;
 
     @Autowired
     public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
@@ -35,25 +36,6 @@ public class CellPhoneCompanyService {
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("name", cellPhoneCompanyRepo::getCellPhoneCompanyByCompanyName);
         this.methodsByParamsMap.put("id", id -> cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(Long.valueOf(id)));
-    }
-
-    /**
-     * A method that gets a list of cell phone company entities, and converts the entities into an
-     * EntityModel or a CollectionModel, according to the size of the list,
-     * and returns the corresponding object within a ResponseEntity
-     * @param companyEntities List of cell phone company entities to be checked
-     * @return ResponseEntity the corresponding type of cell phone companies
-     */
-    //todo: extract to public class utilities
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
-            (List<CellPhoneCompanyEntity> companyEntities) {
-        if (companyEntities.size() == 1) {
-            CellPhoneCompanyEntity companyEntity = companyEntities.get(0);
-            EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
-            return ResponseEntity.of(Optional.of(companyEntityModel));
-        }
-        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companyEntitiesModel = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
-        return ResponseEntity.of(Optional.of(companyEntitiesModel));
     }
 
     /**
@@ -73,8 +55,9 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the cell phone company, if exists.
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
-        List<CellPhoneCompanyEntity> companyEntities = this.methodsByParamsMap.get(param).apply(value);
-        return getCorrespondingEntityType(companyEntities);
+        CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
+        EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
+        return ResponseEntity.of(Optional.of(companyEntityModel));
     }
 
     /**
@@ -121,6 +104,13 @@ public class CellPhoneCompanyService {
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
     }
 
-
-
+    /**
+     * A method that returns all the cell phone companies that belong to a user, if there are any.
+     * @param id The ID of the user that the search is based on.
+     * @return ResponseEntity of the returned cell phone companies that exist.
+     */
+    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@NonNull Long id) {
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
+        return ResponseEntity.of(Optional.of(companies));
+    }
 }
