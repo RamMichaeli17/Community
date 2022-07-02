@@ -69,6 +69,18 @@ public class Config {
             log.info("User3 has been created." + user3);
 
             log.info("All users have been initiated");
+
+
+            CellPhoneCompanyEntity ram = new CellPhoneCompanyEntity(
+                    "Ram",Set.of());
+            UserEntity ramE = new UserEntity("rassm@gmail.com",
+                    "202zxzxcccb962a789912964bd2344b70", "male", 24,Set.of("0342147625"),
+                    new Name("Mr","Ram","Michaeli"),
+                    new Location("Ashdod", new Street("Arik Miller","56"), "Israel"),
+                    new AvatarEntity(5,9, HairColor.blonde01,17));
+            ram.setUsers(Set.of(ramE));
+            ramE.setCellPhoneCompanies(Set.of(ram));
+            userRepo.save(ramE);
         };
     }
 

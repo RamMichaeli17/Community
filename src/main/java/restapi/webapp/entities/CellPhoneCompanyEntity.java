@@ -1,6 +1,7 @@
 package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.*;
  * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods.
  */
 @Data
+@AllArgsConstructor
 @Entity
 @NoArgsConstructor
 @Table(name="CELL_PHONE_COMPANY")
@@ -43,15 +45,4 @@ public class CellPhoneCompanyEntity implements Serializable {
         this.companyName = companyName;
         this.operationalCountries.addAll(operationalCountries);
     }
-
-
-    //
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "cellphone_company")
-//    private List<UserEntity> users = new ArrayList<>();
-
-
-
-
-
 }
