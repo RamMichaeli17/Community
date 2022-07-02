@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.enums.HairColor;
+import restapi.webapp.exceptions.UserAPIException;
+import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.repos.UserRepo;
 import java.net.URL;
@@ -54,24 +56,21 @@ public class ApiService {
     @Async
     public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
         log.info("Trying to fetch data from API");
-       String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
+        String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
                StandardCharsets.UTF_8);
-       log.info("Data fetched successfully");
-       log.info("Trying to map JSON into a Java object");
-        //todo: talk about this if statement
-        if (jsonStringRepresentation!=null) {
-            JSONObject rawJson = new JSONObject(jsonStringRepresentation);
-            JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
-            JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
-            UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
-            user.setAvatarEntity(generateRandomAvatarEntity(user.getEmail()));
-            user.getPhoneNumbers().addAll(generateRandomPhoneNumbers());
-            log.info("Successfully mapped JSON into a Java object");
-            return CompletableFuture.completedFuture(user);
+        log.info("Data fetched successfully");
+        log.info("Trying to map JSON into a Java object");
+        JSONObject rawJson = new JSONObject(jsonStringRepresentation);
+        if (rawJson.has("results")) { // There is an error
+            return CompletableFuture.failedFuture(new UserAPIException());
         }
-        else {
-            return CompletableFuture.failedFuture(new Throwable("Connection to API wasn't successful."));
-        }
+        JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
+        JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
+        UserEntity user = objectMapper.readValue(userJson.toString(), UserEntity.class);
+        user.setAvatarEntity(generateRandomAvatarEntity(user.getEmail()));
+        user.getPhoneNumbers().addAll(generateRandomPhoneNumbers());
+        log.info("Successfully mapped JSON into a Java object");
+        return CompletableFuture.completedFuture(user);
     }
 
     /**
