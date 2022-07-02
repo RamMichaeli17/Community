@@ -75,4 +75,12 @@ public class GlobalAdvice {
         return String.format("API in `%s` is unreachable for this moment", uhe.getMessage());
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(UserAPIException.class)
+    String UserAPIHandler(UserAPIException uapie){
+        String message = uapie.getMessage();
+        log.error(message);
+        return message;
+    }
 }
