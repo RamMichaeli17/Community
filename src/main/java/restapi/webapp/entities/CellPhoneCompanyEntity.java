@@ -33,11 +33,12 @@ public class CellPhoneCompanyEntity implements Serializable {
 
     public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
         //todo: extract this function to public class: utilities
-        int randomAmountOfCountries = (int)Math.floor(Math.random()*(12-1+1)+1);
-
         String[] isoCountries = Locale.getISOCountries();
-        for(int i = 0; i < randomAmountOfCountries-1; i++){
-            int randomCountry = (int)Math.floor(Math.random()*(isoCountries.length-1+1)+1);
+        int randomAmountOfCountries = (int) ((Math.random() * (12-1)) + 1);
+
+        for(int i = 0; i < randomAmountOfCountries; i++){
+            int randomCountry = (int) ((Math.random() * (isoCountries.length-1 - 1)) + 1);
+
             Locale locale = new Locale("en", isoCountries[randomCountry]);
             this.operationalCountries.add(locale.getDisplayCountry());
         }

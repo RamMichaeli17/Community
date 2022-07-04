@@ -94,12 +94,17 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
-        UserEntity userEntity = userRepo.getUserEntityByUserId(id).get(0);
-        if(Objects.isNull(userEntity)){
+        try {
+            // In case no such user exists, exception will be thrown.
+            userRepo.getUserEntityByUserId(id).get(0);
+
+            userRepo.deleteUserEntityByUserId(id);
+            return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
+        }
+
+        catch (IndexOutOfBoundsException ex){
             throw new UserNotFoundException(id);
         }
-        userRepo.deleteUserEntityByUserId(id);
-        return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
     }
 
     /**
@@ -108,12 +113,17 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
-        UserEntity userEntity = userRepo.getUserEntityByEmail(email).get(0);
-        if(Objects.isNull(userEntity)){
+        try {
+            // In case no such user exists, exception will be thrown.
+            userRepo.getUserEntityByEmail(email).get(0);
+
+            userRepo.deleteUserEntityByEmail(email);
+            return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
+        }
+
+        catch (IndexOutOfBoundsException ex){
             throw new UserNotFoundException(email);
         }
-        userRepo.deleteUserEntityByEmail(email);
-        return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
     }
 
     /**
@@ -123,20 +133,26 @@ public class UserService {
      * @return ResponseEntity of the created user
      */
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
-        // In case user already exists, don't override it.
-        UserEntity userEntity = userRepo.getUserEntityByEmail(user.getEmail()).get(0);
-        if (!Objects.isNull(userEntity)) {
+
+        try{
+            // If user's email already exists, an exception will be thrown
+            userRepo.getUserEntityByEmail(user.getEmail()).get(0);
+
+            AvatarEntity currentAvatarEntity = user.getAvatarEntity();
+            currentAvatarEntity.setSeed(user.getEmail());
+            currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
+            user.setAvatarEntity(currentAvatarEntity);
+
+            userRepo.save(user);
+            log.info("User {} has been created", user.getUserId());
+            return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        }
+
+        catch (IndexOutOfBoundsException ex){
             throw new UserExistsException(user.getEmail());
         }
 
-        AvatarEntity currentAvatarEntity = user.getAvatarEntity();
-        currentAvatarEntity.setSeed(user.getEmail());
-        currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
-        user.setAvatarEntity(currentAvatarEntity);
 
-        userRepo.save(user);
-        log.info("User {} has been created", user.getUserId());
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 
     /**
@@ -146,14 +162,19 @@ public class UserService {
      * @return ResponseEntity of the updated user.
      */
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
-        // In case there's already a user with same credentials, it will save the changes.
-        UserEntity userEntity = userRepo.getUserEntityByUserId(user.getUserId()).get(0);
-        if (!Objects.isNull(userEntity)) {
+        // In case there's already a user with same credentials, changes won't be saved.
+        try{
+            userRepo.getUserEntityByUserId(user.getUserId()).get(0);
+
+            userRepo.save(user);
+            log.info("User {} has been updated", user.getUserId());
+            return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        }
+
+        catch (IndexOutOfBoundsException ex){
             throw new UserNotFoundException(user.getUserId());
         }
-        userRepo.save(user);
-        log.info("User {} has been updated", user.getUserId());
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+
     }
 
     /**

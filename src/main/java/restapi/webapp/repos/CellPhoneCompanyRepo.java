@@ -1,5 +1,6 @@
 package restapi.webapp.repos;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -17,9 +18,21 @@ public interface CellPhoneCompanyRepo extends CrudRepository<CellPhoneCompanyEnt
     List<CellPhoneCompanyEntity> findAll();
     CellPhoneCompanyEntity getCellPhoneCompanyByCellPhoneCompanyId(Long id);
     CellPhoneCompanyEntity getCellPhoneCompanyByCompanyName(String name);
-    void deleteCellPhoneCompanyByCompanyName(String companyName);
-    void deleteCellPhoneCompanyByCellPhoneCompanyId(Long id);
+
+    @Modifying
     @Query(nativeQuery = true,
-            value = "SELECT * FROM CELL_PHONE_COMPANY P WHERE P.CELL_PHONE_COMPANY_ID IN (SELECT COMPANY_ID FROM USERS_COMPANIES WHERE USER_ID= ?1)")
+            value = "DELETE FROM USERS_COMPANIES WHERE COMPANY_ID IN (SELECT CELL_PHONE_COMPANY_ID FROM CELL_PHONE_COMPANY WHERE COMPANY_NAME = :name)")
+    void deleteCellPhoneCompanyFromUserCompaniesTableByCompanyName(@Param("name") String name);
+
+    void deleteCellPhoneCompanyByCompanyName(String companyName);
+
+    void deleteCellPhoneCompanyByCellPhoneCompanyId(@Param("id") Long id);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM USERS_COMPANIES WHERE COMPANY_ID = :id")
+    void deleteCellPhoneCompanyFromUserCompaniesTableById(@Param("id")Long id);
+
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM CELL_PHONE_COMPANY P WHERE P.CELL_PHONE_COMPANY_ID IN (SELECT COMPANY_ID FROM USERS_COMPANIES WHERE USER_ID = :id)")
     List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);
 }

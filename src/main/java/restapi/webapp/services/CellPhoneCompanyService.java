@@ -75,9 +75,10 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
         CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName);
-        if(Objects.isNull(companyEntity)){
+        if(companyEntity == null){
             throw new CompanyNotFoundException(companyName);
         }
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableByCompanyName(companyName);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCompanyName(companyName);
         return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
     }
@@ -88,10 +89,8 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
-        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(id);
-        if(Objects.isNull(companyEntity)){
-            throw new CompanyNotFoundException(id);
-        }
+        cellPhoneCompanyRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableById(id);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
         return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
