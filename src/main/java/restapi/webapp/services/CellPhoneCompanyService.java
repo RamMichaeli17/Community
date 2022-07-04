@@ -61,9 +61,16 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
         CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
-        if(Objects.isNull(companyEntity)){
+
+        boolean isValueDigitsOnly = value.matches("\\d+");
+
+        if (Objects.isNull(companyEntity) && isValueDigitsOnly){
+            throw new CompanyNotFoundException(Long.valueOf(value));
+        }
+        else if(Objects.isNull(companyEntity) && !isValueDigitsOnly){
             throw new CompanyNotFoundException(value);
         }
+
         EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
         return ResponseEntity.of(Optional.of(companyEntityModel));
     }
