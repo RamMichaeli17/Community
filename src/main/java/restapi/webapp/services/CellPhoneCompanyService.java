@@ -75,7 +75,7 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
         CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName);
-        if(companyEntity == null){
+        if(Objects.isNull(companyEntity)){
             throw new CompanyNotFoundException(companyName);
         }
         cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableByCompanyName(companyName);
