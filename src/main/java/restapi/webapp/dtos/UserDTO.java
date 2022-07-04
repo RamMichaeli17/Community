@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Value;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.entities.UserEntity;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 /**
  * A class that represents the DTO form of a UserEntity.
@@ -35,7 +36,14 @@ public class UserDTO {
     public String getAvatarURL()  {return this.user.getAvatarEntity().getResultUrl();}
 
     @JsonProperty("Cell Phone Companies")
-    public List<String> getCellPhoneCompaniesNames() {return this.user.getCellPhoneCompanies().stream().map(CellPhoneCompanyEntity::getCompanyName).collect(Collectors.toList());}
+    public List<Map<String,String>> getCellPhoneCompanies() {
+        List<Map<String,String>> cellPhonesCompaniesNamesAndID = new ArrayList<>();
+//        return this.user.getCellPhoneCompanies().stream().map(CellPhoneCompanyEntity::getCompanyName).collect(Collectors.toList());
+        for (CellPhoneCompanyEntity cellPhoneCompanyEntity : this.user.getCellPhoneCompanies()) {
+            cellPhonesCompaniesNamesAndID.add(Map.of("companyName",cellPhoneCompanyEntity.getCompanyName(),"cellPhoneCompanyId",cellPhoneCompanyEntity.getCellPhoneCompanyId().toString()));
+        }
+        return cellPhonesCompaniesNamesAndID;
+    }
 
     @JsonProperty("Summary")
     public String getSummary() {return String.format("Hello I'm %s. I'm %d years old and I live in %s. " +
