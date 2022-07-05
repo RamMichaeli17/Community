@@ -70,7 +70,6 @@ public class UserController {
      * @param user User to be created.
      * @return ResponseEntity of the created user.
      */
-    //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a user",
@@ -104,7 +103,6 @@ public class UserController {
      * @param userId User ID to be deleted.
      * @return ResponseEntity that contains the corresponding message for the deletion request.
      */
-    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
