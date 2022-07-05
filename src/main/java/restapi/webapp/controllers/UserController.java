@@ -60,7 +60,7 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
-        ResponseEntity<?> response = this.userService.getUserBySpecificParameter(param, value);
+        ResponseEntity<?> response = this.userService.getUsersBySpecificParameter(param, value);
         log.info("{}", response);
         return response;
     }

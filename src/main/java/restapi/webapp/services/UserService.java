@@ -20,7 +20,6 @@ import restapi.webapp.repos.UserRepo;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -212,7 +211,7 @@ public class UserService {
      * @param value The requested value of the inputted parameter
      * @return ResponseEntity of the user, if exists.
      */
-    public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
+    public ResponseEntity<?> getUsersBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
         userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException(param, value));
         return getCorrespondingEntityType(userEntities);
