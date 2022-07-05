@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.services.CellPhoneCompanyService;
 
 /**
@@ -19,7 +19,7 @@ import restapi.webapp.services.CellPhoneCompanyService;
  * as well as creation and deletion of companies
  */
 @RestController
-@RequestMapping("/company")
+@RequestMapping("/companies")
 @Slf4j
 @Tag(name = "Cell Phone Company Controller", description = "The controller of CellPhone Company entity")
 public class CellPhoneCompanyController {
@@ -37,7 +37,7 @@ public class CellPhoneCompanyController {
     @GetMapping("/getAllCompanies")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all companies",
-            description = "Find all of Cell Phone companies and their details",
+            description = "Find all of cell phone companies and their details",
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getAllCompanies() {
         log.info("Trying to fetch all cell phone companies");
@@ -60,7 +60,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getCompanyWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get company by param \"{}\" and value \"{}\"", param, value);
-        return this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -76,7 +78,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyByName(@RequestParam String name) {
         log.info("Trying to delete cell phone company with name: {}", name);
-        return this.cellPhoneCompanyService.deleteCompanyByName(name);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.deleteCompanyByName(name);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -92,7 +96,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyById(@RequestParam Long id) {
         log.info("Trying to delete cell phone company with ID: {}", id);
-        return this.cellPhoneCompanyService.deleteCompanyById(id);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.deleteCompanyById(id);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -105,9 +111,11 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Update a cell phone company",
             description = "Update a specific cell phone company",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompany company) {
+    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
-        return this.cellPhoneCompanyService.updateCompany(company);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.updateCompany(company);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -121,9 +129,27 @@ public class CellPhoneCompanyController {
             description = "Create a new company by specific parameters",
             responses = {@ApiResponse(responseCode = "201", description = "Cell Phone Company created")},
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompany company) {
+    public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to create a new company by specific parameters:");
         log.info("{}", company);
         return this.cellPhoneCompanyService.createCompany(company);
     }
+
+    /**
+     * A method that returns all the cell phone companies that belong to a user, if there are any.
+     * @param id The ID of the user that the search is based on.
+     * @return ResponseEntity of the returned cell phone companies that exist.
+     */
+    @GetMapping("/get/userId/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find all cell phone companies that belong to a specific user",
+            description = "Find all the companies and their details in accordance with a specific user ID",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@PathVariable("id") Long id) {
+        log.info("Trying to fetch all cell phone companies");
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompaniesByUserId(id);
+        log.info("{}", response);
+        return response;
+    }
+
 }

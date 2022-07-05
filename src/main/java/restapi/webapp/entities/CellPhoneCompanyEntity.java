@@ -1,6 +1,7 @@
 package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -11,10 +12,11 @@ import java.util.*;
  * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods.
  */
 @Data
+@AllArgsConstructor
 @Entity
 @NoArgsConstructor
 @Table(name="CELL_PHONE_COMPANY")
-public class CellPhoneCompany implements Serializable {
+public class CellPhoneCompanyEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cellPhoneCompanyId;
@@ -29,13 +31,14 @@ public class CellPhoneCompany implements Serializable {
     @ManyToMany(mappedBy = "cellPhoneCompanies")
     private Set<UserEntity> users = new LinkedHashSet<>();
 
-    public CellPhoneCompany(String companyName, Set<String> operationalCountries) {
+    public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
         //todo: extract this function to public class: utilities
-        int randomAmountOfCountries = (int)Math.floor(Math.random()*(12-1+1)+1);
-
         String[] isoCountries = Locale.getISOCountries();
-        for(int i = 0; i < randomAmountOfCountries-1; i++){
-            int randomCountry = (int)Math.floor(Math.random()*(isoCountries.length-1+1)+1);
+        int randomAmountOfCountries = (int) ((Math.random() * (12-1)) + 1);
+
+        for(int i = 0; i < randomAmountOfCountries; i++){
+            int randomCountry = (int) ((Math.random() * (isoCountries.length-1 - 1)) + 1);
+
             Locale locale = new Locale("en", isoCountries[randomCountry]);
             this.operationalCountries.add(locale.getDisplayCountry());
         }
@@ -44,14 +47,12 @@ public class CellPhoneCompany implements Serializable {
         this.operationalCountries.addAll(operationalCountries);
     }
 
-
-    //
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "cellphone_company")
-//    private List<UserEntity> users = new ArrayList<>();
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "CellPhoneCompanyEntity{" +
+                "cellPhoneCompanyId=" + cellPhoneCompanyId +
+                ", companyName='" + companyName + '\'' +
+                ", operationalCountries=" + operationalCountries +
+                '}';
+    }
 }

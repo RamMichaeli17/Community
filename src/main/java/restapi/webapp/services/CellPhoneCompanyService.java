@@ -5,18 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import restapi.webapp.entities.CellPhoneCompany;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.exceptions.CompaniesNotFoundException;
 import restapi.webapp.exceptions.CompanyExistsException;
 import restapi.webapp.exceptions.CompanyNotFoundException;
-import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -29,7 +28,7 @@ import java.util.function.Function;
 public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
-    private final HashMap<String, Function<String, List<CellPhoneCompany>>> methodsByParamsMap;
+    private final HashMap<String, Function<String, CellPhoneCompanyEntity>> methodsByParamsMap;
 
     @Autowired
     public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
@@ -42,32 +41,14 @@ public class CellPhoneCompanyService {
     }
 
     /**
-     * A method that gets a list of cell phone company entities, and converts the entities into an
-     * EntityModel or a CollectionModel, according to the size of the list,
-     * and returns the corresponding object within a ResponseEntity
-     * @param companyEntities List of cell phone company entities to be checked
-     * @return ResponseEntity the corresponding type of cell phone companies
-     */
-    //todo: extract to public class utilities
-    private ResponseEntity<? extends RepresentationModel<? extends RepresentationModel<?>>> getCorrespondingEntityType
-            (List<CellPhoneCompany> companyEntities) {
-        if (companyEntities.size() == 1) {
-            CellPhoneCompany companyEntity = companyEntities.get(0);
-            EntityModel<CellPhoneCompany> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
-            return ResponseEntity.of(Optional.of(companyEntityModel));
-        }
-        CollectionModel<EntityModel<CellPhoneCompany>> companyEntitiesModel = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
-        return ResponseEntity.of(Optional.of(companyEntitiesModel));
-    }
-
-    /**
      * A method that fetches all the cell phone companies that the DB contains, if any.
      * @return ResponseEntity of returned cell phone companies.
      */
     public ResponseEntity<?> getAllCompanies(){
-        List<CellPhoneCompany> companyEntities = cellPhoneCompanyRepo.findAll();
-        companyEntities.stream().findAny().orElseThrow(() -> new CompaniesNotFoundException());
-        CollectionModel<EntityModel<CellPhoneCompany>> companies = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
+        List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
+        companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+                cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
         return ResponseEntity.of(Optional.of(companies));
     }
 
@@ -79,9 +60,19 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the cell phone company, if exists.
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
-        List<CellPhoneCompany> companyEntities = this.methodsByParamsMap.get(param).apply(value);
-        companyEntities.stream().findAny().orElseThrow(() -> new CompanyNotFoundException(value));
-        return getCorrespondingEntityType(companyEntities);
+        CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
+
+        boolean isValueDigitsOnly = value.matches("\\d+");
+
+        if (Objects.isNull(companyEntity) && isValueDigitsOnly){
+            throw new CompanyNotFoundException(Long.valueOf(value));
+        }
+        else if(Objects.isNull(companyEntity) && !isValueDigitsOnly){
+            throw new CompanyNotFoundException(value);
+        }
+
+        EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
+        return ResponseEntity.of(Optional.of(companyEntityModel));
     }
 
     /**
@@ -90,7 +81,11 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(companyName));
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName);
+        if(Objects.isNull(companyEntity)){
+            throw new CompanyNotFoundException(companyName);
+        }
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableByCompanyName(companyName);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCompanyName(companyName);
         return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
     }
@@ -101,7 +96,8 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(id).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(id));
+        cellPhoneCompanyRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableById(id);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
         return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
@@ -112,8 +108,12 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be updated.
      * @return ResponseEntity of the updated cell phone company.
      */
-    public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompany company){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(company.getCompanyName()));
+    public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
+                (company.getCompanyName());
+        if(Objects.isNull(companyEntity)){
+            throw new CompanyNotFoundException(company.getCompanyName());
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
@@ -125,14 +125,28 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be inserted into the DB.
      * @return ResponseEntity of the created cell phone company.
      */
-    public ResponseEntity<?> createCompany(@NonNull CellPhoneCompany company){
-        if (!cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).isEmpty()) { throw new CompanyExistsException(company.getCompanyName()); }
-
+    public ResponseEntity<?> createCompany(@NonNull CellPhoneCompanyEntity company){
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
+                (company.getCompanyName());
+        if(!Objects.isNull(companyEntity)){ // If there was already a company with the same name
+            throw new CompanyExistsException(company.getCompanyName());
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("company {} has been created", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
     }
 
-
-
+    /**
+     * A method that returns all the cell phone companies that belong to a user, if there are any.
+     * @param id The ID of the user that the search is based on.
+     * @return ResponseEntity of the returned cell phone companies that exist.
+     */
+    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@NonNull Long id) {
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+                cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
+        if(companies.getContent().isEmpty()){
+            throw new CompaniesNotFoundException();
+        }
+        return ResponseEntity.of(Optional.of(companies));
+    }
 }

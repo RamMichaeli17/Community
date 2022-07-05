@@ -1,6 +1,5 @@
 package restapi.webapp.services;
 
-import org.apache.catalina.User;
 import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -79,7 +78,11 @@ public class UserService {
      */
     public ResponseEntity<?> getAllUsers(){
         List<UserEntity> userEntities = userRepo.findAll();
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
+        userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
+
+        /* Explicitly declaring CollectionModel and not using getCorrespondingEntityType method because
+        getAllUsers should return a CollectionModel in any case.
+        */
         CollectionModel<EntityModel<UserEntity>> users = assembler.toCollectionModel(userEntities);
         return ResponseEntity.of(Optional.of(users));
     }
@@ -90,9 +93,17 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
-        userRepo.findById(id).stream().findAny().orElseThrow(() -> new UserNotFoundException(id));
-        userRepo.deleteUserEntityByUserId(id);
-        return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
+        try {
+            // In case no such user exists, exception will be thrown.
+            userRepo.getUserEntityByUserId(id).get(0);
+
+            userRepo.deleteUserEntityByUserId(id);
+            return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
+        }
+
+        catch (IndexOutOfBoundsException ex){
+            throw new UserNotFoundException(id);
+        }
     }
 
     /**
@@ -101,9 +112,17 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserByEmail(@NonNull String email) {
-        userRepo.getUserEntityByEmail(email).stream().findAny().orElseThrow(() -> new UserNotFoundException(email));
-        userRepo.deleteUserEntityByEmail(email);
-        return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
+        try {
+            // In case no such user exists, exception will be thrown.
+            userRepo.getUserEntityByEmail(email).get(0);
+
+            userRepo.deleteUserEntityByEmail(email);
+            return ResponseEntity.ok("User with the email: " + email + " has been deleted.");
+        }
+
+        catch (IndexOutOfBoundsException ex){
+            throw new UserNotFoundException(email);
+        }
     }
 
     /**
@@ -113,16 +132,26 @@ public class UserService {
      * @return ResponseEntity of the created user
      */
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
-        if (!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()) { throw new UserExistsException(user.getEmail()); }
 
-        AvatarEntity currentAvatarEntity = user.getAvatarEntity();
-        currentAvatarEntity.setSeed(user.getEmail());
-        currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
-        user.setAvatarEntity(currentAvatarEntity);
+        try{
+            // If user's email already exists, an exception will be thrown
+            userRepo.getUserEntityByEmail(user.getEmail()).get(0);
 
-        userRepo.save(user);
-        log.info("User {} has been created", user.getUserId());
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+            AvatarEntity currentAvatarEntity = user.getAvatarEntity();
+            currentAvatarEntity.setSeed(user.getEmail());
+            currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
+            user.setAvatarEntity(currentAvatarEntity);
+
+            userRepo.save(user);
+            log.info("User {} has been created", user.getUserId());
+            return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        }
+
+        catch (IndexOutOfBoundsException ex){
+            throw new UserExistsException(user.getEmail());
+        }
+
+
     }
 
     /**
@@ -132,11 +161,19 @@ public class UserService {
      * @return ResponseEntity of the updated user.
      */
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
-        // In case there's already a user with same credentials, it will save the changes.
-        userRepo.findById(user.getUserId()).stream().findAny().orElseThrow(() -> new UserNotFoundException(user.getUserId()));
-        userRepo.save(user);
-        log.info("User {} has been updated", user.getUserId());
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        // In case there's already a user with same credentials, changes won't be saved.
+        try{
+            userRepo.getUserEntityByUserId(user.getUserId()).get(0);
+
+            userRepo.save(user);
+            log.info("User {} has been updated", user.getUserId());
+            return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        }
+
+        catch (IndexOutOfBoundsException ex){
+            throw new UserNotFoundException(user.getUserId());
+        }
+
     }
 
     /**
@@ -150,7 +187,8 @@ public class UserService {
     public ResponseEntity<?> getUsersByLocation(@NonNull String city, @NonNull String streetName,
                                                 @NonNull String streetNumber, @NonNull String country){
         List<UserEntity> users = userRepo.getUserEntitiesByLocation(city, streetName, streetNumber, country);
-        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("City %s, Street %s %s, Country %s", city, streetName, streetNumber, country)));
+        users.stream().findAny().orElseThrow(() -> new UsersNotFoundException
+                (String.format("City %s, Street %s %s, Country %s", city, streetName, streetNumber, country)));
         return getCorrespondingEntityType(users);
     }
 
@@ -173,9 +211,9 @@ public class UserService {
      * @param value The requested value of the inputted parameter
      * @return ResponseEntity of the user, if exists.
      */
-    public ResponseEntity<?> getUserBySpecificParameter(@NonNull String param, @NonNull String value) {
+    public ResponseEntity<?> getUsersBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        userEntities.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", param, value)));
+        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException(param, value));
         return getCorrespondingEntityType(userEntities);
     }
 
@@ -187,10 +225,10 @@ public class UserService {
      * @param startingChar Starting character of user's last name to be checked.
      * @return ResponseEntity of the requested user, if exists.
      */
-    public ResponseEntity<?> getUserByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
+    public ResponseEntity<?> getUsersByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
+        userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
         return getCorrespondingEntityType(userEntities);
     }
 
@@ -201,6 +239,12 @@ public class UserService {
      * @return ResponseEntity of the requested user, if exists.
      */
     public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
+        /*
+        This method uses the pre-defined repo method findById because it returns an Optional<T>,
+        which allows us to map the returned value into a UserDTO and return an exception easily,
+        in case of an error.
+         */
+
         return userRepo.findById(id)
                 .map(UserDTO::new)
                 .map(userDTOAssembler::toModel)
@@ -215,7 +259,8 @@ public class UserService {
      */
     public ResponseEntity<?> getAllUsersDtoInfo() {
         List<UserEntity> userEntities = userRepo.findAll();
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException());
+        // Check if there are any users that exist in DB
+        userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
         return ResponseEntity.ok(userDTOAssembler.toCollectionModel(
                         userEntities
                         .stream()

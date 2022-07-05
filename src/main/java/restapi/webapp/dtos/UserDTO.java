@@ -32,7 +32,7 @@ public class UserDTO {
     public String getAvatarURL()  {return this.user.getAvatarEntity().getResultUrl();}
 
     @JsonProperty("Summary")
-    public String getSummary() {return String.format("Hello I'm %s. I'm %d years old and I live in %s." +
+    public String getSummary() {return String.format("Hello I'm %s. I'm %d years old and I live in %s. " +
             "This is my avatar: %s, if you want to learn more about this avatar or even share yours, " +
             "contact me at: %s.", this.getFullName(), this.getAge(), this.getFullLocation(),
             this.getAvatarURL(), this.getEmail());
