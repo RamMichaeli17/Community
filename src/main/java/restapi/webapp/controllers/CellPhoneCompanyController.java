@@ -60,7 +60,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getCompanyWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get company by param \"{}\" and value \"{}\"", param, value);
-        return this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -76,7 +78,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyByName(@RequestParam String name) {
         log.info("Trying to delete cell phone company with name: {}", name);
-        return this.cellPhoneCompanyService.deleteCompanyByName(name);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.deleteCompanyByName(name);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -92,7 +96,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> deleteCompanyById(@RequestParam Long id) {
         log.info("Trying to delete cell phone company with ID: {}", id);
-        return this.cellPhoneCompanyService.deleteCompanyById(id);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.deleteCompanyById(id);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -107,7 +113,9 @@ public class CellPhoneCompanyController {
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
-        return this.cellPhoneCompanyService.updateCompany(company);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.updateCompany(company);
+        log.info("{}", response);
+        return response;
     }
 
     /**

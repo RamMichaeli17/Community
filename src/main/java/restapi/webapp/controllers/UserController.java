@@ -41,7 +41,9 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> getAllUsers() {
         log.info("Trying to fetch all users");
-        return this.userService.getAllUsers();
+        ResponseEntity<?> response = this.userService.getAllUsers();
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -58,7 +60,9 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
-        return this.userService.getUserBySpecificParameter(param, value);
+        ResponseEntity<?> response = this.userService.getUsersBySpecificParameter(param, value);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -188,7 +192,7 @@ public class UserController {
                                                 @RequestParam String startingChar) {
         log.info("Trying to fetch users by advanced querying: Lower bound: {}, Upper bound: {}, " +
                 "Starting char at last name: {}", lower, upper, startingChar);
-        ResponseEntity<?> response = this.userService.getUserByAgeAndName(lower, upper, startingChar);
+        ResponseEntity<?> response = this.userService.getUsersByAgeAndName(lower, upper, startingChar);
         log.info("{}", response);
         return response;
     }

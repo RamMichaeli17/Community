@@ -5,22 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
-import restapi.webapp.entities.CellPhoneCompany;
 import restapi.webapp.exceptions.CompaniesNotFoundException;
 import restapi.webapp.exceptions.CompanyExistsException;
 import restapi.webapp.exceptions.CompanyNotFoundException;
-import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * A class that operates as the service of a cell phone company entity, containing the business logic of
@@ -49,8 +46,9 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> getAllCompanies(){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
-        companyEntities.stream().findAny().orElseThrow(() -> new CompaniesNotFoundException());
-        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies = cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
+        companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+                cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
         return ResponseEntity.of(Optional.of(companies));
     }
 
@@ -63,7 +61,16 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
         CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
-        companyEntity.stream().findAny().orElseThrow(() -> new CompanyNotFoundException(value));
+
+        boolean isValueDigitsOnly = value.matches("\\d+");
+
+        if (Objects.isNull(companyEntity) && isValueDigitsOnly){
+            throw new CompanyNotFoundException(Long.valueOf(value));
+        }
+        else if(Objects.isNull(companyEntity) && !isValueDigitsOnly){
+            throw new CompanyNotFoundException(value);
+        }
+
         EntityModel<CellPhoneCompanyEntity> companyEntityModel = cellPhoneCompanyAssembler.toModel(companyEntity);
         return ResponseEntity.of(Optional.of(companyEntityModel));
     }
@@ -74,7 +81,11 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyByName(@NonNull String companyName){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(companyName));
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(companyName);
+        if(Objects.isNull(companyEntity)){
+            throw new CompanyNotFoundException(companyName);
+        }
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableByCompanyName(companyName);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCompanyName(companyName);
         return ResponseEntity.ok("Cell Phone company " + companyName + " has been deleted.");
     }
@@ -85,7 +96,8 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteCompanyById(@NonNull Long id){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(id).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(id));
+        cellPhoneCompanyRepo.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
+        cellPhoneCompanyRepo.deleteCellPhoneCompanyFromUserCompaniesTableById(id);
         cellPhoneCompanyRepo.deleteCellPhoneCompanyByCellPhoneCompanyId(id);
         return ResponseEntity.ok("Cell Phone company with ID " + id + " has been deleted.");
     }
@@ -97,7 +109,11 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the updated cell phone company.
      */
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
-        cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).stream().findAny().orElseThrow(() -> new CompanyNotFoundException(company.getCompanyName()));
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
+                (company.getCompanyName());
+        if(Objects.isNull(companyEntity)){
+            throw new CompanyNotFoundException(company.getCompanyName());
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
@@ -110,7 +126,11 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the created cell phone company.
      */
     public ResponseEntity<?> createCompany(@NonNull CellPhoneCompanyEntity company){
-        if (!cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()).isEmpty()) { throw new CompanyExistsException(company.getCompanyName()); }
+        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
+                (company.getCompanyName());
+        if(!Objects.isNull(companyEntity)){ // If there was already a company with the same name
+            throw new CompanyExistsException(company.getCompanyName());
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("company {} has been created", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
@@ -122,7 +142,11 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the returned cell phone companies that exist.
      */
     public ResponseEntity<?> getCellPhoneCompaniesByUserId(@NonNull Long id) {
-        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies = cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+                cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
+        if(companies.getContent().isEmpty()){
+            throw new CompaniesNotFoundException();
+        }
         return ResponseEntity.of(Optional.of(companies));
     }
 }
