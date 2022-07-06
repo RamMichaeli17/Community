@@ -184,7 +184,15 @@ public class UserService {
      */
     public ResponseEntity<?> getUsersBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException(param, value));
+        userEntities.stream().findAny().orElseThrow(() -> {
+            switch (param) {
+                case "id":
+                case "email":
+                    throw new UserNotFoundException(param, value);
+                default:
+                    throw new UsersNotFoundException(param, value);
+            }
+        });
         return getCorrespondingEntityType(userEntities);
     }
 
