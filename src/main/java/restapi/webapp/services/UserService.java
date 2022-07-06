@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+//todo: Change ResponseEntity<?
 
 /**
  * A class that operates as the service of the user entity, containing the business logic of
@@ -93,7 +94,7 @@ public class UserService {
      * @return ResponseEntity of corresponding message.
      */
     public ResponseEntity<?> deleteUserById(@NonNull Long id) {
-        userRepo.findById(id).stream().findAny().orElseThrow(() -> new UserNotFoundException(id));
+        userRepo.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         userRepo.deleteUserEntityByUserId(id);
         return ResponseEntity.ok("User with the ID: " + id + " has been deleted.");
     }
@@ -117,7 +118,7 @@ public class UserService {
      */
     public ResponseEntity<?> createUser(@NonNull UserEntity user){
         // If user's email already exists, an exception will be thrown
-        if(userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
+        if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
             throw new UserExistsException(user.getEmail());
         }
 
@@ -139,8 +140,8 @@ public class UserService {
      */
     public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, changes won't be saved.
-        userRepo.findById(user.getUserId()).stream().findAny()
-                .orElseThrow(() -> new UserNotFoundException(user.getUserId()));
+        userRepo.findById(user.getUserId()).orElseThrow(() ->
+                new UserNotFoundException(user.getUserId()));
         userRepo.save(user);
         log.info("User {} has been updated", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
