@@ -28,7 +28,7 @@ public class CellPhoneCompanyEntity implements Serializable {
     private Set<String> operationalCountries = new LinkedHashSet<>();
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "cellPhoneCompanies")
+    @ManyToMany
     private Set<UserEntity> users = new LinkedHashSet<>();
 
     public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
