@@ -5,9 +5,9 @@ public class UsersNotFoundException extends RuntimeException{
         super("Users not found on DB.");
     }
     public UsersNotFoundException(String param, String value){
-        super("Users with param " + param + " and value " + value + " not found.");
+        super("Users with param " + param + " and value " + value + " were not found.");
     }
     public UsersNotFoundException(String value) {
-        super("Users with " + value + " wasn't found.");
+        super("Users with " + value + " were not found.");
     }
 }

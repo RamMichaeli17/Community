@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import restapi.webapp.global.Utils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -34,10 +35,10 @@ public class CellPhoneCompanyEntity implements Serializable {
     public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
         //todo: extract this function to public class: utilities
         String[] isoCountries = Locale.getISOCountries();
-        int randomAmountOfCountries = (int) ((Math.random() * (12-1)) + 1);
+        int randomAmountOfCountries = Utils.randomNumberBetweenMinAndMax(1,12);
 
         for(int i = 0; i < randomAmountOfCountries; i++){
-            int randomCountry = (int) ((Math.random() * (isoCountries.length-1 - 1)) + 1);
+            int randomCountry = Utils.randomNumberBetweenMinAndMax(1, isoCountries.length-1);
 
             Locale locale = new Locale("en", isoCountries[randomCountry]);
             this.operationalCountries.add(locale.getDisplayCountry());
