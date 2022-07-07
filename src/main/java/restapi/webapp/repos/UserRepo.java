@@ -29,8 +29,13 @@ public interface UserRepo extends CrudRepository<UserEntity, Long> {
                                                                   @Param("upper")Integer upper,
                                                                   @Param("startingChar") String startingChar);
 
-    @Query(value = "SELECT * FROM USERS WHERE USER_ID IN (SELECT USER_ENTITY_USER_ID FROM USER_ENTITY_PHONE_NUMBERS WHERE PHONE_NUMBERS LIKE %:phone%)", nativeQuery = true)
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM USERS WHERE USER_ID IN (SELECT USER_ENTITY_USER_ID FROM USER_ENTITY_PHONE_NUMBERS WHERE PHONE_NUMBERS LIKE %:phone%)")
     List<UserEntity> getUserEntityByPhoneNumbersContains(@Param("phone") String phone);
+
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM USERS WHERE USER_ID IN (SELECT USER_ID FROM USERS_COMPANIES WHERE COMPANY_ID = :companyId)")
+    List<UserEntity> getUserEntitiesByCellPhoneCompanyId(@Param("companyId") Long companyId);
 
     List<UserEntity> findAll();
     List<UserEntity> getUserEntitiesByGender(String gender);

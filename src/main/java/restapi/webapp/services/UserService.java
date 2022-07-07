@@ -36,15 +36,12 @@ public class UserService {
     private final UserEntityAssembler assembler;
     private final UserDTOAssembler userDTOAssembler;
     private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
-    private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler,
-                       CellPhoneCompanyRepo cellPhoneCompanyRepo) {
+    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler) {
         this.userRepo = userRepo;
         this.assembler = assembler;
         this.userDTOAssembler = userDTOAssembler;
-        this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
 
         // Populate HashMap of methods. Specific method will be injected on runtime.
         this.methodsByParamsMap = new HashMap<>();
@@ -268,14 +265,9 @@ public class UserService {
      * @return ResponseEntity of all the corresponding users on DB, if they exist.
      */
     public ResponseEntity<?> getUserEntitiesByCellPhoneCompanyId(@NonNull Long id){
-        List<Long> userIdsToFetch = cellPhoneCompanyRepo.getUserEntitiesByCellPhoneCompanyId(id);
+        List<UserEntity> users = userRepo.getUserEntitiesByCellPhoneCompanyId(id);
         // Check if there was any returned IDs of user entities, else throw exception
-        userIdsToFetch.stream().findAny().orElseThrow(UsersNotFoundException::new);
-
-        List<UserEntity> users = new ArrayList<>();
-        for (Long userId : userIdsToFetch){
-            users.add(userRepo.getUserEntityByUserId(userId).get(0));
-        }
+        users.stream().findAny().orElseThrow(UsersNotFoundException::new);
 
         return getCorrespondingEntityType(users);
     }
