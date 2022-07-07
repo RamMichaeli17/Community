@@ -21,8 +21,9 @@ public class CellPhoneCompanyDTO {
         return this.cellPhoneCompany.getCompanyName();
     }
 
+    //TODO: change specific number to number of users
     @JsonProperty("Summary")
     public String getSummary() {
-        return String.format("Hello");
+        return String.format("%s company operates in several countries: %s. The company currently has %d users.",this.getCompanyName(),cellPhoneCompany.getOperationalCountries(),4 );
     }
 }

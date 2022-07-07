@@ -136,6 +136,41 @@ public class CellPhoneCompanyController {
     }
 
     /**
+     * A method that gets a company's DTO representation based on its company ID, if exists.
+     * @param id ID of company to be fetched.
+     * @return ResponseEntity of the requested company, if exists.
+     */
+    @GetMapping("/getCompany/{id}/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get only social information about a specific company",
+            description = "Get a companyDTO that contains only some information about a company we want to present",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getCellPhoneCompanyInfo(@PathVariable Long id) {
+        log.info("Trying to get company info by ID: " + id);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompanyDtoInfo(id);
+        log.info("{}", response);
+        return response;
+    }
+
+    /**
+     * A method that gets the DTO representation of the companies that exist on DB, if they exist.
+     * @return ResponseEntity of the requested companies, if they exist.
+     */
+    @GetMapping("/getAllCompanies/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all the social information about the companies",
+            description = "Get all companyDTOs that contain partial information we present about companies",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getAllCellPhoneCompaniesInfo() {
+        log.info("Trying to get all companies info");
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();
+        log.info("{}", response);
+        return response;
+    }
+
+
+
+    /**
      * A method that returns all the cell phone companies that belong to a user, if there are any.
      * @param id The ID of the user that the search is based on.
      * @return ResponseEntity of the returned cell phone companies that exist.

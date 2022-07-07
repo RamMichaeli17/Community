@@ -7,15 +7,18 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import restapi.webapp.dtos.CellPhoneCompanyDTO;
+import restapi.webapp.dtos.UserDTO;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
-import restapi.webapp.exceptions.CompaniesNotFoundException;
-import restapi.webapp.exceptions.CompanyExistsException;
-import restapi.webapp.exceptions.CompanyNotFoundException;
+import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.*;
 import restapi.webapp.factories.CellPhoneCompanyAssembler;
+import restapi.webapp.factories.CellPhoneCompanyDTOAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A class that operates as the service of a cell phone company entity, containing the business logic of
@@ -26,12 +29,14 @@ import java.util.function.Function;
 public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
+    private final CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler;
     private final HashMap<String, Function<String, CellPhoneCompanyEntity>> methodsByParamsMap;
 
     @Autowired
-    public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler) {
+    public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler, CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler) {
         this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
         this.cellPhoneCompanyAssembler = cellPhoneCompanyAssembler;
+        this.cellPhoneCompanyDTOAssembler = cellPhoneCompanyDTOAssembler;
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("name", cellPhoneCompanyRepo::getCellPhoneCompanyByCompanyName);
@@ -147,4 +152,40 @@ public class CellPhoneCompanyService {
         }
         return ResponseEntity.of(Optional.of(companies));
     }
+
+    /**
+     * A method that fetches a company from the DB by its company ID if exists, then convert it
+     * into its DTO representation.
+     * @param id ID of company to be fetched
+     * @return ResponseEntity of the requested company, if exists.
+     */
+    public ResponseEntity<?> getCellPhoneCompanyDtoInfo(@NonNull Long id) {
+        /*
+        This method uses the pre-defined repo method findById because it returns an Optional<T>,
+        which allows us to map the returned value into a CellPhoneCompanyDTO and return an exception easily,
+        in case of an error.
+         */
+
+        return cellPhoneCompanyRepo.findById(id)
+                .map(CellPhoneCompanyDTO::new)
+                .map(cellPhoneCompanyDTOAssembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CompanyNotFoundException(id));
+    }
+
+    /**
+     * A method that fetches all the companies on DB if they exist,
+     * then convert them into their DTO representation.
+     * @return ResponseEntity of all the companies on DB, if they exist.
+     */
+    public ResponseEntity<?> getAllCellPhoneCompaniesDtoInfo() {
+        List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
+        // Check if there are any users that exist in DB
+        companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
+        return ResponseEntity.ok(cellPhoneCompanyDTOAssembler.toCollectionModel(companyEntities
+                .stream()
+                .map(CellPhoneCompanyDTO::new)
+                .collect(Collectors.toList())));
+    }
+
 }
