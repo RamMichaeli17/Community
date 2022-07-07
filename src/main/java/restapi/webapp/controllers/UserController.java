@@ -225,11 +225,28 @@ public class UserController {
     @GetMapping("/getAllUsers/info")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all the social information about the users",
-            description = "Get all userDTO-s that contain only some information we to present about the users",
+            description = "Get all userDTOs that contain partial information we present about users",
             tags = {"User Controller"})
     public ResponseEntity<?> getAllUsersInfo() {
         log.info("Trying to get all users info");
         ResponseEntity<?> response = this.userService.getAllUsersDtoInfo();
+        log.info("{}", response);
+        return response;
+    }
+
+    /**
+     * A method that gets a cell phone company ID, and returns all the user entities that are connected to it.
+     * @param id Cell phone company's ID
+     * @return ResponseEntity of all the corresponding users on DB, if they exist.
+     */
+    @GetMapping("get/companyId/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get user entities by cell phone company's ID",
+            description = "Get user entities that are connected to a specific cell phone company ID",
+            tags = {"User Controller"})
+    public ResponseEntity<?> getUserEntitiesByCompanyId(@PathVariable Long id){
+        log.info("Trying to get user entities by company ID: {}", id);
+        ResponseEntity<?> response = this.userService.getUserEntitiesByCellPhoneCompanyId(id);
         log.info("{}", response);
         return response;
     }

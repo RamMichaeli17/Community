@@ -21,7 +21,6 @@ import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.global.Utils;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -265,6 +264,19 @@ public class UserService {
                         .stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
+    }
+
+    /**
+     * A method that gets a cell phone company ID, and returns all the user entities that are connected to it.
+     * @param id Cell phone company's ID
+     * @return ResponseEntity of all the corresponding users on DB, if they exist.
+     */
+    public ResponseEntity<?> getUserEntitiesByCellPhoneCompanyId(@NonNull Long id){
+        List<UserEntity> users = userRepo.getUserEntitiesByCellPhoneCompanyId(id);
+        // Check if there was any returned IDs of user entities, else throw exception
+        users.stream().findAny().orElseThrow(UsersNotFoundException::new);
+
+        return getCorrespondingEntityType(users);
     }
 
     public ResponseEntity<?> linkUserWithCellPhoneCompanies(@NonNull Long userId, @NonNull Set<@NonNull Long> companiesIds) {
