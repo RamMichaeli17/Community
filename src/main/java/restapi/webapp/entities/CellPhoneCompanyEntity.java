@@ -13,10 +13,9 @@ import java.util.*;
  * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods.
  */
 @Data
-@AllArgsConstructor
 @Entity
 @NoArgsConstructor
-@Table(name="CELL_PHONE_COMPANY")
+@Table(name="CELL_PHONE_COMPANIES")
 public class CellPhoneCompanyEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

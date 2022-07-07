@@ -111,7 +111,7 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Update a cell phone company",
             description = "Update a specific cell phone company",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompanyEntity company) {
+    public ResponseEntity<?> updateCellPhoneCompany(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
         ResponseEntity<?> response = this.cellPhoneCompanyService.updateCompany(company);
         log.info("{}", response);

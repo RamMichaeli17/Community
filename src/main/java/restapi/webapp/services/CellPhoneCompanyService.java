@@ -70,7 +70,7 @@ public class CellPhoneCompanyService {
         if (Objects.isNull(companyEntity) && isValueDigitsOnly){
             throw new CompanyNotFoundException(Long.valueOf(value));
         }
-        else if(Objects.isNull(companyEntity) && !isValueDigitsOnly){
+        else if(Objects.isNull(companyEntity)){
             throw new CompanyNotFoundException(value);
         }
 
@@ -112,11 +112,13 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the updated cell phone company.
      */
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
-        CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
-                (company.getCompanyName());
-        if(Objects.isNull(companyEntity)){
-            throw new CompanyNotFoundException(company.getCompanyName());
-        }
+        cellPhoneCompanyRepo.findById(company.getCellPhoneCompanyId()).orElseThrow(() ->
+                new CompanyNotFoundException(company.getCellPhoneCompanyId()));
+        //TODO: should throw exception: this name is not available instead of "500 error"
+//        CellPhoneCompanyEntity cellPhoneCompanyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(company.getCellPhoneCompanyId());
+//        if (Objects.isNull(cellPhoneCompanyEntity)) {
+//            throw new CompanyExistsException(company.getCompanyName());
+//        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
