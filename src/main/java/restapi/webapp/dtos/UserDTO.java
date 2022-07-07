@@ -48,7 +48,7 @@ public class UserDTO {
     @JsonProperty("Summary")
     public String getSummary() {return String.format("Hello I'm %s. I'm %d years old and I live in %s. " +
             "This is my avatar: %s, if you want to learn more about this avatar or even share yours, " +
-            "contact me at: %s.", this.getFullName(), this.getAge(), this.getFullLocation(),
-            this.getAvatarURL(), this.getEmail());
+            "contact me at: %s. By the way, the number of the cell phone companies that related to me is: %d.", this.getFullName(), this.getAge(), this.getFullLocation(),
+            this.getAvatarURL(), this.getEmail(),this.getCellPhoneCompanies().size());
     }
 }
