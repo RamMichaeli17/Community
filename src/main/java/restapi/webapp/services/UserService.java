@@ -1,6 +1,5 @@
 package restapi.webapp.services;
 
-import org.apache.commons.lang3.EnumUtils;
 import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,20 +10,19 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.enums.HairColor;
+import restapi.webapp.exceptions.CompanyNotFoundException;
 import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.exceptions.UserNotFoundException;
 import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
 import restapi.webapp.global.Utils;
+import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,12 +39,15 @@ public class UserService {
     private final UserEntityAssembler assembler;
     private final UserDTOAssembler userDTOAssembler;
     private final HashMap<String, Function<String, List<UserEntity>>> methodsByParamsMap;
+    private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
 
     @Autowired
-    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler) {
+    public UserService(UserRepo userRepo, UserEntityAssembler assembler, UserDTOAssembler userDTOAssembler,
+                       CellPhoneCompanyRepo cellPhoneCompanyRepo) {
         this.userRepo = userRepo;
         this.assembler = assembler;
         this.userDTOAssembler = userDTOAssembler;
+        this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
 
         // Populate HashMap of methods. Specific method will be injected on runtime.
         this.methodsByParamsMap = new HashMap<>();
@@ -159,6 +160,7 @@ public class UserService {
             avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
         avatarEntity.setSeed(user.getEmail());
         avatarEntity.setResultUrl(avatarEntity.createResultUrl());
+        user.setCellPhoneCompanies( userRepo.getUserEntityByUserId(user.getUserId()).get(0).getCellPhoneCompanies());
 
         userRepo.save(user);
         log.info("User {} has been updated", user.getUserId());
@@ -222,7 +224,8 @@ public class UserService {
      * @param startingChar Starting character of user's last name to be checked.
      * @return ResponseEntity of the requested user, if exists.
      */
-    public ResponseEntity<?> getUsersByAgeAndName(@NonNull Integer lower, @NonNull Integer upper, @NonNull String startingChar){
+    public ResponseEntity<?> getUsersByAgeAndName(@NonNull Integer lower, @NonNull Integer upper,
+                                                  @NonNull String startingChar){
         List<UserEntity> userEntities = this.userRepo.getUserEntityByAgeBetweenAndLastNameStartingWith(lower,
                 upper, startingChar);
         userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
@@ -262,5 +265,19 @@ public class UserService {
                         .stream()
                         .map(UserDTO::new)
                         .collect(Collectors.toList())));
+    }
+
+    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@NonNull Long userId, @NonNull Set<@NonNull Long> companiesIds) {
+        userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
+        Set<CellPhoneCompanyEntity> cellPhoneCompanyEntities = new HashSet<>();
+        for (Long companyId : companiesIds) {
+            cellPhoneCompanyRepo.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
+            cellPhoneCompanyEntities.add(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId));
+        }
+        user.getCellPhoneCompanies().addAll(cellPhoneCompanyEntities);
+        userRepo.save(user);
+        log.info("User {} has been linked with the cell phone companies above: {}", userId,companiesIds);
+        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 }
