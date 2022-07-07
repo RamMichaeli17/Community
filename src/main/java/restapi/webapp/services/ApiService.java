@@ -17,6 +17,7 @@ import restapi.webapp.enums.HairColor;
 import restapi.webapp.exceptions.UserAPIException;
 import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.factories.UserEntityAssembler;
+import restapi.webapp.global.Utils;
 import restapi.webapp.repos.UserRepo;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -93,12 +94,10 @@ public class ApiService {
     public AvatarEntity generateRandomAvatarEntity(@NonNull String seed) {
         AvatarEntity randomAvatarForUser = new AvatarEntity();
         randomAvatarForUser.setSeed(seed);
-        randomAvatarForUser.setEyes((int)Math.floor(Math.random()*(26-1+1)+1));
-        randomAvatarForUser.setEyebrows((int)Math.floor(Math.random()*(10-1+1)+1));
-        randomAvatarForUser.setMouth((int)Math.floor(Math.random()*(30-1+1)+1));
-        final List<HairColor> HairColorValues = List.of(HairColor.values());
-        final Random random = new Random();
-        randomAvatarForUser.setHairColor(HairColorValues.get(random.nextInt(HairColorValues.size())));
+        randomAvatarForUser.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
+        randomAvatarForUser.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
+        randomAvatarForUser.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
+        randomAvatarForUser.setHairColor(Utils.randomHairColorFromEnum());
         randomAvatarForUser.setResultUrl(randomAvatarForUser.createResultUrl());
         return randomAvatarForUser;
     }
@@ -113,7 +112,7 @@ public class ApiService {
         int num1, num2, num3;
         DecimalFormat df3, df4;
         String phoneNumber;
-        int randomAmountOfPhoneNumbers = (int)Math.floor(Math.random()*(20+1)+0);
+        int randomAmountOfPhoneNumbers = Utils.randomNumberBetweenMinAndMax(0,20);
         Random rand = new Random();
         for(int i=0; i<randomAmountOfPhoneNumbers; i++) {
             num1 = (rand.nextInt(7) + 1) * 100 + (rand.nextInt(8) * 10) + rand.nextInt(8);

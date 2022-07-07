@@ -59,7 +59,7 @@ public class UserController {
             description = "Find user details by name, location, age and more",
             tags = {"User Controller"})
     public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
-        log.info("Trying to get user by param \"{}\" and value \"{}\"", param, value);
+        log.info("Trying to get users by param \"{}\" and value \"{}\"", param, value);
         ResponseEntity<?> response = this.userService.getUsersBySpecificParameter(param, value);
         log.info("{}", response);
         return response;
@@ -70,7 +70,6 @@ public class UserController {
      * @param user User to be created.
      * @return ResponseEntity of the created user.
      */
-    //todo: handle the situation where you press create with the same body
     @PostMapping(value = "/create")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a user",
@@ -104,7 +103,6 @@ public class UserController {
      * @param userId User ID to be deleted.
      * @return ResponseEntity that contains the corresponding message for the deletion request.
      */
-    //todo: maybe merge with deleteByEmail if we want
     @Transactional
     @DeleteMapping("/deleteByUserId")
     @ResponseStatus(HttpStatus.OK)
@@ -113,7 +111,9 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> deleteUserById(@RequestParam Long userId) {
         log.info("Trying to delete user with ID: {}", userId);
-        return this.userService.deleteUserById(userId);
+        ResponseEntity<?> response = this.userService.deleteUserById(userId);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -129,7 +129,9 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> deleteUserByEmail(@RequestParam String email) {
         log.info("Trying to delete user with email: {}", email);
-        return this.userService.deleteUserByEmail(email);
+        ResponseEntity<?> response = this.userService.deleteUserByEmail(email);
+        log.info("{}", response);
+        return response;
     }
 
     /**
@@ -145,7 +147,7 @@ public class UserController {
             tags = {"User Controller"})
     public ResponseEntity<?> getUserByName(@RequestParam("first") String firstName,
                                            @RequestParam("last") String lastName){
-        log.info("Trying to fetch user {} {}", firstName, lastName);
+        log.info("Trying to fetch users by name: {} {}", firstName, lastName);
         ResponseEntity<?> response = this.userService.getUsersByName(firstName, lastName);
         log.info("{}", response);
         return response;
@@ -182,7 +184,7 @@ public class UserController {
      * @param startingChar Starting character of user's last name to be fetched.
      * @return ResponseEntity of the requested user, if exists.
      */
-    @GetMapping("/get/advanced")
+    @GetMapping("/get/userByAgeAndLastName")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find a specific user by their age and last name",
             description = "Find a specific user by their age and the first digit on their last name",

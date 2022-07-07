@@ -1,5 +1,6 @@
 package restapi.webapp.services;
 
+import org.apache.commons.lang3.EnumUtils;
 import restapi.webapp.dtos.UserDTO;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.enums.HairColor;
 import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.exceptions.UserNotFoundException;
 import restapi.webapp.exceptions.UsersNotFoundException;
 import restapi.webapp.factories.UserDTOAssembler;
 import restapi.webapp.factories.UserEntityAssembler;
+import restapi.webapp.global.Utils;
 import restapi.webapp.repos.UserRepo;
 
 import java.util.HashMap;
@@ -121,12 +124,15 @@ public class UserService {
         if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
             throw new UserExistsException(user.getEmail());
         }
-
-        AvatarEntity currentAvatarEntity = user.getAvatarEntity();
-        currentAvatarEntity.setSeed(user.getEmail());
-        currentAvatarEntity.setResultUrl(currentAvatarEntity.createResultUrl());
-        user.setAvatarEntity(currentAvatarEntity);
-
+        AvatarEntity avatarEntity = user.getAvatarEntity();
+        if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
+            avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
+        if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
+            avatarEntity.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
+        if (avatarEntity.getMouth()>30 || avatarEntity.getEyes()<1)
+            avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
+        avatarEntity.setSeed(user.getEmail());
+        avatarEntity.setResultUrl(avatarEntity.createResultUrl());
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -142,6 +148,18 @@ public class UserService {
         // In case there's already a user with same credentials, changes won't be saved.
         userRepo.findById(user.getUserId()).orElseThrow(() ->
                 new UserNotFoundException(user.getUserId()));
+
+        // Making sure the seed is compatible with the user's email address and all fields are valid
+        AvatarEntity avatarEntity = user.getAvatarEntity();
+        if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
+            avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
+        if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
+            avatarEntity.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
+        if (avatarEntity.getMouth()>30 || avatarEntity.getEyes()<1)
+            avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
+        avatarEntity.setSeed(user.getEmail());
+        avatarEntity.setResultUrl(avatarEntity.createResultUrl());
+
         userRepo.save(user);
         log.info("User {} has been updated", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -184,7 +202,15 @@ public class UserService {
      */
     public ResponseEntity<?> getUsersBySpecificParameter(@NonNull String param, @NonNull String value) {
         List<UserEntity> userEntities = this.methodsByParamsMap.get(param).apply(value);
-        userEntities.stream().findAny().orElseThrow(() -> new UsersNotFoundException(param, value));
+        userEntities.stream().findAny().orElseThrow(() -> {
+            switch (param) {
+                case "id":
+                case "email":
+                    throw new UserNotFoundException(param, value);
+                default:
+                    throw new UsersNotFoundException(param, value);
+            }
+        });
         return getCorrespondingEntityType(userEntities);
     }
 
