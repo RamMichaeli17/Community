@@ -1,4 +1,4 @@
-package restapi.webapp.factories;
+package restapi.webapp.assemblers;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
