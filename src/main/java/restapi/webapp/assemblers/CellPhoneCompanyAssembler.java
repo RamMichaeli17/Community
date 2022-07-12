@@ -1,4 +1,4 @@
-package restapi.webapp.factories;
+package restapi.webapp.assemblers;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -25,7 +25,7 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
     @Override
     public EntityModel<CellPhoneCompanyEntity> toModel(CellPhoneCompanyEntity entity) {
         return EntityModel.of(entity)
-                .add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies()).withRel("Get all companies"))
+                .add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies()).withRel("Get all cell phone companies"))
                 .add(linkTo(methodOn(CellPhoneCompanyController.class)
                         .getCompanyWithPathVar("name", entity.getCompanyName())).withSelfRel());
     }
