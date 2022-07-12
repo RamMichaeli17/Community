@@ -148,8 +148,11 @@ public class UserService {
         // In case there's already a user with same credentials, changes won't be saved.
         userRepo.findById(user.getUserId()).orElseThrow(() ->
                 new UserNotFoundException(user.getUserId()));
-        if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
-            throw new UserExistsException(user.getEmail());
+        if(!user.getEmail().equals(userRepo.getUserEntityByUserId(user.getUserId()).get(0).getEmail()))
+        {
+            if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
+                throw new UserExistsException(user.getEmail());
+            }
         }
         // Making sure the seed is compatible with the user's email address and all fields are valid
         AvatarEntity avatarEntity = user.getAvatarEntity();
