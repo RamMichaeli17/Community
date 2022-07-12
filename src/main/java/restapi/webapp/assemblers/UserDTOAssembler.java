@@ -1,4 +1,4 @@
-package restapi.webapp.factories;
+package restapi.webapp.assemblers;
 
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import restapi.webapp.dtos.UserDTO;
