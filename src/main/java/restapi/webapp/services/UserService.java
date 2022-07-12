@@ -279,17 +279,17 @@ public class UserService {
         return getCorrespondingEntityType(users);
     }
 
-    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@NonNull Long userId, @NonNull Set<@NonNull Long> companiesIds) {
+    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@NonNull Long userId, @NonNull Set<@NonNull Long> cellPhoneCompaniesIds) {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
         Set<CellPhoneCompanyEntity> cellPhoneCompanyEntities = new HashSet<>();
-        for (Long companyId : companiesIds) {
+        for (Long companyId : cellPhoneCompaniesIds) {
             cellPhoneCompanyRepo.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
             cellPhoneCompanyEntities.add(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId));
         }
         user.getCellPhoneCompanies().addAll(cellPhoneCompanyEntities);
         userRepo.save(user);
-        log.info("User {} has been linked with the cell phone companies above: {}", userId,companiesIds);
+        log.info("User {} has been linked with the cell phone companies above: {}", userId,cellPhoneCompaniesIds);
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
     }
 }

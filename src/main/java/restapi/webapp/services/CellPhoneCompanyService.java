@@ -50,9 +50,9 @@ public class CellPhoneCompanyService {
     public ResponseEntity<?> getAllCompanies(){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
         companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
-        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
                 cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
-        return ResponseEntity.of(Optional.of(companies));
+        return ResponseEntity.of(Optional.of(cellPhoneCompanies));
     }
 
     /**
@@ -147,12 +147,12 @@ public class CellPhoneCompanyService {
      * @return ResponseEntity of the returned cell phone companies that exist.
      */
     public ResponseEntity<?> getCellPhoneCompaniesByUserId(@NonNull Long id) {
-        CollectionModel<EntityModel<CellPhoneCompanyEntity>> companies =
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
                 cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
-        if(companies.getContent().isEmpty()){
+        if(cellPhoneCompanies.getContent().isEmpty()){
             throw new CompaniesNotFoundException();
         }
-        return ResponseEntity.of(Optional.of(companies));
+        return ResponseEntity.of(Optional.of(cellPhoneCompanies));
     }
 
     /**
