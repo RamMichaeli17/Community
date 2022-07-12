@@ -112,11 +112,6 @@ public class CellPhoneCompanyService {
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.findById(company.getCellPhoneCompanyId()).orElseThrow(() ->
                 new CompanyNotFoundException(company.getCellPhoneCompanyId()));
-        //TODO: should throw exception: this name is not available instead of "500 error"
-//        CellPhoneCompanyEntity cellPhoneCompanyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(company.getCellPhoneCompanyId());
-//        if (Objects.isNull(cellPhoneCompanyEntity)) {
-//            throw new CompanyExistsException(company.getCompanyName());
-//        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
