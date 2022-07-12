@@ -13,10 +13,9 @@ import java.util.*;
  * A class that represents the Cell Phone Company entity, and contains its various characteristics and methods.
  */
 @Data
-@AllArgsConstructor
 @Entity
 @NoArgsConstructor
-@Table(name="CELL_PHONE_COMPANY")
+@Table(name="CELL_PHONE_COMPANIES")
 public class CellPhoneCompanyEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +32,6 @@ public class CellPhoneCompanyEntity implements Serializable {
     private Set<UserEntity> users = new LinkedHashSet<>();
 
     public CellPhoneCompanyEntity(String companyName, Set<String> operationalCountries) {
-        //todo: extract this function to public class: utilities
         String[] isoCountries = Locale.getISOCountries();
         int randomAmountOfCountries = Utils.randomNumberBetweenMinAndMax(1,12);
 

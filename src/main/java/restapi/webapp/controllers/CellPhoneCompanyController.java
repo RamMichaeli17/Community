@@ -111,7 +111,7 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Update a cell phone company",
             description = "Update a specific cell phone company",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> updateUser(@RequestBody CellPhoneCompanyEntity company) {
+    public ResponseEntity<?> updateCellPhoneCompany(@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
         ResponseEntity<?> response = this.cellPhoneCompanyService.updateCompany(company);
         log.info("{}", response);
@@ -134,6 +134,41 @@ public class CellPhoneCompanyController {
         log.info("{}", company);
         return this.cellPhoneCompanyService.createCompany(company);
     }
+
+    /**
+     * A method that gets a company's DTO representation based on its company ID, if exists.
+     * @param id ID of company to be fetched.
+     * @return ResponseEntity of the requested company, if exists.
+     */
+    @GetMapping("/getCompany/{id}/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get only social information about a specific company",
+            description = "Get a companyDTO that contains only some information about a company we want to present",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getCellPhoneCompanyInfo(@PathVariable Long id) {
+        log.info("Trying to get company info by ID: " + id);
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompanyDtoInfo(id);
+        log.info("{}", response);
+        return response;
+    }
+
+    /**
+     * A method that gets the DTO representation of the companies that exist on DB, if they exist.
+     * @return ResponseEntity of the requested companies, if they exist.
+     */
+    @GetMapping("/getAllCompanies/info")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all the social information about the companies",
+            description = "Get all companyDTOs that contain partial information we present about companies",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> getAllCellPhoneCompaniesInfo() {
+        log.info("Trying to get all companies info");
+        ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();
+        log.info("{}", response);
+        return response;
+    }
+
+
 
     /**
      * A method that returns all the cell phone companies that belong to a user, if there are any.

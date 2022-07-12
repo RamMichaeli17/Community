@@ -23,6 +23,6 @@ public class CellPhoneCompanyDTO {
 
     @JsonProperty("Summary")
     public String getSummary() {
-        return String.format("Hello");
+        return String.format("%s company operates in several countries: %s.",this.getCompanyName(),cellPhoneCompany.getOperationalCountries());
     }
 }

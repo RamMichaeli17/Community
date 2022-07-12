@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.UserService;
 
+import java.util.Set;
+
 /**
  * A class that represents the controller of the UserEntity,
  * containing various endpoints for getting information about users,
@@ -245,6 +247,19 @@ public class UserController {
     public ResponseEntity<?> getUserEntitiesByCompanyId(@PathVariable Long id){
         log.info("Trying to get user entities by company ID: {}", id);
         ResponseEntity<?> response = this.userService.getUserEntitiesByCellPhoneCompanyId(id);
+        log.info("{}", response);
+        return response;
+    }
+
+    @PutMapping("/linkUserWithCompanies")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update a user",
+            description = "Update a specific user",
+            tags = {"User Controller"})
+    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@RequestParam Long userId,
+                                                            @RequestParam Set<Long> companiesIds) {
+        log.info("Trying to link user {} with the cell phone companies above: {}",userId,companiesIds);
+        ResponseEntity<?> response = this.userService.linkUserWithCellPhoneCompanies(userId,companiesIds);
         log.info("{}", response);
         return response;
     }
