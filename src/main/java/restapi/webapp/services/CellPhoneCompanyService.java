@@ -8,12 +8,10 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import restapi.webapp.dtos.CellPhoneCompanyDTO;
-import restapi.webapp.dtos.UserDTO;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
-import restapi.webapp.entities.UserEntity;
 import restapi.webapp.exceptions.*;
-import restapi.webapp.factories.CellPhoneCompanyAssembler;
-import restapi.webapp.factories.CellPhoneCompanyDTOAssembler;
+import restapi.webapp.assemblers.CellPhoneCompanyAssembler;
+import restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 
 import java.util.*;
