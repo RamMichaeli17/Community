@@ -15,6 +15,7 @@ import restapi.webapp.enums.HairColor;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
 
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -34,7 +35,7 @@ public class Config {
             log.info("Cellcom has been created: " + cellcom);
 
             CellPhoneCompanyEntity orange = cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity(
-                    "Orange", Set.of("Argentina","Brazil","Israel")
+                    "Orange", Set.of("Argentina","Brazil")
             ));
             log.info("Orange has been created: " + orange);
 
@@ -69,6 +70,11 @@ public class Config {
             log.info("User3 has been created." + user3);
 
             log.info("All users have been initiated");
+
+            cellcom.getOperationalCountries().add(user1.getLocation().getCountry());
+            orange.getOperationalCountries().add(user1.getLocation().getCountry());
+            partner.getOperationalCountries().add(user1.getLocation().getCountry());
+            cellPhoneCompanyRepo.saveAll(List.of(cellcom, partner, orange));
         };
     }
 
