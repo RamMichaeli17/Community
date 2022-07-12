@@ -14,9 +14,9 @@ import restapi.webapp.services.CellPhoneCompanyService;
 
 /**
  * A class that represents the controller of a cell phone company,
- * containing various endpoints for getting information about companies,
- * searching companies by specific parameters, editing company's information,
- * as well as creation and deletion of companies
+ * containing various endpoints for getting information about cell phone companies,
+ * searching cell phone companies by specific parameters, editing company's information,
+ * as well as creation and deletion of cell phone companies
  */
 @RestController
 @RequestMapping("/companies")
@@ -36,7 +36,7 @@ public class CellPhoneCompanyController {
      */
     @GetMapping("/getAllCompanies")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Find all companies",
+    @Operation(summary = "Find all cell phone companies",
             description = "Find all of cell phone companies and their details",
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getAllCompanies() {
@@ -153,16 +153,16 @@ public class CellPhoneCompanyController {
     }
 
     /**
-     * A method that gets the DTO representation of the companies that exist on DB, if they exist.
-     * @return ResponseEntity of the requested companies, if they exist.
+     * A method that gets the DTO representation of the cell phone companies that exist on DB, if they exist.
+     * @return ResponseEntity of the requested cell phone companies, if they exist.
      */
     @GetMapping("/getAllCompanies/info")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all the social information about the companies",
-            description = "Get all companyDTOs that contain partial information we present about companies",
+    @Operation(summary = "Get all the social information about the cell phone companies",
+            description = "Get all companyDTOs that contain partial information we present about cell phone companies",
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getAllCellPhoneCompaniesInfo() {
-        log.info("Trying to get all companies info");
+        log.info("Trying to get all cell phone companies info");
         ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();
         log.info("{}", response);
         return response;
@@ -178,7 +178,7 @@ public class CellPhoneCompanyController {
     @GetMapping("/get/userId/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all cell phone companies that belong to a specific user",
-            description = "Find all the companies and their details in accordance with a specific user ID",
+            description = "Find all the cell phone companies and their details in accordance with a specific user ID",
             tags = {"Cell Phone Company Controller"})
     public ResponseEntity<?> getCellPhoneCompaniesByUserId(@PathVariable("id") Long id) {
         log.info("Trying to fetch all cell phone companies");

@@ -38,7 +38,6 @@ public class UserDTO {
     @JsonProperty("Cell Phone Companies")
     public List<Map<String,String>> getCellPhoneCompanies() {
         List<Map<String,String>> cellPhonesCompaniesNamesAndID = new ArrayList<>();
-//        return this.user.getCellPhoneCompanies().stream().map(CellPhoneCompanyEntity::getCompanyName).collect(Collectors.toList());
         for (CellPhoneCompanyEntity cellPhoneCompanyEntity : this.user.getCellPhoneCompanies()) {
             cellPhonesCompaniesNamesAndID.add(Map.of("companyName",cellPhoneCompanyEntity.getCompanyName(),"cellPhoneCompanyId",cellPhoneCompanyEntity.getCellPhoneCompanyId().toString()));
         }
