@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UserAPIException;
 import restapi.webapp.services.ApiService;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +45,7 @@ public class ApiController {
             tags = {"API Controller"})
     public ResponseEntity<?> getUserByGender(@PathVariable String gender) {
         log.info("Trying to get {} user", gender);
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType(gender);
+        CompletableFuture<UserEntity> response = this.apiService.getUserByGender(gender);
 
         // Get the result of CompletableFuture
         response.join();
@@ -52,7 +53,7 @@ public class ApiController {
         try {
             return ResponseEntity.of(Optional.of(response.get()));
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new UserAPIException();
         }
     }
 
@@ -69,7 +70,7 @@ public class ApiController {
             tags = {"API Controller"})
     public ResponseEntity<?> saveUserByGender(@PathVariable String gender) {
         log.info("Trying to save user by gender: {}", gender);
-        return this.apiService.saveUser(this.apiService.getUserByType(gender).join());
+        return this.apiService.saveUser(this.apiService.getUserByGender(gender).join());
     }
 
 }
