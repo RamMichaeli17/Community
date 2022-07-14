@@ -148,7 +148,12 @@ public class UserService {
         // In case there's already a user with same credentials, changes won't be saved.
         userRepo.findById(user.getUserId()).orElseThrow(() ->
                 new UserNotFoundException(user.getUserId()));
-
+        if(!user.getEmail().equals(userRepo.getUserEntityByUserId(user.getUserId()).get(0).getEmail()))
+        {
+            if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
+                throw new UserExistsException(user.getEmail());
+            }
+        }
         // Making sure the seed is compatible with the user's email address and all fields are valid
         AvatarEntity avatarEntity = user.getAvatarEntity();
         if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
@@ -283,9 +288,12 @@ public class UserService {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
         Set<CellPhoneCompanyEntity> cellPhoneCompanyEntities = new HashSet<>();
+        CellPhoneCompanyEntity cellPhoneCompanyEntity;
         for (Long companyId : cellPhoneCompaniesIds) {
             cellPhoneCompanyRepo.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
-            cellPhoneCompanyEntities.add(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId));
+            cellPhoneCompanyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId);
+            cellPhoneCompanyEntity.getOperationalCountries().add(user.getLocation().getCountry());
+            cellPhoneCompanyEntities.add(cellPhoneCompanyEntity);
         }
         user.getCellPhoneCompanies().addAll(cellPhoneCompanyEntities);
         userRepo.save(user);
