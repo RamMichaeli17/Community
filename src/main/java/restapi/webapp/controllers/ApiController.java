@@ -45,7 +45,7 @@ public class ApiController {
             tags = {"API Controller"})
     public ResponseEntity<?> getUserByGender(@PathVariable String gender) {
         log.info("Trying to get {} user", gender);
-        CompletableFuture<UserEntity> response = this.apiService.getUserByType(gender);
+        CompletableFuture<UserEntity> response = this.apiService.getUserByGender(gender);
 
         // Get the result of CompletableFuture
         response.join();
@@ -70,7 +70,7 @@ public class ApiController {
             tags = {"API Controller"})
     public ResponseEntity<?> saveUserByGender(@PathVariable String gender) {
         log.info("Trying to save user by gender: {}", gender);
-        return this.apiService.saveUser(this.apiService.getUserByType(gender).join());
+        return this.apiService.saveUser(this.apiService.getUserByGender(gender).join());
     }
 
 }

@@ -53,7 +53,7 @@ public class ApiService {
      */
     @SneakyThrows
     @Async
-    public CompletableFuture<UserEntity> getUserByType(@NonNull String userType) {
+    public CompletableFuture<UserEntity> getUserByGender(@NonNull String userType) {
         log.info("Trying to fetch data from API");
         String jsonStringRepresentation = IOUtils.toString(new URL(userRetrieveTypes.get(userType)),
                StandardCharsets.UTF_8);
