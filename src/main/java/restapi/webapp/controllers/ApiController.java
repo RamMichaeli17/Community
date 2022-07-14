@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import restapi.webapp.entities.UserEntity;
+import restapi.webapp.exceptions.UserAPIException;
 import restapi.webapp.services.ApiService;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -52,7 +53,7 @@ public class ApiController {
         try {
             return ResponseEntity.of(Optional.of(response.get()));
         } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
+            throw new UserAPIException();
         }
     }
 

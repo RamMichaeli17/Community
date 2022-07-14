@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import restapi.webapp.exceptions.*;
-
 import java.net.UnknownHostException;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalAdvice {
-
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserExistsException.class)

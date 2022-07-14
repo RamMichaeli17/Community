@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import restapi.webapp.entities.AvatarEntity;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.exceptions.UserAPIException;
-import restapi.webapp.exceptions.UserAPIException;
 import restapi.webapp.assemblers.UserEntityAssembler;
 import restapi.webapp.global.Utils;
 import restapi.webapp.repos.UserRepo;
@@ -113,12 +112,13 @@ public class ApiService {
         String phoneNumber;
         int randomAmountOfPhoneNumbers = Utils.randomNumberBetweenMinAndMax(0,20);
         Random rand = new Random();
-        for(int i=0; i<randomAmountOfPhoneNumbers; i++) {
+
+        for(int i = 0; i<randomAmountOfPhoneNumbers; i++) {
             num1 = (rand.nextInt(7) + 1) * 100 + (rand.nextInt(8) * 10) + rand.nextInt(8);
             num2 = rand.nextInt(743);
             num3 = rand.nextInt(10000);
-            df3 = new DecimalFormat("000"); // 3 zeros
-            df4 = new DecimalFormat("0000"); // 4 zeros
+            df3 = new DecimalFormat("000"); // 3 digits in pattern
+            df4 = new DecimalFormat("0000"); // 4 digits in pattern
             phoneNumber = df3.format(num1) + "-" + df3.format(num2) + "-" + df4.format(num3);
             randomPhoneNumbers.add(phoneNumber);
         }
