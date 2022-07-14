@@ -35,12 +35,12 @@ public class Config {
             log.info("Cellcom has been created: " + cellcom);
 
             CellPhoneCompanyEntity orange = cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity(
-                    "Orange", Set.of("Argentina","Brazil")
+                    "Orange", Set.of("Argentina","Brazil", "Israel")
             ));
             log.info("Orange has been created: " + orange);
 
-            CellPhoneCompanyEntity partner =
-                    cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity("Partner", Set.of("Spain","Turkey")));
+            CellPhoneCompanyEntity partner = cellPhoneCompanyRepo.save(new CellPhoneCompanyEntity(
+                    "Partner",Set.of("Spain", "Turkey")));
             log.info("Partner has been created: " + partner);
 
             log.info("All cell phone companies have been created");
