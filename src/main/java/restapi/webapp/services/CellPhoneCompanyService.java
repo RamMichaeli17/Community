@@ -113,6 +113,12 @@ public class CellPhoneCompanyService {
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.findById(company.getCellPhoneCompanyId()).orElseThrow(() ->
                 new CompanyNotFoundException(company.getCellPhoneCompanyId()));
+        if(!company.getCompanyName().equals(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(company.getCellPhoneCompanyId()).getCompanyName()))
+        {
+            if(cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()) != null) {
+                throw new CompanyExistsException(company.getCompanyName());
+            }
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));
