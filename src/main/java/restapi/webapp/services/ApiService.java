@@ -28,8 +28,13 @@ import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.global.Utils;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -155,11 +160,16 @@ public class ApiService {
     @SneakyThrows
     @Async
     public CompletableFuture<CellPhoneCompanyEntity> getRandomCompany() {
-        RestTemplate restTemplate = new RestTemplate();
+        String path = System.getProperty("user.dir") + "\\" + "apiKey.txt";
+        Path keyPath = Path.of(path);
+        File f = new File(System.getProperty("user.dir") + "\\" + "apiKey.txt");
+        if (!f.exists()) {
+            f.createNewFile();
+        }
         String url = "https://randommer.io/api/Name/BusinessName?number=1&cultureCode=en_US";
         // create headers
         HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Api-Key","d4622d642fcc42b38d5eed4acae7971c");
+        headers.set("X-Api-Key",Files.readString(keyPath));
         final HttpEntity<String> entity = new HttpEntity<>(headers);
         log.info("Trying to fetch data from API");
         try {
@@ -185,7 +195,5 @@ public class ApiService {
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel
                 (cellPhoneCompanyEntity)));
     }
-
-
 
 }
