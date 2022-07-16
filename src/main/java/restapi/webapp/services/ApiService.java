@@ -8,17 +8,33 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
+import restapi.webapp.assemblers.CellPhoneCompanyAssembler;
 import restapi.webapp.entities.AvatarEntity;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.exceptions.UserAPIException;
+import restapi.webapp.exceptions.APIException;
 import restapi.webapp.assemblers.UserEntityAssembler;
+import restapi.webapp.exceptions.CompanyExistsException;
+import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.global.Utils;
+import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
+
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -33,16 +49,24 @@ public class ApiService {
     private final ObjectMapper objectMapper;
     private final Map<String, String> userRetrieveTypes;
     private final UserRepo userRepo;
-    private final UserEntityAssembler assembler;
+    private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
+    private final UserEntityAssembler userEntityAssembler;
+    private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public ApiService(ObjectMapper objectMapper, UserRepo userRepo, UserEntityAssembler userEntityAssembler) {
+    public ApiService(ObjectMapper objectMapper, UserRepo userRepo, UserEntityAssembler userEntityAssembler,
+                      CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler,
+                      RestTemplateBuilder restTemplateBuilder) {
         userRetrieveTypes = Map.of("random", "https://randomuser.me/api?exc=picture,cell,nat,registered&noinfo",
                 "male", "https://randomuser.me/api/?gender=male&exc=picture,cell,nat,registered&noinfo",
                 "female", "https://randomuser.me/api/?gender=female&exc=picture,cell,nat,registered&noinfo");
         this.objectMapper = objectMapper;
         this.userRepo = userRepo;
-        this.assembler = userEntityAssembler;
+        this.userEntityAssembler = userEntityAssembler;
+        this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
+        this.cellPhoneCompanyAssembler = cellPhoneCompanyAssembler;
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     /**
@@ -61,7 +85,7 @@ public class ApiService {
         log.info("Trying to map JSON into a Java object");
         JSONObject rawJson = new JSONObject(jsonStringRepresentation);
         if (!rawJson.has("results")) { // There is an error
-            return CompletableFuture.failedFuture(new UserAPIException());
+            return CompletableFuture.failedFuture(new APIException());
         }
         JSONArray jsonArrayToExtractUser = rawJson.getJSONArray("results");
         JSONObject userJson = jsonArrayToExtractUser.getJSONObject(0);
@@ -78,9 +102,12 @@ public class ApiService {
      * @return ResponseEntity of the saved user entity.
      */
     public ResponseEntity<?> saveUser(@NonNull UserEntity user) {
+        if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
+            throw new UserExistsException(user.getEmail());
+        }
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        return ResponseEntity.of(Optional.of(userEntityAssembler.toModel(user)));
     }
 
     /**
@@ -123,6 +150,50 @@ public class ApiService {
             randomPhoneNumbers.add(phoneNumber);
         }
         return randomPhoneNumbers;
+    }
+
+    /**
+     * A function that fetches a random company name from external API using restTemplate
+     * and creates a random company (with random phone numbers).
+     * @return CompletableFuture of CellPhoneCompanyEntity
+     */
+    @SneakyThrows
+    @Async
+    public CompletableFuture<CellPhoneCompanyEntity> getRandomCompany() {
+        String path = System.getProperty("user.dir") + "\\" + "apiKey.txt";
+        Path keyPath = Path.of(path);
+        File f = new File(path);
+        if (!f.exists()) {
+            f.createNewFile();
+        }
+        String url = "https://randommer.io/api/Name/BusinessName?number=1&cultureCode=en_US";
+        // create headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-Api-Key",Files.readString(keyPath));
+        final HttpEntity<String> entity = new HttpEntity<>(headers);
+        log.info("Trying to fetch data from API");
+        try {
+            List<String> companyName = restTemplate.postForObject(url, entity, List.class);
+            log.info("Data fetched successfully");
+            return CompletableFuture.completedFuture(new CellPhoneCompanyEntity(companyName.get(0),Set.of()));
+        }
+        catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
+            return CompletableFuture.failedFuture(new APIException());
+        }
+    }
+
+    /**
+     * A method that gets a random cell phone company entity as a parameter and saves it into the DB,
+     * @param cellPhoneCompanyEntity Cell Phone Company entity to be saved into the DB.
+     * @return ResponseEntity of the saved cell phone company entity.
+     */
+    public ResponseEntity<?> saveCompany(@NonNull CellPhoneCompanyEntity cellPhoneCompanyEntity){
+        if(cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(cellPhoneCompanyEntity.getCompanyName())!= null) {
+            throw new CompanyExistsException(cellPhoneCompanyEntity.getCompanyName());
+        }
+        cellPhoneCompanyRepo.save(cellPhoneCompanyEntity);
+        return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel
+                (cellPhoneCompanyEntity)));
     }
 
 }

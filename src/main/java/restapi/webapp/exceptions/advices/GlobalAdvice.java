@@ -76,9 +76,9 @@ public class GlobalAdvice {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    @ExceptionHandler(UserAPIException.class)
-    String UserAPIHandler(UserAPIException uapie){
-        String message = uapie.getMessage();
+    @ExceptionHandler(APIException.class)
+    String UserAPIHandler(APIException apie){
+        String message = apie.getMessage();
         log.error(message);
         return message;
     }

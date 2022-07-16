@@ -1,6 +1,7 @@
 package restapi.webapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.*;
 @Table(name="CELL_PHONE_COMPANIES")
 public class CellPhoneCompanyEntity implements Serializable {
     @Id
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cellPhoneCompanyId;
 
