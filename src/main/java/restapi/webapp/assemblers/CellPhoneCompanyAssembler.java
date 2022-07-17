@@ -28,7 +28,7 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
                 .add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies())
                         .withRel("Get all cell phone companies"))
                 .add(linkTo(methodOn(CellPhoneCompanyController.class)
-                        .getCompanyWithPathVar("name", entity.getCompanyName())).withSelfRel());
+                        .getCompanyBySpecificParameter("name", entity.getCompanyName())).withSelfRel());
     }
 
     /**

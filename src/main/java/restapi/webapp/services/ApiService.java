@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,7 @@ import restapi.webapp.exceptions.UserExistsException;
 import restapi.webapp.global.Utils;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
-
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -101,7 +100,7 @@ public class ApiService {
      * @param user User entity to be saved into the DB.
      * @return ResponseEntity of the saved user entity.
      */
-    public ResponseEntity<?> saveUser(@NonNull UserEntity user) {
+    public ResponseEntity<EntityModel<UserEntity>> saveUser(@NonNull UserEntity user) {
         if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
             throw new UserExistsException(user.getEmail());
         }
@@ -175,7 +174,8 @@ public class ApiService {
         try {
             List<String> companyName = restTemplate.postForObject(url, entity, List.class);
             log.info("Data fetched successfully");
-            return CompletableFuture.completedFuture(new CellPhoneCompanyEntity(companyName.get(0),Set.of()));
+            return CompletableFuture.completedFuture(new CellPhoneCompanyEntity
+                    (Objects.requireNonNull(companyName).get(0), Set.of()));
         }
         catch (HttpClientErrorException | HttpServerErrorException httpClientOrServerExc) {
             return CompletableFuture.failedFuture(new APIException());
@@ -187,13 +187,15 @@ public class ApiService {
      * @param cellPhoneCompanyEntity Cell Phone Company entity to be saved into the DB.
      * @return ResponseEntity of the saved cell phone company entity.
      */
-    public ResponseEntity<?> saveCompany(@NonNull CellPhoneCompanyEntity cellPhoneCompanyEntity){
-        if(cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(cellPhoneCompanyEntity.getCompanyName())!= null) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> saveCompany
+    (@NonNull CellPhoneCompanyEntity cellPhoneCompanyEntity){
+        CellPhoneCompanyEntity company =
+                cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(cellPhoneCompanyEntity.getCompanyName());
+        if(!Objects.isNull(company)) { // If a company with identical name won't exist, object will be null
             throw new CompanyExistsException(cellPhoneCompanyEntity.getCompanyName());
         }
         cellPhoneCompanyRepo.save(cellPhoneCompanyEntity);
-        return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel
-                (cellPhoneCompanyEntity)));
+        return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(cellPhoneCompanyEntity)));
     }
 
 }

@@ -25,8 +25,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-//todo: Change ResponseEntity<?
-
 /**
  * A class that operates as the service of the user entity, containing the business logic of
  * the operations that are given to the user.
@@ -63,7 +61,7 @@ public class UserService {
      * @param avatarEntity Avatar entity to modify.
      * @param email User's email to set as seed for avatar entity.
      */
-    private void modifyAvatarEntity(@NonNull AvatarEntity avatarEntity, String email) {
+    private void modifyAvatarEntity(@NonNull AvatarEntity avatarEntity, @NonNull String email) {
         if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
             avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
         if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
@@ -96,7 +94,7 @@ public class UserService {
      * A method that fetches all the users that the DB contains, if any.
      * @return ResponseEntity of returned users.
      */
-    public ResponseEntity<?> getAllUsers(){
+    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getAllUsers(){
         List<UserEntity> userEntities = userRepo.findAll();
         userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
 
@@ -135,7 +133,7 @@ public class UserService {
      * @param user User entity to be inserted into the DB
      * @return ResponseEntity of the created user
      */
-    public ResponseEntity<?> createUser(@NonNull UserEntity user){
+    public ResponseEntity<EntityModel<UserEntity>> createUser(@NonNull UserEntity user){
         // If user's email already exists, an exception will be thrown
         if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
             throw new UserExistsException(user.getEmail());
@@ -152,7 +150,7 @@ public class UserService {
      * @param user User entity to be updated.
      * @return ResponseEntity of the updated user.
      */
-    public ResponseEntity<?> updateUser(@NonNull UserEntity user) {
+    public ResponseEntity<EntityModel<UserEntity>> updateUser(@NonNull UserEntity user) {
         // In case there's already a user with same credentials, changes won't be saved.
         userRepo.findById(user.getUserId()).orElseThrow(() ->
                 new UserNotFoundException(user.getUserId()));
@@ -242,7 +240,7 @@ public class UserService {
      * @param id ID of user to be fetched
      * @return ResponseEntity of the requested user, if exists.
      */
-    public ResponseEntity<?> getUserDtoInfo(@NonNull Long id) {
+    public ResponseEntity<EntityModel<UserDTO>> getUserDtoInfo(@NonNull Long id) {
         /*
         This method uses the pre-defined repo method findById because it returns an Optional<T>,
         which allows us to map the returned value into a UserDTO and return an exception easily,
@@ -261,7 +259,7 @@ public class UserService {
      * then convert them into their DTO representation.
      * @return ResponseEntity of all the users on DB, if they exist.
      */
-    public ResponseEntity<?> getAllUsersDtoInfo() {
+    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersDtoInfo() {
         List<UserEntity> userEntities = userRepo.findAll();
         // Check if there are any users that exist in DB
         userEntities.stream().findAny().orElseThrow(UsersNotFoundException::new);
@@ -289,7 +287,8 @@ public class UserService {
         return getCorrespondingEntityType(users);
     }
 
-    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@NonNull Long userId, @NonNull Set<@NonNull Long> cellPhoneCompaniesIds) {
+    public ResponseEntity<EntityModel<UserEntity>> linkUserWithCellPhoneCompanies(@NonNull Long userId,
+                                                            @NonNull Set<@NonNull Long> cellPhoneCompaniesIds) {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
         Set<CellPhoneCompanyEntity> cellPhoneCompanyEntities = new HashSet<>();
