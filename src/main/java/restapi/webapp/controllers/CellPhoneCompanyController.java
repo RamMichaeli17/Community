@@ -62,8 +62,8 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Find a Cell Phone company by Path Variable params",
             description = "Find company details by param and value",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> getCompanyWithPathVar(@PathVariable String param,
-                                                                                     @PathVariable String value) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> getCompanyBySpecificParameter
+    (@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get company by param \"{}\" and value \"{}\"", param, value);
         ResponseEntity<EntityModel<CellPhoneCompanyEntity>> response =
                 this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
