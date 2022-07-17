@@ -5,13 +5,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import restapi.webapp.dtos.UserDTO;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.UserService;
-
 import java.util.Set;
 
 /**
@@ -41,9 +43,9 @@ public class UserController {
     @Operation(summary = "Find all users",
             description = "Find user details by name, location age and more",
             tags = {"User Controller"})
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<CollectionModel<EntityModel<UserEntity>>> getAllUsers() {
         log.info("Trying to fetch all users");
-        ResponseEntity<?> response = this.userService.getAllUsers();
+        ResponseEntity<CollectionModel<EntityModel<UserEntity>>> response = this.userService.getAllUsers();
         log.info("{}", response);
         return response;
     }
@@ -78,7 +80,7 @@ public class UserController {
             description = "Create a new user by specific parameters",
             responses = {@ApiResponse(responseCode = "201", description = "User created")},
             tags = {"User Controller"})
-    public ResponseEntity<?> createUser(@RequestBody UserEntity user) {
+    public ResponseEntity<EntityModel<UserEntity>> createUser(@RequestBody UserEntity user) {
         log.info("Trying to create a new user by specific parameters:");
         log.info("{}", user);
         return this.userService.createUser(user);
@@ -94,7 +96,7 @@ public class UserController {
     @Operation(summary = "Update a user",
             description = "Update a specific user",
             tags = {"User Controller"})
-    public ResponseEntity<?> updateUser(@RequestBody UserEntity user) {
+    public ResponseEntity<EntityModel<UserEntity>> updateUser(@RequestBody UserEntity user) {
         log.info("Trying to update user by specific parameters");
         log.info("{}", user);
         return this.userService.updateUser(user);
@@ -191,7 +193,7 @@ public class UserController {
     @Operation(summary = "Find a specific user by their age and last name",
             description = "Find a specific user by their age and the first digit on their last name",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserByAgeAndLastName(@RequestParam Integer lower,
+    public ResponseEntity<?> getUsersByAgeAndLastName(@RequestParam Integer lower,
                                                 @RequestParam Integer upper,
                                                 @RequestParam String startingChar) {
         log.info("Trying to fetch users by advanced querying: Lower bound: {}, Upper bound: {}, " +
@@ -211,9 +213,9 @@ public class UserController {
     @Operation(summary = "Get only social information about a specific user",
             description = "Get a userDTO that contains only some information about a user we want to present",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserInfo(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<UserDTO>> getUserDtoInfo(@PathVariable Long id) {
         log.info("Trying to get user info by ID: " + id);
-        ResponseEntity<?> response = this.userService.getUserDtoInfo(id);
+        ResponseEntity<EntityModel<UserDTO>> response = this.userService.getUserDtoInfo(id);
         log.info("{}", response);
         return response;
     }
@@ -227,9 +229,9 @@ public class UserController {
     @Operation(summary = "Get all the social information about the users",
             description = "Get all userDTOs that contain partial information we present about users",
             tags = {"User Controller"})
-    public ResponseEntity<?> getAllUsersInfo() {
+    public ResponseEntity<CollectionModel<EntityModel<UserDTO>>> getAllUsersDtoInfo() {
         log.info("Trying to get all users info");
-        ResponseEntity<?> response = this.userService.getAllUsersDtoInfo();
+        ResponseEntity<CollectionModel<EntityModel<UserDTO>>> response = this.userService.getAllUsersDtoInfo();
         log.info("{}", response);
         return response;
     }
@@ -256,10 +258,11 @@ public class UserController {
     @Operation(summary = "Update a user",
             description = "Update a specific user",
             tags = {"User Controller"})
-    public ResponseEntity<?> linkUserWithCellPhoneCompanies(@RequestParam Long userId,
+    public ResponseEntity<EntityModel<UserEntity>> linkUserWithCellPhoneCompanies(@RequestParam Long userId,
                                                             @RequestParam Set<Long> companiesIds) {
-        log.info("Trying to link user {} with the cell phone companies above: {}",userId,companiesIds);
-        ResponseEntity<?> response = this.userService.linkUserWithCellPhoneCompanies(userId,companiesIds);
+        log.info("Trying to link user {} with the cell phone companies above: {}", userId, companiesIds);
+        ResponseEntity<EntityModel<UserEntity>> response = this.userService
+                .linkUserWithCellPhoneCompanies(userId,companiesIds);
         log.info("{}", response);
         return response;
     }

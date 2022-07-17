@@ -47,7 +47,7 @@ public class CellPhoneCompanyService {
      * A method that fetches all the cell phone companies that the DB contains, if any.
      * @return ResponseEntity of returned cell phone companies.
      */
-    public ResponseEntity<?> getAllCompanies(){
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getAllCompanies(){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
         companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
         CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
@@ -62,7 +62,8 @@ public class CellPhoneCompanyService {
      * @param value The requested value of the inputted parameter
      * @return ResponseEntity of the cell phone company, if exists.
      */
-    public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> getCompanyBySpecificParameter(@NonNull String param,
+                                                                                             @NonNull String value) {
         CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
         boolean isValueDigitsOnly = value.matches("\\d+");
 
@@ -110,7 +111,7 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be updated.
      * @return ResponseEntity of the updated cell phone company.
      */
-    public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> updateCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.findById(company.getCellPhoneCompanyId()).orElseThrow(() ->
                 new CompanyNotFoundException(company.getCellPhoneCompanyId()));
         if(!company.getCompanyName().equals(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId
@@ -131,7 +132,7 @@ public class CellPhoneCompanyService {
      * @param company Cell phone company entity to be inserted into the DB.
      * @return ResponseEntity of the created cell phone company.
      */
-    public ResponseEntity<?> createCompany(@NonNull CellPhoneCompanyEntity company){
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> createCompany(@NonNull CellPhoneCompanyEntity company){
         CellPhoneCompanyEntity companyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName
                 (company.getCompanyName());
         if(!Objects.isNull(companyEntity)){ // If there was already a company with the same name
@@ -147,7 +148,8 @@ public class CellPhoneCompanyService {
      * @param id The ID of the user that the search is based on.
      * @return ResponseEntity of the returned cell phone companies that exist.
      */
-    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@NonNull Long id) {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByUserId
+    (@NonNull Long id) {
         CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
                 cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
         if(cellPhoneCompanies.getContent().isEmpty()){
@@ -162,7 +164,7 @@ public class CellPhoneCompanyService {
      * @param id ID of company to be fetched
      * @return ResponseEntity of the requested company, if exists.
      */
-    public ResponseEntity<?> getCellPhoneCompanyDtoInfo(@NonNull Long id) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyDTO>> getCellPhoneCompanyDtoInfo(@NonNull Long id) {
         /*
         This method uses the pre-defined repo method findById because it returns an Optional<T>,
         which allows us to map the returned value into a CellPhoneCompanyDTO and return an exception easily,
@@ -181,7 +183,7 @@ public class CellPhoneCompanyService {
      * then convert them into their DTO representation.
      * @return ResponseEntity of all the companies on DB, if they exist.
      */
-    public ResponseEntity<?> getAllCellPhoneCompaniesDtoInfo() {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> getAllCellPhoneCompaniesDtoInfo() {
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo.findAll();
         // Check if there are any users that exist in DB
         companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);

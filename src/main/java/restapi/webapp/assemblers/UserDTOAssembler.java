@@ -6,6 +6,9 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.UserController;
+
+import java.util.Objects;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -21,9 +24,9 @@ public class UserDTOAssembler implements SimpleRepresentationModelAssembler<User
      */
     @Override
     public void addLinks(EntityModel<UserDTO> resource) {
-        resource.add(linkTo(methodOn(UserController.class).getAllUsersInfo()).withRel("Get all users info"));
-        resource.add(linkTo(methodOn(UserController.class).getUserInfo(resource.getContent().getUser().getUserId()))
-                        .withSelfRel()
+        resource.add(linkTo(methodOn(UserController.class).getAllUsersDtoInfo()).withRel("Get all users info"));
+        resource.add(linkTo(methodOn(UserController.class).getUserDtoInfo
+                (Objects.requireNonNull(resource.getContent()).getUser().getUserId())).withSelfRel()
         );
     }
 
@@ -33,6 +36,6 @@ public class UserDTOAssembler implements SimpleRepresentationModelAssembler<User
      */
     @Override
     public void addLinks(CollectionModel<EntityModel<UserDTO>> resources) {
-        resources.add(linkTo(methodOn(UserController.class).getAllUsersInfo()).withSelfRel());
+        resources.add(linkTo(methodOn(UserController.class).getAllUsersDtoInfo()).withSelfRel());
     }
 }

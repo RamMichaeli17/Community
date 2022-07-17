@@ -5,10 +5,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import restapi.webapp.dtos.CellPhoneCompanyDTO;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.services.CellPhoneCompanyService;
 
@@ -39,9 +42,10 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Find all cell phone companies",
             description = "Find all of cell phone companies and their details",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> getAllCompanies() {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getAllCompanies() {
         log.info("Trying to fetch all cell phone companies");
-        ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCompanies();
+        ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response =
+                this.cellPhoneCompanyService.getAllCompanies();
         log.info("{}", response);
         return response;
     }
@@ -58,9 +62,11 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Find a Cell Phone company by Path Variable params",
             description = "Find company details by param and value",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> getCompanyWithPathVar(@PathVariable String param, @PathVariable String value) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> getCompanyWithPathVar(@PathVariable String param,
+                                                                                     @PathVariable String value) {
         log.info("Trying to get company by param \"{}\" and value \"{}\"", param, value);
-        ResponseEntity<?> response = this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
+        ResponseEntity<EntityModel<CellPhoneCompanyEntity>> response =
+                this.cellPhoneCompanyService.getCompanyBySpecificParameter(param, value);
         log.info("{}", response);
         return response;
     }
@@ -111,9 +117,11 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Update a cell phone company",
             description = "Update a specific cell phone company",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> updateCellPhoneCompany(@RequestBody CellPhoneCompanyEntity company) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> updateCellPhoneCompany
+    (@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to update company by specific parameters");
-        ResponseEntity<?> response = this.cellPhoneCompanyService.updateCompany(company);
+        ResponseEntity<EntityModel<CellPhoneCompanyEntity>> response =
+                this.cellPhoneCompanyService.updateCompany(company);
         log.info("{}", response);
         return response;
     }
@@ -129,7 +137,8 @@ public class CellPhoneCompanyController {
             description = "Create a new company by specific parameters",
             responses = {@ApiResponse(responseCode = "201", description = "Cell Phone Company created")},
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> createCompany(@RequestBody CellPhoneCompanyEntity company) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyEntity>> createCompany
+    (@RequestBody CellPhoneCompanyEntity company) {
         log.info("Trying to create a new company by specific parameters:");
         log.info("{}", company);
         return this.cellPhoneCompanyService.createCompany(company);
@@ -145,9 +154,10 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Get only social information about a specific company",
             description = "Get a companyDTO that contains only some information about a company we want to present",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> getCellPhoneCompanyInfo(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyDTO>> getCellPhoneCompanyInfo(@PathVariable Long id) {
         log.info("Trying to get company info by ID: " + id);
-        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompanyDtoInfo(id);
+        ResponseEntity<EntityModel<CellPhoneCompanyDTO>> response =
+                this.cellPhoneCompanyService.getCellPhoneCompanyDtoInfo(id);
         log.info("{}", response);
         return response;
     }
@@ -161,9 +171,10 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Get all the social information about the cell phone companies",
             description = "Get all companyDTOs that contain partial information we present about cell phone companies",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> getAllCellPhoneCompaniesInfo() {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> getAllCellPhoneCompaniesInfo() {
         log.info("Trying to get all cell phone companies info");
-        ResponseEntity<?> response = this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();
+        ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> response =
+                this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();
         log.info("{}", response);
         return response;
     }
@@ -180,9 +191,11 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Find all cell phone companies that belong to a specific user",
             description = "Find all the cell phone companies and their details in accordance with a specific user ID",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<?> getCellPhoneCompaniesByUserId(@PathVariable("id") Long id) {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByUserId
+    (@PathVariable("id") Long id) {
         log.info("Trying to fetch all cell phone companies");
-        ResponseEntity<?> response = this.cellPhoneCompanyService.getCellPhoneCompaniesByUserId(id);
+        ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response =
+                this.cellPhoneCompanyService.getCellPhoneCompaniesByUserId(id);
         log.info("{}", response);
         return response;
     }
