@@ -25,15 +25,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CellPhoneCompanyService {
     private final CellPhoneCompanyRepo cellPhoneCompanyRepo;
+    private final UserRepo userRepo;
     private final CellPhoneCompanyAssembler cellPhoneCompanyAssembler;
     private final CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler;
     private final HashMap<String, Function<String, CellPhoneCompanyEntity>> methodsByParamsMap;
 
     @Autowired
     public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo,
-                                   CellPhoneCompanyAssembler cellPhoneCompanyAssembler,
+                                   UserRepo userRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler,
                                    CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler) {
         this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
+        this.userRepo = userRepo;
         this.cellPhoneCompanyAssembler = cellPhoneCompanyAssembler;
         this.cellPhoneCompanyDTOAssembler = cellPhoneCompanyDTOAssembler;
 
@@ -150,9 +152,13 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByUserId
     (@NonNull Long id) {
+        List<CellPhoneCompanyEntity> cellPhoneCompaniesByUserId = cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id);
         CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
-                cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompanyRepo.getCellPhoneCompaniesByUserId(id));
-        if(cellPhoneCompanies.getContent().isEmpty()){
+                cellPhoneCompanyAssembler.toCollectionModel(cellPhoneCompaniesByUserId);
+        if(userRepo.getUserEntityByUserId(id).isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
+        else if(cellPhoneCompaniesByUserId.isEmpty()){
             throw new CompaniesNotFoundException();
         }
         return ResponseEntity.of(Optional.of(cellPhoneCompanies));
