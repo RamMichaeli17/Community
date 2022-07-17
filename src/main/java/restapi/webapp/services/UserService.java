@@ -277,7 +277,12 @@ public class UserService {
      * @return ResponseEntity of all the corresponding users on DB, if they exist.
      */
     public ResponseEntity<?> getUserEntitiesByCellPhoneCompanyId(@NonNull Long id){
+        CellPhoneCompanyEntity cellPhoneCompany = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(id);
         List<UserEntity> users = userRepo.getUserEntitiesByCellPhoneCompanyId(id);
+
+        if (cellPhoneCompany == null) {
+            throw new CompanyNotFoundException(id);
+        }
         // Check if there was any returned IDs of user entities, else throw exception
         users.stream().findAny().orElseThrow(() -> new UserNotFoundException(id));
 
