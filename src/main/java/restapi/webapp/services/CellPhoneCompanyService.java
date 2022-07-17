@@ -13,7 +13,6 @@ import restapi.webapp.exceptions.*;
 import restapi.webapp.assemblers.CellPhoneCompanyAssembler;
 import restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -31,14 +30,17 @@ public class CellPhoneCompanyService {
     private final HashMap<String, Function<String, CellPhoneCompanyEntity>> methodsByParamsMap;
 
     @Autowired
-    public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo, CellPhoneCompanyAssembler cellPhoneCompanyAssembler, CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler) {
+    public CellPhoneCompanyService(CellPhoneCompanyRepo cellPhoneCompanyRepo,
+                                   CellPhoneCompanyAssembler cellPhoneCompanyAssembler,
+                                   CellPhoneCompanyDTOAssembler cellPhoneCompanyDTOAssembler) {
         this.cellPhoneCompanyRepo = cellPhoneCompanyRepo;
         this.cellPhoneCompanyAssembler = cellPhoneCompanyAssembler;
         this.cellPhoneCompanyDTOAssembler = cellPhoneCompanyDTOAssembler;
 
         this.methodsByParamsMap = new HashMap<>();
         this.methodsByParamsMap.put("name", cellPhoneCompanyRepo::getCellPhoneCompanyByCompanyName);
-        this.methodsByParamsMap.put("id", id -> cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(Long.valueOf(id)));
+        this.methodsByParamsMap.put("id",
+                id -> cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(Long.valueOf(id)));
     }
 
     /**
@@ -62,7 +64,6 @@ public class CellPhoneCompanyService {
      */
     public ResponseEntity<?> getCompanyBySpecificParameter(@NonNull String param, @NonNull String value) {
         CellPhoneCompanyEntity companyEntity = this.methodsByParamsMap.get(param).apply(value);
-
         boolean isValueDigitsOnly = value.matches("\\d+");
 
         if (Objects.isNull(companyEntity) && isValueDigitsOnly){
@@ -112,11 +113,13 @@ public class CellPhoneCompanyService {
     public ResponseEntity<?> updateCompany(@NonNull CellPhoneCompanyEntity company){
         cellPhoneCompanyRepo.findById(company.getCellPhoneCompanyId()).orElseThrow(() ->
                 new CompanyNotFoundException(company.getCellPhoneCompanyId()));
-        //TODO: should throw exception: this name is not available instead of "500 error"
-//        CellPhoneCompanyEntity cellPhoneCompanyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(company.getCellPhoneCompanyId());
-//        if (Objects.isNull(cellPhoneCompanyEntity)) {
-//            throw new CompanyExistsException(company.getCompanyName());
-//        }
+        if(!company.getCompanyName().equals(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId
+                (company.getCellPhoneCompanyId()).getCompanyName()))
+        {
+            if(cellPhoneCompanyRepo.getCellPhoneCompanyByCompanyName(company.getCompanyName()) != null) {
+                throw new CompanyExistsException(company.getCompanyName());
+            }
+        }
         cellPhoneCompanyRepo.save(company);
         log.info("Company {} has been updated", company.getCompanyName());
         return ResponseEntity.of(Optional.of(cellPhoneCompanyAssembler.toModel(company)));

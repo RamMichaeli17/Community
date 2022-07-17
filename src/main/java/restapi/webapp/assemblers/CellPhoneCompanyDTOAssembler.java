@@ -23,9 +23,11 @@ public class CellPhoneCompanyDTOAssembler implements SimpleRepresentationModelAs
      */
     @Override
     public void addLinks(EntityModel<CellPhoneCompanyDTO> resource) {
-        resource.add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies()).withRel("Get all companies info"));
-        resource.add(linkTo(methodOn(CellPhoneCompanyController.class).getCellPhoneCompanyInfo(resource.getContent().getCellPhoneCompany().getCellPhoneCompanyId()))
-                .withSelfRel()
+        resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
+                .getAllCompanies()).withRel("Get all companies info"));
+        resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
+                .getCellPhoneCompanyInfo(resource.getContent()
+                        .getCellPhoneCompany().getCellPhoneCompanyId())).withSelfRel()
         );
     }
 
@@ -35,6 +37,7 @@ public class CellPhoneCompanyDTOAssembler implements SimpleRepresentationModelAs
      */
     @Override
     public void addLinks(CollectionModel<EntityModel<CellPhoneCompanyDTO>> resources) {
-        resources.add(linkTo(methodOn(CellPhoneCompanyController.class).getAllCellPhoneCompaniesInfo()).withSelfRel());
+        resources.add(linkTo(methodOn(CellPhoneCompanyController.class)
+                .getAllCellPhoneCompaniesInfo()).withSelfRel());
     }
 }

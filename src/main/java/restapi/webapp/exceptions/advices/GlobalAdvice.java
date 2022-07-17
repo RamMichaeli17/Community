@@ -1,5 +1,6 @@
 package restapi.webapp.exceptions.advices;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,13 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import restapi.webapp.exceptions.*;
-
 import java.net.UnknownHostException;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalAdvice {
-
     @ResponseBody
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserExistsException.class)
@@ -77,9 +76,18 @@ public class GlobalAdvice {
 
     @ResponseBody
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-    @ExceptionHandler(UserAPIException.class)
-    String UserAPIHandler(UserAPIException uapie){
-        String message = uapie.getMessage();
+    @ExceptionHandler(APIException.class)
+    String UserAPIHandler(APIException apie){
+        String message = apie.getMessage();
+        log.error(message);
+        return message;
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidFormatException.class)
+    String InvalidFormatHandler(InvalidFormatException ifhe){
+        String message = ifhe.getMessage();
         log.error(message);
         return message;
     }

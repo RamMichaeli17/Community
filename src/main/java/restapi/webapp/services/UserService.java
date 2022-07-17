@@ -59,6 +59,22 @@ public class UserService {
     }
 
     /**
+     * A method that modifies user's avatar entity and verifies its details
+     * @param avatarEntity Avatar entity to modify.
+     * @param email User's email to set as seed for avatar entity.
+     */
+    private void modifyAvatarEntity(@NonNull AvatarEntity avatarEntity, String email) {
+        if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
+            avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
+        if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
+            avatarEntity.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
+        if (avatarEntity.getMouth()>30 || avatarEntity.getMouth()<1)
+            avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
+        avatarEntity.setSeed(email);
+        avatarEntity.setResultUrl(avatarEntity.createResultUrl());
+    }
+
+    /**
      * A method that gets a list of user entities, and converts the entities into an
      * EntityModel or a CollectionModel, according to the size of the list,
      * then putting the object within a ResponseEntity
@@ -124,15 +140,7 @@ public class UserService {
         if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
             throw new UserExistsException(user.getEmail());
         }
-        AvatarEntity avatarEntity = user.getAvatarEntity();
-        if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
-            avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
-        if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
-            avatarEntity.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
-        if (avatarEntity.getMouth()>30 || avatarEntity.getEyes()<1)
-            avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
-        avatarEntity.setSeed(user.getEmail());
-        avatarEntity.setResultUrl(avatarEntity.createResultUrl());
+        modifyAvatarEntity(user.getAvatarEntity(),user.getEmail());
         userRepo.save(user);
         log.info("User {} has been created", user.getUserId());
         return ResponseEntity.of(Optional.of(assembler.toModel(user)));
@@ -148,17 +156,14 @@ public class UserService {
         // In case there's already a user with same credentials, changes won't be saved.
         userRepo.findById(user.getUserId()).orElseThrow(() ->
                 new UserNotFoundException(user.getUserId()));
-
+        if(!user.getEmail().equals(userRepo.getUserEntityByUserId(user.getUserId()).get(0).getEmail()))
+        {
+            if(!userRepo.getUserEntityByEmail(user.getEmail()).isEmpty()){
+                throw new UserExistsException(user.getEmail());
+            }
+        }
         // Making sure the seed is compatible with the user's email address and all fields are valid
-        AvatarEntity avatarEntity = user.getAvatarEntity();
-        if (avatarEntity.getEyes()>26 || avatarEntity.getEyes()<1)
-            avatarEntity.setEyes(Utils.randomNumberBetweenMinAndMax(1,26));
-        if (avatarEntity.getEyebrows()>10 || avatarEntity.getEyebrows()<1)
-            avatarEntity.setEyebrows(Utils.randomNumberBetweenMinAndMax(1,10));
-        if (avatarEntity.getMouth()>30 || avatarEntity.getEyes()<1)
-            avatarEntity.setMouth(Utils.randomNumberBetweenMinAndMax(1,30));
-        avatarEntity.setSeed(user.getEmail());
-        avatarEntity.setResultUrl(avatarEntity.createResultUrl());
+        modifyAvatarEntity(user.getAvatarEntity(),user.getEmail());
         user.setCellPhoneCompanies( userRepo.getUserEntityByUserId(user.getUserId()).get(0).getCellPhoneCompanies());
 
         userRepo.save(user);
@@ -283,9 +288,12 @@ public class UserService {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
         Set<CellPhoneCompanyEntity> cellPhoneCompanyEntities = new HashSet<>();
+        CellPhoneCompanyEntity cellPhoneCompanyEntity;
         for (Long companyId : cellPhoneCompaniesIds) {
             cellPhoneCompanyRepo.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId));
-            cellPhoneCompanyEntities.add(cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId));
+            cellPhoneCompanyEntity = cellPhoneCompanyRepo.getCellPhoneCompanyByCellPhoneCompanyId(companyId);
+            cellPhoneCompanyEntity.getOperationalCountries().add(user.getLocation().getCountry());
+            cellPhoneCompanyEntities.add(cellPhoneCompanyEntity);
         }
         user.getCellPhoneCompanies().addAll(cellPhoneCompanyEntities);
         userRepo.save(user);

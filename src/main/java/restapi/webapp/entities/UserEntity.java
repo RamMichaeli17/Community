@@ -17,7 +17,6 @@ import java.util.Set;
  * A class that represents the User entity, and contains its various characteristics and methods.
  */
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Data
 @Table(name="USERS")
@@ -50,7 +49,8 @@ public class UserEntity implements Serializable {
     Set<CellPhoneCompanyEntity> cellPhoneCompanies = new LinkedHashSet<>();
 
     public UserEntity(String email, String md5, String gender, Integer age,
-                      Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity, Set<CellPhoneCompanyEntity> cellPhoneCompanies) {
+                      Set<String> phoneNumbers, Name name, Location location, AvatarEntity avatarEntity,
+                      Set<CellPhoneCompanyEntity> cellPhoneCompanies) {
         this.email = email;
         this.md5 = md5;
         this.gender = gender;
