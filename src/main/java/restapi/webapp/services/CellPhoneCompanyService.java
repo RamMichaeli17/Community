@@ -13,6 +13,8 @@ import restapi.webapp.exceptions.*;
 import restapi.webapp.assemblers.CellPhoneCompanyAssembler;
 import restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
+import restapi.webapp.repos.UserRepo;
+
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
