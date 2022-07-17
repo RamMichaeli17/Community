@@ -9,8 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.entities.UserEntity;
-import restapi.webapp.exceptions.UserAPIException;
+import restapi.webapp.exceptions.APIException;
 import restapi.webapp.services.ApiService;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +39,7 @@ public class ApiController {
      * @param gender Requested gender of user to be fetched.
      * @return ResponseEntity of the returned user.
      */
-    @GetMapping("/get/{gender}")
+    @GetMapping("/get/user/{gender}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Fetch a random user by requested type",
             description = "Fetch a random user from external API by specified type (random/male/female)",
@@ -53,7 +54,7 @@ public class ApiController {
         try {
             return ResponseEntity.of(Optional.of(response.get()));
         } catch (InterruptedException | ExecutionException e) {
-            throw new UserAPIException();
+            throw new APIException();
         }
     }
 
@@ -62,7 +63,7 @@ public class ApiController {
      * @param gender Requested gender of user to fetch.
      * @return ResponseEntity of the saved user.
      */
-    @PostMapping("/save/{gender}")
+    @PostMapping("/save/user/{gender}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Save a Random user by requested type",
             description = "Save a random user from external API by specified type (random/male/female)",
@@ -73,4 +74,41 @@ public class ApiController {
         return this.apiService.saveUser(this.apiService.getUserByGender(gender).join());
     }
 
+    /**
+     * A method that fetches a random company from external API.
+     * @return ResponseEntity of the returned company.
+     */
+    @GetMapping("/get/company")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Fetch a random company",
+            description = "Fetch a random company from external API",
+            tags = {"API Controller"})
+    public ResponseEntity<?> getCompany() {
+        log.info("Trying to get company");
+        CompletableFuture<CellPhoneCompanyEntity> response = this.apiService.getRandomCompany();
+
+        // Get the result of CompletableFuture
+        response.join();
+        log.info("{}", response);
+        try {
+            return ResponseEntity.of(Optional.of(response.get()));
+        } catch (InterruptedException | ExecutionException e) {
+            throw new APIException();
+        }
+    }
+
+    /**
+     * A method that creates a radom cell phone company based on random name and countries.
+     * @return ResponseEntity of the created cell phone company.
+     */
+    @PostMapping(value = "save/company")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a radnom cell phone company",
+            description = "Create a new company by random values",
+            responses = {@ApiResponse(responseCode = "201", description = "Random Cell Phone Company created")},
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<?> saveRandomCompany() {
+        log.info("Trying to save a random company:");
+        return  this.apiService.saveCompany(this.apiService.getRandomCompany().join());
+    }
 }
