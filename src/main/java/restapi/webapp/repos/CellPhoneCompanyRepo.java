@@ -34,5 +34,4 @@ public interface CellPhoneCompanyRepo extends CrudRepository<CellPhoneCompanyEnt
 
     @Query(nativeQuery = true,
             value = "SELECT * FROM CELL_PHONE_COMPANIES P WHERE P.CELL_PHONE_COMPANY_ID IN (SELECT COMPANY_ID FROM USERS_COMPANIES WHERE USER_ID = :id)")
-    List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);
-}
+    List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);}
