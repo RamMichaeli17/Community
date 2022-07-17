@@ -150,6 +150,9 @@ public class CellPhoneCompanyService {
         if(cellPhoneCompanies.getContent().isEmpty()){
             throw new CompaniesNotFoundException();
         }
+        else if(cellPhoneCompanyRepo.getUserExists(id) == 0) {
+            throw new UserNotFoundException(id);
+        }
         return ResponseEntity.of(Optional.of(cellPhoneCompanies));
     }
 

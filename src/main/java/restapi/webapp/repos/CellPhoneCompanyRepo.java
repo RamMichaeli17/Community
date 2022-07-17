@@ -33,6 +33,9 @@ public interface CellPhoneCompanyRepo extends CrudRepository<CellPhoneCompanyEnt
     void deleteCellPhoneCompanyFromUserCompaniesTableById(@Param("id")Long id);
 
     @Query(nativeQuery = true,
+            value = "SELECT COUNT(*) FROM USERS P WHERE P.USER_ID = :id)")
+    int getUserExists(@Param("id") Long id);
+
+    @Query(nativeQuery = true,
             value = "SELECT * FROM CELL_PHONE_COMPANIES P WHERE P.CELL_PHONE_COMPANY_ID IN (SELECT COMPANY_ID FROM USERS_COMPANIES WHERE USER_ID = :id)")
-    List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);
-}
+    List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);}

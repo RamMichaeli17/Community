@@ -1,15 +1,11 @@
-package restapi.webapp.factories;
+package restapi.webapp.assemblers;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.CellPhoneCompanyController;
-import restapi.webapp.controllers.UserController;
 import restapi.webapp.dtos.CellPhoneCompanyDTO;
-import restapi.webapp.dtos.UserDTO;
-import restapi.webapp.entities.CellPhoneCompanyEntity;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
