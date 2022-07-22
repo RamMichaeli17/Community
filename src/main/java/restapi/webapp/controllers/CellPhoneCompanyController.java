@@ -154,7 +154,7 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Get only social information about a specific company",
             description = "Get a companyDTO that contains only some information about a company we want to present",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<EntityModel<CellPhoneCompanyDTO>> getCellPhoneCompanyInfo(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<CellPhoneCompanyDTO>> getCellPhoneCompanyDtoInfo(@PathVariable Long id) {
         log.info("Trying to get company info by ID: " + id);
         ResponseEntity<EntityModel<CellPhoneCompanyDTO>> response =
                 this.cellPhoneCompanyService.getCellPhoneCompanyDtoInfo(id);
@@ -171,7 +171,7 @@ public class CellPhoneCompanyController {
     @Operation(summary = "Get all the social information about the cell phone companies",
             description = "Get all companyDTOs that contain partial information we present about cell phone companies",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> getAllCellPhoneCompaniesInfo() {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> getAllCellPhoneCompaniesDtoInfo() {
         log.info("Trying to get all cell phone companies info");
         ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyDTO>>> response =
                 this.cellPhoneCompanyService.getAllCellPhoneCompaniesDtoInfo();

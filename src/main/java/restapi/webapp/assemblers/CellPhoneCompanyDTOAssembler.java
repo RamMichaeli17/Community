@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.CellPhoneCompanyController;
 import restapi.webapp.dtos.CellPhoneCompanyDTO;
 
+import java.util.Objects;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -26,7 +28,7 @@ public class CellPhoneCompanyDTOAssembler implements SimpleRepresentationModelAs
         resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
                 .getAllCompanies()).withRel("Get all companies info"));
         resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
-                .getCellPhoneCompanyInfo(resource.getContent()
+                .getCellPhoneCompanyDtoInfo(Objects.requireNonNull(resource.getContent())
                         .getCellPhoneCompany().getCellPhoneCompanyId())).withSelfRel()
         );
     }
@@ -38,6 +40,6 @@ public class CellPhoneCompanyDTOAssembler implements SimpleRepresentationModelAs
     @Override
     public void addLinks(CollectionModel<EntityModel<CellPhoneCompanyDTO>> resources) {
         resources.add(linkTo(methodOn(CellPhoneCompanyController.class)
-                .getAllCellPhoneCompaniesInfo()).withSelfRel());
+                .getAllCellPhoneCompaniesDtoInfo()).withSelfRel());
     }
 }
