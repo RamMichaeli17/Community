@@ -204,19 +204,19 @@ public class CellPhoneCompanyController {
     }
 
     //todo: change summary...
-    @GetMapping("/getCompaniesByCountriesAndOptionalNameContains")
+    @GetMapping("/getCompaniesByCountryAndOptionalNameContains")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Find all cell phone companies",
             description = "Find all of cell phone companies and their details",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountriesAndOptionalNameContains
-            (@RequestParam Set<String> operationalCountries, @RequestParam (required = false) String companyName) {
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountryAndOptionalNameContains
+            (@RequestParam String operationalCountry, @RequestParam (required = false) String companyName) {
         log.info("Trying to fetch all cell phone companies");
         ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response;
         if (Objects.isNull(companyName))
-            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountries(operationalCountries);
+            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountry(operationalCountry);
         else
-            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountriesAndOptionalNameContains(operationalCountries, companyName);
+            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountryAndOptionalNameContains(operationalCountry, companyName);
         log.info("{}", response);
         return response;
     }

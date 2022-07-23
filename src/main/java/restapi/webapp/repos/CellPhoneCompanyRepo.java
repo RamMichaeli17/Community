@@ -39,8 +39,8 @@ public interface CellPhoneCompanyRepo extends CrudRepository<CellPhoneCompanyEnt
             value = "SELECT * FROM CELL_PHONE_COMPANIES P WHERE P.CELL_PHONE_COMPANY_ID IN (SELECT COMPANY_ID FROM USERS_COMPANIES WHERE USER_ID = :id)")
     List<CellPhoneCompanyEntity> getCellPhoneCompaniesByUserId(@Param("id") Long id);
 
-    List<CellPhoneCompanyEntity> getCellPhoneCompanyEntitiesByOperationalCountriesInAndCompanyNameContains(Set<String> operationalCountries, String companyName);
+    List<CellPhoneCompanyEntity> getCellPhoneCompanyEntitiesByOperationalCountriesAndCompanyNameContains(String operationalCountry, String companyName);
 
-    List<CellPhoneCompanyEntity> getCellPhoneCompanyEntitiesByOperationalCountriesIn(Set<String> operationalCountries);
+    List<CellPhoneCompanyEntity> getCellPhoneCompanyEntitiesByOperationalCountries(String operationalCountry);
 
 }

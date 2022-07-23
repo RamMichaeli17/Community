@@ -203,11 +203,11 @@ public class CellPhoneCompanyService {
 
 
     //todo: add doco
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountriesAndOptionalNameContains
-            (@NonNull Set<String> operationalCountries, String companyName){
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountryAndOptionalNameContains
+            (@NonNull String operationalCountry, String companyName){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo
-                .getCellPhoneCompanyEntitiesByOperationalCountriesInAndCompanyNameContains
-                        (operationalCountries, companyName);
+                .getCellPhoneCompanyEntitiesByOperationalCountriesAndCompanyNameContains
+                        (operationalCountry, companyName);
         companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
         CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
                 cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
@@ -215,10 +215,10 @@ public class CellPhoneCompanyService {
     }
 
     //todo: add doco
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountries
-            (@NonNull Set<String> operationalCountries){
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountry
+            (@NonNull String operationalCountry){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo
-                .getCellPhoneCompanyEntitiesByOperationalCountriesIn(operationalCountries);
+                .getCellPhoneCompanyEntitiesByOperationalCountries(operationalCountry);
         companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
         CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
                 cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
