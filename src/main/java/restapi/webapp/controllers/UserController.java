@@ -258,10 +258,10 @@ public class UserController {
     @Operation(summary = "Update a user",
             description = "Update a specific user",
             tags = {"User Controller"})
-    public ResponseEntity<EntityModel<UserEntity>> linkUserWithCellPhoneCompanies(@RequestParam Long userId,
+    public ResponseEntity<EntityModel<UserDTO>> linkUserWithCellPhoneCompanies(@RequestParam Long userId,
                                                             @RequestParam Set<Long> companiesIds) {
         log.info("Trying to link user {} with the cell phone companies above: {}", userId, companiesIds);
-        ResponseEntity<EntityModel<UserEntity>> response = this.userService
+        ResponseEntity<EntityModel<UserDTO>> response = this.userService
                 .linkUserWithCellPhoneCompanies(userId,companiesIds);
         log.info("{}", response);
         return response;
