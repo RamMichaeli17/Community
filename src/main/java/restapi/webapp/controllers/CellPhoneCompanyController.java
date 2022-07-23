@@ -16,7 +16,6 @@ import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.services.CellPhoneCompanyService;
 
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A class that represents the controller of a cell phone company,
@@ -182,8 +181,6 @@ public class CellPhoneCompanyController {
         return response;
     }
 
-
-
     /**
      * A method that returns all the cell phone companies that belong to a user, if there are any.
      * @param id The ID of the user that the search is based on.
@@ -203,20 +200,22 @@ public class CellPhoneCompanyController {
         return response;
     }
 
-    //todo: change summary...
     @GetMapping("/getCompaniesByCountryAndOptionalNameContains")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Find all cell phone companies",
-            description = "Find all of cell phone companies and their details",
+    @Operation(summary = "Find all cell phone companies by specific conditions",
+            description = "Find all of cell phone companies and their details," +
+                    "specifying the operational country, and (optionally, some of) the company name",
             tags = {"Cell Phone Company Controller"})
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountryAndOptionalNameContains
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>>
+    getCellPhoneCompaniesByCountryAndOptionalNameContains
             (@RequestParam String operationalCountry, @RequestParam (required = false) String companyName) {
         log.info("Trying to fetch all cell phone companies");
         ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response;
         if (Objects.isNull(companyName))
             response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountry(operationalCountry);
         else
-            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountryAndOptionalNameContains(operationalCountry, companyName);
+            response = this.cellPhoneCompanyService
+                    .getCellPhoneCompaniesByCountryAndNameContains(operationalCountry, companyName);
         log.info("{}", response);
         return response;
     }

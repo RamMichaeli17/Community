@@ -45,4 +45,6 @@ public interface UserRepo extends CrudRepository<UserEntity, Long> {
     List<UserEntity> getUserEntityByPhoneNumbers(String phone);
     void deleteUserEntityByUserId(Long userId);
     void deleteUserEntityByEmail(String email);
+    @Query(value = "select u from UserEntity u where u.name.first = :first")
+    List<UserEntity> getUserEntitiesByFirstName(@Param("first") String first);
 }

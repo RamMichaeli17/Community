@@ -191,7 +191,7 @@ public class UserService {
      * @param last Last name to be checked.
      * @return ResponseEntity of the requested user, if exists.
      */
-    public ResponseEntity<?> getUsersByName(@NonNull String first, @NonNull String last){
+    public ResponseEntity<?> getUsersByFullName(@NonNull String first, @NonNull String last){
         List<UserEntity> users = userRepo.getUserEntitiesByName(first, last);
         users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s %s", first, last)));
         return getCorrespondingEntityType(users);
@@ -287,6 +287,12 @@ public class UserService {
         return getCorrespondingEntityType(users);
     }
 
+    /**
+     * A method that links a specific user with a set of cell phone companies.
+     * @param userId User ID to link the companies to.
+     * @param cellPhoneCompaniesIds Cell phone companies to link the user to.
+     * @return UserDTO representation that contains the linked user and companies.
+     */
     public ResponseEntity<EntityModel<UserDTO>> linkUserWithCellPhoneCompanies(@NonNull Long userId,
                                                             @NonNull Set<@NonNull Long> cellPhoneCompaniesIds) {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -303,5 +309,17 @@ public class UserService {
         userRepo.save(user);
         log.info("User {} has been linked with the cell phone companies above: {}", userId,cellPhoneCompaniesIds);
         return getUserDtoInfo(userId);
+    }
+
+
+    /**
+     * A method that fetches a specific user on DB by specific first name, if exists.
+     * @param first First name to be checked.
+     * @return ResponseEntity of the requested user, if exists.
+     */
+    public ResponseEntity<?> getUsersByFirstName(@NonNull String first){
+        List<UserEntity> users = userRepo.getUserEntitiesByFirstName(first);
+        users.stream().findAny().orElseThrow(() -> new UserNotFoundException(String.format("%s", first)));
+        return getCorrespondingEntityType(users);
     }
 }
