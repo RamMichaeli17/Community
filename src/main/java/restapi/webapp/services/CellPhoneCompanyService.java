@@ -14,7 +14,6 @@ import restapi.webapp.assemblers.CellPhoneCompanyAssembler;
 import restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler;
 import restapi.webapp.repos.CellPhoneCompanyRepo;
 import restapi.webapp.repos.UserRepo;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -202,9 +201,16 @@ public class CellPhoneCompanyService {
     }
 
 
-    //todo: add doco
-    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountryAndOptionalNameContains
-            (@NonNull String operationalCountry, String companyName){
+    /**
+     * A method that gets cell phone companies by a specific conditions such as
+     * operational countries and a partial character sequence that represents a cell phone company name.
+     * @param operationalCountry The country that cell phone companies operate in.
+     * @param companyName (Part of) Company name to be searched.
+     * @return ResponseEntity of the cell phone companies
+     */
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>>
+    getCellPhoneCompaniesByCountryAndNameContains
+            (@NonNull String operationalCountry, @NonNull String companyName){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo
                 .getCellPhoneCompanyEntitiesByOperationalCountriesAndCompanyNameContains
                         (operationalCountry, companyName);
@@ -214,7 +220,11 @@ public class CellPhoneCompanyService {
         return ResponseEntity.of(Optional.of(cellPhoneCompanies));
     }
 
-    //todo: add doco
+    /**
+     * A method that gets cell phone companies by a special condition of operational country.
+     * @param operationalCountry The country that cell phone companies operate in.
+     * @return ResponseEntity of the cell phone companies
+     */
     public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountry
             (@NonNull String operationalCountry){
         List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo

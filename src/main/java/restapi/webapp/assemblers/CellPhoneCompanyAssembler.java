@@ -39,7 +39,6 @@ public class CellPhoneCompanyAssembler implements RepresentationModelAssembler<C
     @Override
     public CollectionModel<EntityModel<CellPhoneCompanyEntity>> toCollectionModel
             (Iterable<? extends CellPhoneCompanyEntity> entities) {
-
         return RepresentationModelAssembler.super.toCollectionModel(entities)
                 .add((linkTo(methodOn(CellPhoneCompanyController.class).getAllCompanies())
                         .withRel("Get all companies")));

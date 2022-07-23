@@ -17,7 +17,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class UserEntityAssembler implements RepresentationModelAssembler<UserEntity, EntityModel<UserEntity>> {
 
     /**
-     * A method that gets a user entity and returns an EntityModel of it.
+     * A method that gets an entity and returns an EntityModel of it,
+     * in addition to adding specific links.
      * @param entity User entity to be converted.
      * @return EntityModel of the user entity.
      */
@@ -26,11 +27,12 @@ public class UserEntityAssembler implements RepresentationModelAssembler<UserEnt
         return EntityModel.of(entity)
                 .add(linkTo(methodOn(UserController.class).getAllUsers()).withRel("Get all users"))
                 .add(linkTo(methodOn(UserController.class)
-                        .getUserWithPathVar("id", entity.getUserId().toString())).withSelfRel());
+                        .getUsersWithPathVar("id", entity.getUserId().toString())).withSelfRel());
     }
 
     /**
-     * A method that gets a user entity and returns a CollectionModel of it.
+     * A method that gets entities and returns a CollectionModel of them,
+     * in addition to adding specific links.
      * @param entities User entities to be converted.
      * @return CollectionModel of the user entities.
      */

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import restapi.webapp.dtos.UserDTO;
 import restapi.webapp.entities.UserEntity;
 import restapi.webapp.services.UserService;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -62,7 +63,7 @@ public class UserController {
     @Operation(summary = "Find a user by specific parameters By Path Variable",
             description = "Find user details by name, location, age and more",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
+    public ResponseEntity<?> getUsersWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get users by param \"{}\" and value \"{}\"", param, value);
         ResponseEntity<?> response = this.userService.getUsersBySpecificParameter(param, value);
         log.info("{}", response);
@@ -150,9 +151,13 @@ public class UserController {
             description = "Delete a specific user by their first name and last name",
             tags = {"User Controller"})
     public ResponseEntity<?> getUserByName(@RequestParam("first") String firstName,
-                                           @RequestParam("last") String lastName){
+                                           @RequestParam(value = "last", required = false) String lastName){
         log.info("Trying to fetch users by name: {} {}", firstName, lastName);
-        ResponseEntity<?> response = this.userService.getUsersByName(firstName, lastName);
+        ResponseEntity<?> response;
+        if (Objects.isNull(lastName))
+            response = this.userService.getUsersByFirstName(firstName);
+        else
+            response = this.userService.getUsersByFullName(firstName, lastName);
         log.info("{}", response);
         return response;
     }
