@@ -2,6 +2,7 @@ package restapi.webapp.assemblers;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.server.SimpleRepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 import restapi.webapp.controllers.CellPhoneCompanyController;
@@ -17,29 +18,36 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
  * or a CollectionModel<EntityModel<CellPhoneCompany>>.
  */
 @Component
-public class CellPhoneCompanyDTOAssembler implements SimpleRepresentationModelAssembler<CellPhoneCompanyDTO> {
+public class CellPhoneCompanyDTOAssembler implements RepresentationModelAssembler<CellPhoneCompanyDTO,
+        EntityModel<CellPhoneCompanyDTO>> {
 
     /**
-     * A method that adds links to an entity of CellPhoneCompanyDTO.
-     * @param resource Entity to add links to.
+     * A method that gets an entity and returns an EntityModel of it,
+     * in addition to adding specific links.
+     * @param entity entity to be converted.
+     * @return EntityModel of the CellPhoneCompanyDTO entity.
      */
     @Override
-    public void addLinks(EntityModel<CellPhoneCompanyDTO> resource) {
-        resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
-                .getAllCompanies()).withRel("Get all companies info"));
-        resource.add(linkTo(methodOn(CellPhoneCompanyController.class)
-                .getCellPhoneCompanyDtoInfo(Objects.requireNonNull(resource.getContent())
-                        .getCellPhoneCompany().getCellPhoneCompanyId())).withSelfRel()
-        );
+    public EntityModel<CellPhoneCompanyDTO> toModel(CellPhoneCompanyDTO entity) {
+        return EntityModel.of(entity)
+                .add(linkTo(methodOn(CellPhoneCompanyController.class)
+                .getAllCompanies()).withRel("Get all companies info"))
+                .add(linkTo(methodOn(CellPhoneCompanyController.class)
+                        .getCellPhoneCompanyDtoInfo
+                                (entity.getCellPhoneCompany().getCellPhoneCompanyId())).withSelfRel());
     }
 
     /**
-     * A method that adds links to a collection of entities of CellPhoneCompanyDTOs.
-     * @param resources Entities to add links to.
+     * A method that gets entities and returns a CollectionModel of them,
+     * in addition to adding specific links.
+     * @param entities entities to be converted.
+     * @return CollectionModel of the entities.
      */
     @Override
-    public void addLinks(CollectionModel<EntityModel<CellPhoneCompanyDTO>> resources) {
-        resources.add(linkTo(methodOn(CellPhoneCompanyController.class)
-                .getAllCellPhoneCompaniesDtoInfo()).withSelfRel());
+    public CollectionModel<EntityModel<CellPhoneCompanyDTO>> toCollectionModel
+    (Iterable<? extends CellPhoneCompanyDTO> entities) {
+        return RepresentationModelAssembler.super.toCollectionModel(entities)
+                .add(linkTo(methodOn(CellPhoneCompanyController.class)
+                        .getAllCellPhoneCompaniesDtoInfo()).withSelfRel());
     }
 }

@@ -62,7 +62,7 @@ public class UserController {
     @Operation(summary = "Find a user by specific parameters By Path Variable",
             description = "Find user details by name, location, age and more",
             tags = {"User Controller"})
-    public ResponseEntity<?> getUserWithPathVar(@PathVariable String param, @PathVariable String value) {
+    public ResponseEntity<?> getUsersWithPathVar(@PathVariable String param, @PathVariable String value) {
         log.info("Trying to get users by param \"{}\" and value \"{}\"", param, value);
         ResponseEntity<?> response = this.userService.getUsersBySpecificParameter(param, value);
         log.info("{}", response);
