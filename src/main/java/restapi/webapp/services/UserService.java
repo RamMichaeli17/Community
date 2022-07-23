@@ -287,7 +287,7 @@ public class UserService {
         return getCorrespondingEntityType(users);
     }
 
-    public ResponseEntity<EntityModel<UserEntity>> linkUserWithCellPhoneCompanies(@NonNull Long userId,
+    public ResponseEntity<EntityModel<UserDTO>> linkUserWithCellPhoneCompanies(@NonNull Long userId,
                                                             @NonNull Set<@NonNull Long> cellPhoneCompaniesIds) {
         userRepo.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         UserEntity user = userRepo.getUserEntityByUserId(userId).get(0);
@@ -302,6 +302,6 @@ public class UserService {
         user.getCellPhoneCompanies().addAll(cellPhoneCompanyEntities);
         userRepo.save(user);
         log.info("User {} has been linked with the cell phone companies above: {}", userId,cellPhoneCompaniesIds);
-        return ResponseEntity.of(Optional.of(assembler.toModel(user)));
+        return getUserDtoInfo(userId);
     }
 }

@@ -15,6 +15,9 @@ import restapi.webapp.dtos.CellPhoneCompanyDTO;
 import restapi.webapp.entities.CellPhoneCompanyEntity;
 import restapi.webapp.services.CellPhoneCompanyService;
 
+import java.util.Objects;
+import java.util.Set;
+
 /**
  * A class that represents the controller of a cell phone company,
  * containing various endpoints for getting information about cell phone companies,
@@ -200,4 +203,21 @@ public class CellPhoneCompanyController {
         return response;
     }
 
+    //todo: change summary...
+    @GetMapping("/getCompaniesByCountryAndOptionalNameContains")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Find all cell phone companies",
+            description = "Find all of cell phone companies and their details",
+            tags = {"Cell Phone Company Controller"})
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountryAndOptionalNameContains
+            (@RequestParam String operationalCountry, @RequestParam (required = false) String companyName) {
+        log.info("Trying to fetch all cell phone companies");
+        ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response;
+        if (Objects.isNull(companyName))
+            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountry(operationalCountry);
+        else
+            response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountryAndOptionalNameContains(operationalCountry, companyName);
+        log.info("{}", response);
+        return response;
+    }
 }
