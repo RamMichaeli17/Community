@@ -201,4 +201,28 @@ public class CellPhoneCompanyService {
                 .collect(Collectors.toList())));
     }
 
+
+    //todo: add doco
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountriesAndOptionalNameContains
+            (@NonNull Set<String> operationalCountries, String companyName){
+        List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo
+                .getCellPhoneCompanyEntitiesByOperationalCountriesInAndCompanyNameContains
+                        (operationalCountries, companyName);
+        companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
+                cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
+        return ResponseEntity.of(Optional.of(cellPhoneCompanies));
+    }
+
+    //todo: add doco
+    public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> getCellPhoneCompaniesByCountries
+            (@NonNull Set<String> operationalCountries){
+        List<CellPhoneCompanyEntity> companyEntities = cellPhoneCompanyRepo
+                .getCellPhoneCompanyEntitiesByOperationalCountriesIn(operationalCountries);
+        companyEntities.stream().findAny().orElseThrow(CompaniesNotFoundException::new);
+        CollectionModel<EntityModel<CellPhoneCompanyEntity>> cellPhoneCompanies =
+                cellPhoneCompanyAssembler.toCollectionModel(companyEntities);
+        return ResponseEntity.of(Optional.of(cellPhoneCompanies));
+    }
+
 }
