@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>restapi.webapp.services.CellPhoneCompanyService</OriginalElement>
+  <nodes>
+    <node x="692.6653640324975" y="205.36098451706198">restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler</node>
+    <node x="1708.8158918861882" y="1138.4428396249552">restapi.webapp.dtos.UserDTO</node>
+    <node x="2033.1926041994725" y="261.50796809209425">restapi.webapp.exceptions.UsersNotFoundException</node>
+    <node x="512.3901040555525" y="423.6322060781956">restapi.webapp.dtos.CellPhoneCompanyDTO</node>
+    <node x="2952.298900868523" y="915.5594161069453">restapi.webapp.entities.UserEntity</node>
+    <node x="2820.741883108594" y="617.1518668056106">restapi.webapp.exceptions.APIException</node>
+    <node x="3359.41183423612" y="1102.5594161069453">restapi.webapp.entities.UserEntity.Name</node>
+    <node x="-131.68246831348716" y="61.97049468734809">restapi.webapp.controllers.CellPhoneCompanyController</node>
+    <node x="1414.7960606268769" y="212.09493024537545">restapi.webapp.assemblers.UserDTOAssembler</node>
+    <node x="9.35091169205549" y="760.8560935936689">restapi.webapp.services.UserService</node>
+    <node x="2784.741883108594" y="1785.0026248718968">restapi.webapp.entities.UserEntity.Location</node>
+    <node x="960.8881814413646" y="449.92931925572634">restapi.webapp.exceptions.CompanyExistsException</node>
+    <node x="2740.796443233115" y="-150.8835781503838">restapi.webapp.entities.CellPhoneCompanyEntity</node>
+    <node x="3702.172526480722" y="436.0169839288711">restapi.webapp.assemblers.UserEntityAssembler</node>
+    <node x="3701.8338573795845" y="768.6542908526294">restapi.webapp.entities.AvatarEntity</node>
+    <node x="1293.6570177214746" y="796.9705995875188">restapi.webapp.services.ApiService</node>
+    <node x="2451.6093319857437" y="743.6619884860472">restapi.webapp.global.Utils</node>
+    <node x="2449.137700971313" y="1004.445833636848">restapi.webapp.config.Config</node>
+    <node x="2154.049747127625" y="425.22668383009875">restapi.webapp.repos.CellPhoneCompanyRepo</node>
+    <node x="1616.8997401610955" y="51.414435725704664">restapi.webapp.assemblers.CellPhoneCompanyAssembler</node>
+    <node x="3080.682214118121" y="382.3619165855042">restapi.webapp.controllers.UserController</node>
+    <node x="1854.2097772012396" y="466.2890095651974">restapi.webapp.exceptions.UserExistsException</node>
+    <node x="3223.8458819558464" y="-64.08658606694644">restapi.webapp.services.CellPhoneCompanyService</node>
+    <node x="2761.4266745524415" y="299.98048001631525">restapi.webapp.exceptions.UserNotFoundException</node>
+    <node x="740.5217681042102" y="727.1245263333185">restapi.webapp.controllers.ApiController</node>
+    <node x="2795.241883108594" y="2137.002624871897">restapi.webapp.entities.UserEntity.Location.Street</node>
+    <node x="2351.0052101687525" y="132.02183486234395">restapi.webapp.exceptions.CompaniesNotFoundException</node>
+    <node x="1184.8653696685717" y="1233.6621379896283">restapi.webapp.enums.HairColor</node>
+    <node x="2411.8035739588677" y="288.6355681756039">restapi.webapp.exceptions.CompanyNotFoundException</node>
+    <node x="1933.853909682166" y="737.5289228065351">restapi.webapp.repos.UserRepo</node>
+    <node x="1301.3269232294779" y="383.8140446665242">restapi.webapp.exceptions.advices.GlobalAdvice</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.AvatarEntity" relationship="CREATE">
+      <point x="2.990286870954151E-4" y="51.00016636315195" />
+      <point x="2665.138" y="1189.0" />
+      <point x="2913.638" y="1189.0" />
+      <point x="2913.638" y="836.162" />
+      <point x="-154.49985737958468" y="-160.49229085262937" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.repos.UserRepo" relationship="TO_ONE">
+      <point x="14.999982278525295" y="-94.99959958751879" />
+      <point x="1598.657" y="721.0" />
+      <point x="2160.854" y="721.0" />
+      <point x="9.031783383761649E-5" y="-169.9999228065351" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity.Location.Street" target="restapi.webapp.entities.UserEntity.Location" relationship="INNER_CLASS">
+      <point x="15.0" y="-129.0" />
+      <point x="15.0" y="151.0" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity" target="restapi.webapp.entities.AvatarEntity" relationship="TO_ONE">
+      <point x="176.0" y="-256.90512525431586" />
+      <point x="-154.5" y="0.0" />
+    </edge>
+    <edge source="restapi.webapp.controllers.UserController" target="restapi.webapp.services.UserService" relationship="TO_ONE">
+      <point x="280.5" y="-135.8449326566331" />
+      <point x="4261.673" y="418.5169839288711" />
+      <point x="4261.673" y="1714.059" />
+      <point x="343.8509116920555" y="1714.059" />
+      <point x="0.0" y="205.0" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.assemblers.UserDTOAssembler" relationship="TO_ONE">
+      <point x="-44.99991169205549" y="-205.0" />
+      <point x="298.851" y="655.3140446665242" />
+      <point x="892.8901040555525" y="655.3140446665242" />
+      <point x="892.8901040555525" y="329.59493024537545" />
+      <point x="1665.7960606268769" y="329.59493024537545" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.UserEntity.Location" relationship="CREATE">
+      <point x="208.5" y="51.0" />
+      <point x="-14.604182137280986" y="-151.00000000000023" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.assemblers.CellPhoneCompanyAssembler" relationship="TO_ONE">
+      <point x="146.16998227852537" y="-94.99959958751879" />
+      <point x="1729.827" y="447.727" />
+      <point x="2015.693" y="447.727" />
+      <point x="2015.693" y="229.0" />
+      <point x="1952.9" y="229.0" />
+      <point x="2.598389046397642E-4" y="49.999564274295324" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.repos.UserRepo" relationship="TO_ONE">
+      <point x="334.5000883079445" y="-9.359366890748788E-5" />
+      <point x="1276.157" y="965.856" />
+      <point x="1276.157" y="721.0" />
+      <point x="2160.854" y="721.0" />
+      <point x="9.031783383761649E-5" y="-169.9999228065351" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity" target="restapi.webapp.entities.UserEntity.Name" relationship="TO_ONE">
+      <point x="176.0" y="-15.000416106945295" />
+      <point x="-97.5" y="-15.000416106945295" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.exceptions.UserExistsException" relationship="CREATE">
+      <point x="-14.999911692055491" y="-205.0000935936689" />
+      <point x="328.851" y="671.0" />
+      <point x="1952.71" y="671.0" />
+      <point x="2.2279876043285185E-4" y="26.999990434802612" />
+    </edge>
+    <edge source="restapi.webapp.dtos.UserDTO" target="restapi.webapp.entities.UserEntity" relationship="TO_ONE">
+      <point x="1.08113811847943E-4" y="162.00016037504474" />
+      <point x="1863.316" y="1536.0" />
+      <point x="2307.5" y="1536.0" />
+      <point x="2307.5" y="1253.559" />
+      <point x="-175.99990086852313" y="-4.1610694529481407E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.exceptions.CompanyExistsException" relationship="CREATE">
+      <point x="-290.0000177214747" y="88.8854004124812" />
+      <point x="1255.0" y="980.856" />
+      <point x="1255.0" y="476.929" />
+      <point x="111.9998185586353" y="-3.192557263673734E-4" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity" target="restapi.webapp.entities.UserEntity.Location" relationship="TO_ONE">
+      <point x="-168.5" y="338.0" />
+      <point x="71.5570177599293" y="-151.00000000000023" />
+    </edge>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.CellPhoneCompanyEntity" relationship="CREATE">
+      <point x="-215.9997009713129" y="1.6636315194773488E-4" />
+      <point x="2405.354" y="1055.446" />
+      <point x="2405.354" y="1101.0" />
+      <point x="2035.316" y="1101.0" />
+      <point x="2035.316" y="1654.059" />
+      <point x="4231.673" y="1654.059" />
+      <point x="4231.673" y="-213.38400000000001" />
+      <point x="2889.796" y="-213.38400000000001" />
+      <point x="-4.432331152202096E-4" y="-173.0004218496162" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.exceptions.UserExistsException" relationship="CREATE">
+      <point x="-15.000017721474705" y="-94.99959958751879" />
+      <point x="1568.657" y="671.0" />
+      <point x="1952.71" y="671.0" />
+      <point x="2.2279876043285185E-4" y="26.999990434802612" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.assemblers.CellPhoneCompanyDTOAssembler" relationship="TO_ONE">
+      <point x="30.000118044153623" y="-150.0" />
+      <point x="3662.346" y="-273.384" />
+      <point x="1023.6653640324975" y="-273.384" />
+      <point x="0.0" y="-50.0" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.exceptions.UserNotFoundException" relationship="CREATE">
+      <point x="41.83611804415341" y="149.99958606694645" />
+      <point x="3674.182" y="1624.059" />
+      <point x="1167.365" y="1624.059" />
+      <point x="1167.365" y="1123.0" />
+      <point x="2898.638" y="1123.0" />
+      <point x="2898.638" y="721.0" />
+      <point x="2973.242" y="721.0" />
+      <point x="82.31532544755873" y="48.99951998368476" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.exceptions.CompanyExistsException" relationship="CREATE">
+      <point x="26.83611804415341" y="149.99958606694645" />
+      <point x="3659.182" y="1609.059" />
+      <point x="1535.365" y="1609.059" />
+      <point x="1535.365" y="1004.471" />
+      <point x="1255.0" y="1004.471" />
+      <point x="1255.0" y="476.929" />
+      <point x="111.9998185586353" y="-3.192557263673734E-4" />
+    </edge>
+    <edge source="restapi.webapp.controllers.CellPhoneCompanyController" target="restapi.webapp.services.CellPhoneCompanyService" relationship="TO_ONE">
+      <point x="0.0" y="-139.0" />
+      <point x="250.31753168651284" y="-288.384" />
+      <point x="3677.346" y="-288.384" />
+      <point x="45.00011804415362" y="-150.0" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.exceptions.CompanyNotFoundException" relationship="CREATE">
+      <point x="15.000118044153623" y="-150.00041393305355" />
+      <point x="3647.346" y="-183.38400000000001" />
+      <point x="1492.0" y="-183.38400000000001" />
+      <point x="1492.0" y="179.0" />
+      <point x="2314.693" y="179.0" />
+      <point x="2314.693" y="326.636" />
+      <point x="-123.99957395886759" y="4.3182439611655354E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.exceptions.APIException" relationship="CREATE">
+      <point x="29.999982278525295" y="-94.99959958751879" />
+      <point x="1613.657" y="687.0" />
+      <point x="2068.71" y="687.0" />
+      <point x="2068.71" y="390.48" />
+      <point x="2748.296" y="390.48" />
+      <point x="2748.296" y="644.152" />
+      <point x="-67.49988310859362" y="1.3319438949110918E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.assemblers.CellPhoneCompanyAssembler" relationship="TO_ONE">
+      <point x="-408.4998819558464" y="14.99958606694645" />
+      <point x="3071.296" y="100.91300000000001" />
+      <point x="3071.296" y="229.0" />
+      <point x="1952.9" y="229.0" />
+      <point x="2.598389046397642E-4" y="49.999564274295324" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.entities.CellPhoneCompanyEntity" relationship="CREATE">
+      <point x="22.84298227852537" y="95.00040041248121" />
+      <point x="1606.5" y="1101.0" />
+      <point x="2035.316" y="1101.0" />
+      <point x="2035.316" y="1654.059" />
+      <point x="4231.673" y="1654.059" />
+      <point x="4231.673" y="-213.38400000000001" />
+      <point x="2889.796" y="-213.38400000000001" />
+      <point x="-4.432331152202096E-4" y="-173.0004218496162" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.repos.CellPhoneCompanyRepo" relationship="TO_ONE">
+      <point x="-1.77214747054677E-5" y="-94.99959958751879" />
+      <point x="1583.657" y="703.0" />
+      <point x="2427.55" y="703.0" />
+      <point x="2.52872375313018E-4" y="126.00031616990123" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.repos.CellPhoneCompanyRepo" relationship="TO_ONE">
+      <point x="8.83079445088697E-5" y="-205.0000935936689" />
+      <point x="343.851" y="703.0" />
+      <point x="2427.55" y="703.0" />
+      <point x="2.52872375313018E-4" y="126.00031616990123" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.exceptions.UserNotFoundException" relationship="CREATE">
+      <point x="334.5000883079445" y="14.999906406331093" />
+      <point x="1225.022" y="980.856" />
+      <point x="1225.022" y="1123.0" />
+      <point x="2898.638" y="1123.0" />
+      <point x="2898.638" y="721.0" />
+      <point x="2973.242" y="721.0" />
+      <point x="82.31532544755873" y="48.99951998368476" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.repos.UserRepo" relationship="TO_ONE">
+      <point x="1.1804415362348664E-4" y="-150.00041393305355" />
+      <point x="3632.346" y="-168.38400000000001" />
+      <point x="2718.55" y="-168.38400000000001" />
+      <point x="2718.55" y="721.0" />
+      <point x="2160.854" y="721.0" />
+      <point x="9.031783383761649E-5" y="-169.9999228065351" />
+    </edge>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.UserEntity.Location.Street" relationship="CREATE">
+      <point x="-14.999700971312905" y="51.0" />
+      <point x="2650.138" y="2266.002624871897" />
+      <point x="-93.0" y="0.0" />
+    </edge>
+    <edge source="restapi.webapp.dtos.CellPhoneCompanyDTO" target="restapi.webapp.entities.CellPhoneCompanyEntity" relationship="TO_ONE">
+      <point x="-11.225104055552492" y="-107.00020607819567" />
+      <point x="660.165" y="-198.38400000000001" />
+      <point x="4058.346" y="-198.38400000000001" />
+      <point x="4058.346" y="364.86199999999997" />
+      <point x="3039.0" y="364.86199999999997" />
+      <point x="3039.0" y="271.136" />
+      <point x="2889.796" y="271.136" />
+      <point x="-4.432331152202096E-4" y="172.9995781503838" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.exceptions.CompaniesNotFoundException" relationship="CREATE">
+      <point x="-29.999881955846377" y="-150.0" />
+      <point x="3602.346" y="-243.38400000000001" />
+      <point x="2475.5052101687525" y="-243.38400000000001" />
+      <point x="0.0" y="-27.0" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity.Location" target="restapi.webapp.entities.UserEntity" relationship="INNER_CLASS">
+      <point x="103.50011689140638" y="3.75128103314637E-4" />
+      <point x="3332.0" y="1936.0030000000002" />
+      <point x="3332.0" y="1253.559" />
+      <point x="176.00009913147687" y="-4.1610694529481407E-4" />
+    </edge>
+    <edge source="restapi.webapp.controllers.ApiController" target="restapi.webapp.services.ApiService" relationship="TO_ONE">
+      <point x="246.0" y="4.346073254200292" />
+      <point x="-290.0" y="-87.5" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity.Name" target="restapi.webapp.entities.UserEntity" relationship="INNER_CLASS">
+      <point x="-97.49983423612002" y="-4.1610694529481407E-4" />
+      <point x="176.00009913147687" y="-4.1610694529481407E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.assemblers.UserEntityAssembler" relationship="TO_ONE">
+      <point x="334.5000883079445" y="157.1439064063311" />
+      <point x="1152.365" y="1123.0" />
+      <point x="1152.365" y="1639.059" />
+      <point x="4028.334" y="1639.059" />
+      <point x="70.16147351927793" y="50.000016071128925" />
+    </edge>
+    <edge source="restapi.webapp.entities.CellPhoneCompanyEntity" target="restapi.webapp.entities.UserEntity" relationship="TO_MANY">
+      <point x="14.99955676688478" y="-173.0004218496162" />
+      <point x="2904.796" y="-228.38400000000001" />
+      <point x="4246.673" y="-228.38400000000001" />
+      <point x="4246.673" y="1669.059" />
+      <point x="2307.5" y="1669.059" />
+      <point x="2307.5" y="1253.559" />
+      <point x="-175.99990086852313" y="-4.1610694529481407E-4" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity" target="restapi.webapp.entities.CellPhoneCompanyEntity" relationship="TO_MANY">
+      <point x="9.913147687257151E-5" y="-338.0004161069453" />
+      <point x="3128.299" y="776.154" />
+      <point x="3039.0" y="776.154" />
+      <point x="3039.0" y="271.136" />
+      <point x="2889.796" y="271.136" />
+      <point x="-4.432331152202096E-4" y="172.9995781503838" />
+    </edge>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.UserEntity" relationship="CREATE">
+      <point x="216.0" y="0.0" />
+      <point x="-176.0" y="-198.1135824700973" />
+    </edge>
+    <edge source="restapi.webapp.config.Config" target="restapi.webapp.entities.UserEntity.Name" relationship="CREATE">
+      <point x="0.0" y="-51.0" />
+      <point x="2665.137700971313" y="898.0594161069453" />
+      <point x="3456.91183423612" y="898.0594161069453" />
+      <point x="0.0" y="-151.0" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.entities.AvatarEntity" relationship="CREATE">
+      <point x="-15.000017721474705" y="95.00040041248121" />
+      <point x="1568.657" y="1479.943" />
+      <point x="2292.5" y="1479.943" />
+      <point x="2292.5" y="1189.0" />
+      <point x="2913.638" y="1189.0" />
+      <point x="2913.638" y="836.162" />
+      <point x="-154.49985737958468" y="-160.49229085262937" />
+    </edge>
+    <edge source="restapi.webapp.entities.AvatarEntity" target="restapi.webapp.enums.HairColor" relationship="TO_ONE">
+      <point x="0.0" y="228.0" />
+      <point x="3856.3338573795845" y="1699.059" />
+      <point x="1276.3653696685717" y="1699.059" />
+      <point x="0.0" y="50.0" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.exceptions.UsersNotFoundException" relationship="CREATE">
+      <point x="-334.5" y="0.0" />
+      <point x="-149.18246831348716" y="965.8560935936689" />
+      <point x="-149.18246831348716" y="-213.38400000000001" />
+      <point x="2329.693" y="-213.38400000000001" />
+      <point x="2329.693" y="310.50796809209425" />
+      <point x="132.0" y="0.0" />
+    </edge>
+    <edge source="restapi.webapp.services.CellPhoneCompanyService" target="restapi.webapp.repos.CellPhoneCompanyRepo" relationship="TO_ONE">
+      <point x="-408.4998819558464" y="-4.139330535508634E-4" />
+      <point x="3056.296" y="85.91300000000001" />
+      <point x="3056.296" y="703.0" />
+      <point x="2427.55" y="703.0" />
+      <point x="2.52872375313018E-4" y="126.00031616990123" />
+    </edge>
+    <edge source="restapi.webapp.controllers.ApiController" target="restapi.webapp.exceptions.APIException" relationship="CREATE">
+      <point x="2.3189578985238768E-4" y="-72.9995263333185" />
+      <point x="986.522" y="687.0" />
+      <point x="2068.71" y="687.0" />
+      <point x="2068.71" y="390.48" />
+      <point x="2748.296" y="390.48" />
+      <point x="2748.296" y="644.152" />
+      <point x="-67.49988310859362" y="1.3319438949110918E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.UserService" target="restapi.webapp.exceptions.CompanyNotFoundException" relationship="CREATE">
+      <point x="-29.99991169205549" y="-205.0000935936689" />
+      <point x="313.851" y="391.31399999999996" />
+      <point x="675.165" y="391.31399999999996" />
+      <point x="675.165" y="179.0" />
+      <point x="2314.693" y="179.0" />
+      <point x="2314.693" y="326.636" />
+      <point x="-123.99957395886759" y="4.3182439611655354E-4" />
+    </edge>
+    <edge source="restapi.webapp.services.ApiService" target="restapi.webapp.assemblers.UserEntityAssembler" relationship="TO_ONE">
+      <point x="-1.77214747054677E-5" y="95.00040041248121" />
+      <point x="1583.657" y="1101.0" />
+      <point x="1152.365" y="1101.0" />
+      <point x="1152.365" y="1639.059" />
+      <point x="4028.334" y="1639.059" />
+      <point x="70.16147351927793" y="50.000016071128925" />
+    </edge>
+    <edge source="restapi.webapp.entities.UserEntity.Location" target="restapi.webapp.entities.UserEntity.Location.Street" relationship="TO_ONE">
+      <point x="0.0" y="151.0" />
+      <point x="0.0" y="-129.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.37387184115523464" showDependencies="true" x="2066.0" y="859.0" />
+  <SelectedNodes>
+    <node>restapi.webapp.services.CellPhoneCompanyService</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

@@ -209,7 +209,7 @@ public class CellPhoneCompanyController {
     public ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>>
     getCellPhoneCompaniesByCountryAndOptionalNameContains
             (@RequestParam String operationalCountry, @RequestParam (required = false) String companyName) {
-        log.info("Trying to fetch all cell phone companies");
+        log.info("Trying to fetch all cell phone companies by specific conditions");
         ResponseEntity<CollectionModel<EntityModel<CellPhoneCompanyEntity>>> response;
         if (Objects.isNull(companyName))
             response = this.cellPhoneCompanyService.getCellPhoneCompaniesByCountry(operationalCountry);
