@@ -204,7 +204,7 @@ Project Link: [https://github.com/RamMichaeli17/Community](https://github.com/Ra
 
 [stars-url]: https://github.com/RamMichaeli17/Community/stargazers
 
-[license-shield]: https://img.shields.io/github/license/RamMichaeli17/Community.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/RamMichaeli17/Community?style=for-the-badge
 
 [license-url]: https://github.com/RamMichaeli17/Community/blob/master/LICENSE.txt
 
