@@ -130,7 +130,7 @@ http://localhost:8080/swagger-ui/index.html
 
 
 
-_For more examples, please refer to the [Documentation](https://github.com/RamMichaeli17/Community/raw/readme/Project%20Appendices.zip)_
+_For more examples, please refer to the [Documentation](https://github.com/RamMichaeli17/Community/raw/master/Project%20Appendices.zip)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
