@@ -59,9 +59,9 @@
 This project was developed fully in Java language, using Spring Boot framework. <br>
 In this project we implemented a system that manages users and offers a wide variety of functionalities. The user is offered not only the basic CRUD functionality, but rather get data about users using complex queries and conditions.<br>
 
-RESTful representations were also implemented using HATEOAS library,
+Throughout the whole project, RESTful representations were also implemented using HATEOAS library,
 Async programming was also used in this project by using CompletableFuture class,
-and data was fetched from various APIs and mapped into POJOs using both RestTemplate and ObjectMapper.
+and data was fetched from 3 different API resources and mapped into POJOs using both RestTemplate and ObjectMapper.
 
 In this project, one can create, get, edit and delete users, cell phone companies and/or perform manipulations with the data stored in the database.
 
@@ -126,7 +126,7 @@ http://localhost:8080/swagger-ui/index.html
 
 ### Demo Video:
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/HOo1qsXnqFU/0.jpg)](https://www.youtube.com/watch?v=HOo1qsXnqFU) <br>
-** Increasing the speed of the videos is recommended. <br>
+** Increasing the speed of the video is recommended. <br>
 
 
 
