@@ -137,7 +137,7 @@ _For more examples, please refer to the [Documentation](https://github.com/RamMi
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [`LICENSE.txt`](https://github.com/RamMichaeli17/Community/blob/main/LICENSE.txt) for more information.
+Distributed under the MIT License. See [`LICENSE.txt`](https://github.com/RamMichaeli17/Community/blob/master/LICENSE.txt) for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
